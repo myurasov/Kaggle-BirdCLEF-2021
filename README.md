@@ -44,6 +44,7 @@
 ## Ideas
 
 - Collect more data, particularly on rare classes
+- Use only soundscapes for validation
 
 ### Crazy Ideas
 
@@ -53,3 +54,6 @@
 
 - "Perceiver: General Perception with Iterative Attention" <https://arxiv.org/pdf/2103.03206.pdf>
 - "Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains" <https://arxiv.org/pdf/2006.10739.pdf>
+- https://www.kaggle.com/stefankahl/birdclef2021-exploring-the-data
+- http://dcase.community/challenge2018/task-bird-audio-detection-results
+- http://dcase.community/documents/challenge2018/technical_reports/DCASE2018_Lasseck_76.pdf
