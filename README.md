@@ -46,6 +46,7 @@
 - Collect more data, particularly on rare classes
 - Use only soundscapes for validation to be closer to test dataset
 - Assign default rating value more optimally (is there correllation between length/other stuff and rating?)
+- Implement SWA <https://arxiv.org/pdf/1803.05407.pdf>
 
 ### Crazy Ideas
 
