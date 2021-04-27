@@ -6,7 +6,6 @@
 
 ### Dataset Creation
 
-
 - read `train_metadata.csv`
 - select only labels with good rating
 - slice clips into fragments with `stride` and `length` cut fragments based on detection model
@@ -14,6 +13,7 @@
 - add date coarsened up to season (month?, 1/8 of y?)
 - add secondary labels
 
+---
 
 - read `train_soundscape_labels.csv`
 - add date coarsened date
@@ -21,6 +21,7 @@
 - assume rating is '5' (?)
 - assume all labels are primary (?)
 
+---
 
 - add folds
 
