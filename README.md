@@ -32,6 +32,10 @@
 - do something about class imbalance
 - do augmentation with mixing of random fragments
 
+---
+
+- use sounscapes data for fine-tuning
+
 ### Models
 
 - Baseline: ensemble of 2d and 1d convnets
