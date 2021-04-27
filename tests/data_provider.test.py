@@ -9,8 +9,18 @@ class Test_DataProvider(unittest.TestCase):
         self.dp = get_data_provider(c)
 
     def test_get_audio_fragment(self):
-        res = self.dp.get_audio_fragment("XC11209.ogg")
-        self.assertEqual(res, "/app/tests/res/XC11209.ogg")
+        # 16.38 second clip
+
+        wave = self.dp.get_audio_fragment("XC11209.ogg")
+        self.assertEqual(len(wave), 532933)
+
+        wave = self.dp.get_audio_fragment("XC11209.ogg", 0, 5)
+        self.assertEqual(len(wave), c["AUDIO_SR"] * 5)
+
+        with self.assertRaises(Exception) as context:
+            wave = self.dp.get_audio_fragment("XC11209.ogg", 0, 50)
+        self.assertGreater(str(context.exception).find("Range"), -1)
+        self.assertGreater(str(context.exception).find("doesn't exist"), -1)
 
 
 if __name__ == "__main__":
