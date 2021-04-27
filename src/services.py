@@ -1,5 +1,5 @@
 from src.config import c
-from src.services.data_provider import DataProvider
+from src.data_provider import DataProvider
 from torchaudio.transforms import MelSpectrogram
 
 # services cache
