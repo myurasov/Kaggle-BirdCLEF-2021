@@ -39,6 +39,11 @@ class DataProvider:
 
         raise FileNotFoundError(f"Can't find {file_name} in one of the source dirs.")
 
+    def get_audio_duration(self, file_name):
+        """Get audio file duration [second]"""
+        file_path = self._find_src_file(file_name)
+        return librosa.get_duration(filename=file_path)
+
     def get_audio_fragment(self, file_name, start_s=0, end_s=None):
         """Get audio fragment by file name"""
 
