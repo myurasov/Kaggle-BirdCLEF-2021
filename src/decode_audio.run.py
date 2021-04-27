@@ -7,8 +7,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from src.config import c
-
-from src.services import get_data_provider
+from src.services import get_data_provider, get_torch_melspectrogram
 
 # region: read arguments
 parser = argparse.ArgumentParser(
@@ -33,3 +32,6 @@ os.chdir(c["WORK_DIR"])
 
 dp = get_data_provider()
 print(dp.get_audio_fragment("XC6671.ogg"))
+
+ms = get_torch_melspectrogram()
+print(ms)
