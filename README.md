@@ -8,7 +8,7 @@
 
 - read `train_metadata.csv`
 - select only labels with good rating
-- slice clips into fragments with `stride` and `length` cut fragments based on detection model
+- slice clips into fragments with `stride` and `length` or cut based on detection model
 - convert coordinates into orthogonal basis,  bin them to a coarse grid (10x10?)
 - add date coarsened up to season (month?, 1/8 of y?)
 - add secondary labels
