@@ -54,13 +54,11 @@ class DataProvider:
 
         # try reading from cache
         if self._cache_dir is not None:
-
             cache_key = f"{file_path}:sr={self._audio_sr}:{start_sample=}:{end_sample=}"
             cache_key = md5(cache_key.encode()).hexdigest()
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
             cache_dir = os.path.join(cache_dir, cache_key[0], cache_key[1])
             cache_path = os.path.join(cache_dir, cache_key)
-
             if os.path.isfile(cache_path):
                 wave = np.load(cache_path + ".npy")
 
@@ -82,10 +80,8 @@ class DataProvider:
 
             # save to cache
             if self._cache_dir is not None:
-
                 if not os.path.isdir(cache_dir):
                     os.makedirs(cache_dir)
-
                 np.save(cache_path, wave)
 
         return wave
