@@ -6,7 +6,9 @@ from pprint import pformat
 import pandas as pd
 from tqdm import tqdm
 
-from src.config import c 
+from src.config import c
+
+from src.services import get_data_provider
 
 # region: read arguments
 parser = argparse.ArgumentParser(
@@ -15,51 +17,19 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument(
-    "--src_dirs",
-    type=str,
-    default=c["SRC_AUDIO_DIRS"],
-    nargs="+",
-    help="List of input dirs/globs with audio files",
-)
-
-parser.add_argument(
     "--sr",
     type=float,
-    default=22500,
+    default=32000,
     help="Target sample rate",
 )
-
-
 
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
 os.chdir(c["WORK_DIR"])
-df = pd.read_csv(args.in_csv)
 
-g = Generator(
-    df=df,
-    batch_size=1,
-    shuffle=False,
-    zoom=args.zoom,
-    augmentation_options=None,
-    image_output_size=tuple(args.size),
-)
+#
 
-
-def _mapping(i):
-    g.__getitem__(i)
-
-
-with Pool(cpu_count()) as pool:
-    list(
-        tqdm(
-            pool.imap(
-                _mapping,
-                range(df.shape[0]),
-            ),
-            total=df.shape[0],
-            smoothing=0,
-        )
-    )
+dp = get_data_provider()
+print(dp.get_audio_fragment("XC6671.ogg"))

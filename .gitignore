@@ -4,8 +4,6 @@
 .keras/
 .virtual_documents/
 _data/
-_out/
-__*/
-__*.*
+_work/
 kaggle.json
 docker/res/root/.jupyter/migrated
