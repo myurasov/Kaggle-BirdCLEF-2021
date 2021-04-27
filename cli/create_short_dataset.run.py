@@ -28,7 +28,7 @@ parser.add_argument(
     "--min_rating",
     type=float,
     default=4,
-    help="Filter short audio clips only with at least this rating rating",
+    help="Filter short audio clips only with at least this rating",
 )
 
 parser.add_argument(
