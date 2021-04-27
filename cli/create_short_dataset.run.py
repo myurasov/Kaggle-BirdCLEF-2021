@@ -5,12 +5,10 @@ import os
 from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
-import librosa
 import pandas as pd
-from tqdm import tqdm
-
 from services import get_data_provider
 from src.config import c
+from tqdm import tqdm
 
 # see README.md for details on the dataset creation
 
