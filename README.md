@@ -13,7 +13,6 @@
 - "upsample" classes with too little data
 - convert coordinates into orthogonal basis,  bin them to a coarse grid (10x10?)
 - add date coarsened up to season (month?, 1/8 of y?)
-- add secondary labels
 
 ---
 
@@ -25,6 +24,8 @@
 
 ---
 
+- join datasets (short+long+external?)
+- treat secondary labels with lower value than 1 (?)
 - add folds
 
 ### Training
