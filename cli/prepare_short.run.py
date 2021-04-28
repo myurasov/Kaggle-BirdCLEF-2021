@@ -1,13 +1,14 @@
 #!/usr/bin/python
 
 import argparse
+import datetime
 import os
 from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
 import numpy as np
 import pandas as pd
-from lib.utils import list_indexes, fix_random_seed
+from lib.utils import fix_random_seed, list_indexes
 from src.config import c
 from src.data_utils import rectify_class_counts
 from src.services import get_data_provider
@@ -120,6 +121,17 @@ df.at[df.rating == 0, "rating"] = args.no_rating_value
 # filter by min rating
 df = _filter_by_rating(df, args.min_rating)
 
+# endregion
+
+# region: add date coarsened to month
+df_dates = []
+
+for ix, row in df.iterrows():
+    c_date = datetime.datetime.strptime(row.date, "%Y-%m-%d")
+    c_date = c_date.month
+    df_dates.append(c_date)
+
+df["_date"] = df_dates
 # endregion
 
 # region: sample fragments
