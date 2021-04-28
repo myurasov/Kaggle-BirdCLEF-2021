@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from lib.utils import list_indexes
 from src.config import c
+from src.data_utils import rectify_class_counts
 from src.services import get_data_provider
 from tqdm import tqdm
 
@@ -24,6 +25,7 @@ parser.add_argument(
     "--out_csv",
     type=str,
     default="short_dataset.csv",
+    help="Output CSV file path",
 )
 
 parser.add_argument(
@@ -50,11 +52,18 @@ parser.add_argument(
 
 parser.add_argument(
     "--sample_with_detection",
-    type=bool,
-    default=0,
-    help="Produce samples from bird song presense detection.)",
+    action="store_true",
+    help="Produce samples from bird song presense detection.",
 )
 
+parser.add_argument(
+    "--rectify_class_balance",
+    type=float,
+    default=[1.5, 0.25],
+    nargs="+",
+    help="Randomly drop rows with too many entries (> mean*[0]). "
+    + "Repeat rows with too little entries (< mean*[1]).",
+)
 
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
@@ -67,7 +76,7 @@ os.chdir(c["WORK_DIR"])
 def _filter_by_rating(df, min_rating):
     """Filter df by min rating"""
     print(
-        f"* Filtered out {df[df.rating < min_rating].shape[0]} "
+        f"* Filtered out {df[df.rating < min_rating].shape[0]:,} "
         + f"rows where rating < {min_rating}"
     )
 
@@ -96,7 +105,7 @@ def _get_audio_file_durations(filenames):
 # read short audios metadata csv
 csv_path = os.path.join(c["DATA_DIR"], "competition_data", "train_metadata.csv")
 df = pd.read_csv(csv_path)
-print(f"* Total {df.shape[0]} rows in {csv_path}")
+print(f"* Total {df.shape[0]:,} rows in {csv_path}")
 
 # assign default rating value
 df.at[df.rating == 0, "rating"] = args.no_rating_value
@@ -123,6 +132,8 @@ if args.sample_with_stride > 0:
     clip_len_s = c["AUDIO_TARTGET_LEN_S"]
     stride_s = args.sample_with_stride
 
+    print(f"* Sampling {clip_len_s}s clips with stride={stride_s}s")
+
     for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
         clip_duration_s = row["_duration_s"]
 
@@ -136,9 +147,25 @@ if args.sample_with_stride > 0:
 
 # create output df
 out_df = pd.DataFrame(out_df_rows, columns=df.columns)
+out_df = out_df.reset_index()
+print(f"* Total {len(out_df_rows):,} clips")
 
-# balance: randomly drop too large classes
+# rectify class balance
+if len(args.rectify_class_balance) == 2:
+    primary_label_counts = out_df["primary_label"].value_counts()
+    mean = np.mean(primary_label_counts)
+    max_items = int(mean * args.rectify_class_balance[0])
+    min_items = int(mean * args.rectify_class_balance[1])
+    print(f"* Rectifying class balance with max={max_items}, min={min_items}...")
 
+    out_df = rectify_class_counts(
+        out_df,
+        max_items=max_items,
+        min_items=min_items,
+        class_col="primary_label",
+    )
+
+    print(f"* Total {out_df.shape[0]:,} clips")
 
 # save outoput df
 
@@ -152,4 +179,5 @@ out_df = out_df.drop(
     ]
 )
 
-out_df.to_csv(os.path.join(c["WORK_DIR"], "short_dataset.csv"), index=False)
+out_df.to_csv(args.out_csv, index=False)
+print(f'* Saved CSV to "{args.out_csv}"')
