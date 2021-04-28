@@ -7,7 +7,7 @@ from pprint import pformat
 
 import numpy as np
 import pandas as pd
-from lib.utils import list_indexes
+from lib.utils import list_indexes, fix_random_seed
 from src.config import c
 from src.data_utils import rectify_class_counts
 from src.services import get_data_provider
@@ -69,7 +69,9 @@ args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
-# bootstrap
+# region: bootstrap
+
+fix_random_seed(c["SEED"])
 os.chdir(c["WORK_DIR"])
 
 
@@ -102,16 +104,25 @@ def _get_audio_file_durations(filenames):
     return res
 
 
-# read short audios metadata csv
+# endregion
+
+# region: read short clips csv
 csv_path = os.path.join(c["DATA_DIR"], "competition_data", "train_metadata.csv")
 df = pd.read_csv(csv_path)
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")
+# endregion
+
+# region: ratings
 
 # assign default rating value
 df.at[df.rating == 0, "rating"] = args.no_rating_value
 
 # filter by min rating
 df = _filter_by_rating(df, args.min_rating)
+
+# endregion
+
+# region: sample fragments
 
 # calc audio files durations
 print("* Calculating short files duration...")
@@ -126,7 +137,7 @@ df["_to_s"] = [None] * df.shape[0]
 out_df_rows = []
 out_df_col_ixs = list_indexes(list(df.columns))
 
-# sample with stride
+# sample with strides
 if args.sample_with_stride > 0:
 
     clip_len_s = c["AUDIO_TARGET_LEN_S"]
@@ -150,7 +161,9 @@ out_df = pd.DataFrame(out_df_rows, columns=df.columns)
 out_df = out_df.reset_index()
 print(f"* Total {len(out_df_rows):,} clips")
 
-# rectify class balance
+# endregion
+
+# region: rectify class balance
 if len(args.rectify_class_balance) == 2:
     primary_label_counts = out_df["primary_label"].value_counts()
     mean = np.mean(primary_label_counts)
@@ -166,9 +179,9 @@ if len(args.rectify_class_balance) == 2:
     )
 
     print(f"* Total {out_df.shape[0]:,} clips")
+# endregion
 
-# save output df
-
+# region: save output df
 out_df = out_df.drop(
     columns=[
         "url",
@@ -181,3 +194,4 @@ out_df = out_df.drop(
 
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
+# endregion
