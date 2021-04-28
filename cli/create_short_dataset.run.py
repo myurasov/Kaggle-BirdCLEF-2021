@@ -129,7 +129,7 @@ out_df_col_ixs = list_indexes(list(df.columns))
 # sample with stride
 if args.sample_with_stride > 0:
 
-    clip_len_s = c["AUDIO_TARTGET_LEN_S"]
+    clip_len_s = c["AUDIO_TARGET_LEN_S"]
     stride_s = args.sample_with_stride
 
     print(f"* Sampling {clip_len_s}s clips with stride={stride_s}s")
@@ -167,7 +167,7 @@ if len(args.rectify_class_balance) == 2:
 
     print(f"* Total {out_df.shape[0]:,} clips")
 
-# save outoput df
+# save output df
 
 out_df = out_df.drop(
     columns=[

@@ -21,7 +21,7 @@ c["SRC_DATA_DIRS"] = [
 c["AUDIO_SR"] = 32000
 
 # audio sample length
-c["AUDIO_TARTGET_LEN_S"] = 5
+c["AUDIO_TARGET_LEN_S"] = 5
 
 # parameters for melspectrogram computation
 
@@ -30,7 +30,7 @@ c["MSG_N_FFT"] = 2048
 c["MSG_TARGET_SIZE"] = {"w": 224, "h": 224}
 
 c["MSG_N_HOP_LENGTH"] = (
-    c["AUDIO_SR"] // c["MSG_TARGET_SIZE"]["w"] * c["AUDIO_TARTGET_LEN_S"]
+    c["AUDIO_SR"] // c["MSG_TARGET_SIZE"]["w"] * c["AUDIO_TARGET_LEN_S"]
 )
 
 c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["h"]
