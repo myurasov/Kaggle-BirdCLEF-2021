@@ -71,3 +71,4 @@
 - <http://dcase.community/documents/challenge2018/technical_reports/DCASE2018_Lasseck_76.pdf>
 - SWA <https://arxiv.org/pdf/1803.05407.pdf>, <https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/>
 - <https://github.com/iver56/audiomentations>
+- <https://ai.googleblog.com/2019/04/specaugment-new-data-augmentation.html>
