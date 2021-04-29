@@ -18,14 +18,14 @@ from tqdm import tqdm
 
 # region: read arguments
 parser = argparse.ArgumentParser(
-    description="Create short audio dataset",
+    description="Prepare short audio data",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 
 parser.add_argument(
     "--out_csv",
     type=str,
-    default="short_dataset.csv",
+    default="short.csv",
     help="Output CSV file path",
 )
 
@@ -124,14 +124,22 @@ df = _filter_by_rating(df, args.min_rating)
 # endregion
 
 # region: add date coarsened to month
-df_dates = []
+coarse_dates = []
 
 for ix, row in df.iterrows():
-    c_date = datetime.datetime.strptime(row.date, "%Y-%m-%d")
-    c_date = c_date.month
-    df_dates.append(c_date)
+    date_s = row.date
 
-df["_date"] = df_dates
+    if date_s[-5:-3] == "00":  # they've invented "zero" months and days...
+        coarse_date = 1
+    else:
+        if date_s[-2:] == "00":
+            date_s = date_s[:-1] + "1"
+        coarse_date = datetime.datetime.strptime(date_s, "%Y-%m-%d")
+        coarse_date = coarse_date.month
+
+    coarse_dates.append(coarse_date)
+
+df["_date_coarse"] = coarse_dates
 # endregion
 
 # region: sample fragments

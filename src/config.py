@@ -27,13 +27,13 @@ c["AUDIO_TARGET_LEN_S"] = 5
 
 c["MSG_N_FFT"] = 2048
 
-c["MSG_TARGET_SIZE"] = {"w": 224, "h": 224}
+c["MSG_TARGET_SIZE"] = {"time": 512, "freq": 512}
 
 c["MSG_N_HOP_LENGTH"] = (
-    c["AUDIO_SR"] // c["MSG_TARGET_SIZE"]["w"] * c["AUDIO_TARGET_LEN_S"]
+    c["AUDIO_SR"] // c["MSG_TARGET_SIZE"]["time"] * c["AUDIO_TARGET_LEN_S"]
 )
 
-c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["h"]
+c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freq"]
 
 # torchaudio melspectrogram device: cpu or cuda
 c["TA_MELSPECTROGRAM_DEVICE"] = "cpu"
