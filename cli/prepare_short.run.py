@@ -8,7 +8,7 @@ from pprint import pformat
 
 import numpy as np
 import pandas as pd
-from lib.utils import fix_random_seed, list_indexes
+from lib.utils import coarsen_number, fix_random_seed, list_indexes
 from src.config import c
 from src.data_utils import rectify_class_counts
 from src.services import get_data_provider
@@ -124,6 +124,8 @@ df = _filter_by_rating(df, args.min_rating)
 # endregion
 
 # region: add date coarsened to month
+print("* Adding coarsened dates...")
+
 coarse_dates = []
 
 for ix, row in df.iterrows():
@@ -140,6 +142,22 @@ for ix, row in df.iterrows():
     coarse_dates.append(coarse_date)
 
 df["_date_coarse"] = coarse_dates
+# endregion
+
+# region: add coarsened coords (8x8 grid)
+print("* Adding coarsened lat/lon...")
+
+coarse_lats = []
+coarse_lons = []
+
+for ix, row in df.iterrows():
+    lat = row.latitude
+    lon = row.latitude
+    coarse_lats.append(coarsen_number(lat, bins=8, min_val=-90, max_val=90))
+    coarse_lons.append(coarsen_number(lat, bins=8, min_val=-180, max_val=180))
+
+df["_lat_coarse"] = coarse_lats
+df["_lon_coarse"] = coarse_lons
 # endregion
 
 # region: sample fragments

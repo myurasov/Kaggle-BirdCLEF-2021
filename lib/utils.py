@@ -1,4 +1,5 @@
 import hashlib
+import math
 import os
 import random
 import shutil
@@ -56,15 +57,6 @@ def md5_file(path):
     return hash.hexdigest()
 
 
-def create_tensorboard_run_dir(run):
-    """
-    Creates a directory to log tensorboard data into
-    """
-    tb_log_dir = f"/app/.tensorboard/{run}"
-    shutil.rmtree(tb_log_dir, ignore_errors=True)
-    return tb_log_dir
-
-
 def show_keras_model(model: keras.Model, expand_nested=False):
     """Display model structure in notebook"""
     return IPython.display.SVG(
@@ -79,3 +71,18 @@ def show_keras_model(model: keras.Model, expand_nested=False):
             format="svg",
         )
     )
+
+
+def bin_number(number, bins=10, min_val=0.0, max_val=1.0):
+    """Bin a float number"""
+    number -= min_val
+    number = number / (max_val - min_val)
+    return int(max(0, min(math.floor(number * bins), bins - 1)))
+
+
+def coarsen_number(number, bins=10, min_val=0.0, max_val=1.0):
+    """Coarsen a float number"""
+    number -= min_val
+    number = number / (max_val - min_val)
+    bin_n = max(0, min(round(number * bins), bins))
+    return (bin_n / bins) * (max_val - min_val) + min_val
