@@ -11,7 +11,7 @@
 - slice clips into fragments with `stride` and `length` or cut based on detection model
 - randomly drop samples classes with too much data
 - "upsample" classes with too little data
-- convert coordinates into orthogonal basis,  bin them to a coarse grid (10x10?)
+- coarsen coordinates
 - add date coarsened up to season (month?, 1/8 of y?)
 
 ---
@@ -33,7 +33,8 @@
 - use rating as sample weight (?)
 - use secondary labels with label value < 1 and linear activation (?)
 - do something about class imbalance
-- do augmentation with mixing of random fragments
+- do augmentation with mixing of random fragments, (*predict all labels mixed up*)
+- try "Cosine Annealing Scheduler with warmup"
 
 ---
 
@@ -43,6 +44,12 @@
 
 - Baseline: ensemble of 2d and 1d convnets
 - Perceiver (?)
+
+### Prediction
+
+- Predictions close by in time of the same bird should be treaded with more confidence
+- Try LSTM that takes predicted stream and trains on soundscapes to correct predictions
+- Try different ensembling methods: averaging/sqrt(sum(squares))/voting
 
 ## Ideas
 
@@ -63,3 +70,4 @@
 - <http://dcase.community/challenge2018/task-bird-audio-detection-results>
 - <http://dcase.community/documents/challenge2018/technical_reports/DCASE2018_Lasseck_76.pdf>
 - SWA <https://arxiv.org/pdf/1803.05407.pdf>, <https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/>
+- <https://github.com/iver56/audiomentations>
