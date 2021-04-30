@@ -66,6 +66,13 @@ parser.add_argument(
     + "Repeat rows with too little entries (< mean*[1]).",
 )
 
+parser.add_argument(
+    "--max_from_clip",
+    type=int,
+    default=10,
+    help="Maximum number of samples from a single clip.",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -220,13 +227,21 @@ if args.sample_with_stride > 0:
 
     for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
         clip_duration_s = row["_duration_s"]
+        clip_rows = []
 
         # stride through one file
         for from_s in np.arange(0, clip_duration_s - clip_len_s, stride_s):
-            out_df_row = list(row)
-            out_df_row[out_df_col_ixs["_from_s"]] = from_s
-            out_df_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
-            out_df_rows.append(out_df_row)
+            clip_row = list(row)
+            clip_row[out_df_col_ixs["_from_s"]] = from_s
+            clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
+            clip_rows.append(clip_row)
+
+        # limit max number per audio clip
+        if len(clip_rows) > args.max_from_clip:
+            np.random.shuffle(clip_rows)
+            clip_rows = clip_rows[: args.max_from_clip]
+
+        out_df_rows += clip_rows
 
 
 # create output df
