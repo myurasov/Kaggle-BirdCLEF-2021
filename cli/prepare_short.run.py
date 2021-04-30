@@ -78,12 +78,16 @@ os.chdir(c["WORK_DIR"])
 
 def _filter_by_rating(df, min_rating):
     """Filter df by min rating"""
-    print(
-        f"* Filtered out {df[df.rating < min_rating].shape[0]:,} "
-        + f"rows where rating < {min_rating}"
-    )
+    to_drop = df[df.rating < min_rating]
+    print(f"* Filtered out {to_drop.shape[0]:,} rows where rating < {min_rating}")
+    return df.drop(index=to_drop.index)
 
-    return df[df.rating >= min_rating]
+
+def _filter_invalid_dates(df):
+    """Filter-out invalid dates"""
+    to_drop = df[df.date == "0000-00-00"]
+    print(f"* Filtered out {to_drop.shape[0]:,} rows with invalid dates")
+    return df.drop(index=to_drop.index)
 
 
 def _audio_file_path_to_duration(filename):
@@ -108,12 +112,13 @@ def _get_audio_file_durations(filenames):
 # endregion
 
 # region: read short clips csv
+
 csv_path = os.path.join(c["DATA_DIR"], "competition_data", "train_metadata.csv")
 df = pd.read_csv(csv_path)
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")
 # endregion
 
-# region: ratings
+# region filter out invalid/bad quality rows
 
 # assign default rating value
 df.at[df.rating == 0, "rating"] = args.no_rating_value
@@ -121,30 +126,45 @@ df.at[df.rating == 0, "rating"] = args.no_rating_value
 # filter by min rating
 df = _filter_by_rating(df, args.min_rating)
 
+# filter out invalid dates
+df = _filter_invalid_dates(df)
+
+# endregion
+
+# region: convert labels
+print("* Converting labels...")
+
+for ix, row in tqdm(df.iterrows()):
+    ...
+
+
 # endregion
 
 # region: add date coarsened to month
 print("* Adding coarsened dates...")
 
-coarse_dates = []
+months = []
+years = []
 
 for ix, row in df.iterrows():
     date_s = row.date
 
-    if date_s[-5:-3] == "00":  # they've invented "zero" months and days...
-        coarse_date = 1
-    else:
-        if date_s[-2:] == "00":
-            date_s = date_s[:-1] + "1"
-        coarse_date = datetime.datetime.strptime(date_s, "%Y-%m-%d")
-        coarse_date = coarse_date.month
+    # they have invented month zero and day zero...
+    date_s = date_s.split("-")
+    for i in [1, 2]:
+        if date_s[i] == "00":
+            date_s[i] = "01"
+    date_s = "-".join(date_s)
 
-    coarse_dates.append(coarse_date)
+    date = datetime.datetime.strptime(date_s, "%Y-%m-%d")
+    months.append(date.month)
+    years.append(date.year)
 
-df["_date_coarse"] = coarse_dates
+df["_year"] = years
+df["_month"] = months
 # endregion
 
-# region: add coarsened coords (8x8 grid)
+# region: add coarsened coords
 print("* Adding coarsened lat/lon...")
 
 coarse_lats = []
@@ -153,8 +173,12 @@ coarse_lons = []
 for ix, row in df.iterrows():
     lat = row.latitude
     lon = row.latitude
-    coarse_lats.append(coarsen_number(lat, bins=8, min_val=-90, max_val=90))
-    coarse_lons.append(coarsen_number(lat, bins=8, min_val=-180, max_val=180))
+    coarse_lats.append(
+        coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-90, max_val=90)
+    )
+    coarse_lons.append(
+        coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-180, max_val=180)
+    )
 
 df["_lat_coarse"] = coarse_lats
 df["_lon_coarse"] = coarse_lons
@@ -223,10 +247,15 @@ if len(args.rectify_class_balance) == 2:
 out_df = out_df.drop(
     columns=[
         "url",
-        "license",
-        "scientific_name",
-        "common_name",
+        "type",
+        "time",
+        "date",
         "author",
+        "license",
+        "latitude",
+        "longitude",
+        "common_name",
+        "scientific_name",
     ]
 )
 

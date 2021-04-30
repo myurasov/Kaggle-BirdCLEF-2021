@@ -3,8 +3,9 @@
 
 import argparse
 import datetime
-from glob import glob
 import os
+import re
+from glob import glob
 from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
@@ -15,7 +16,6 @@ from src.config import c
 from src.data_utils import rectify_class_counts
 from src.services import get_data_provider
 from tqdm import tqdm
-
 
 # see README.md for details on the dataset creation
 
@@ -50,20 +50,43 @@ print(f"* Total {df.shape[0]:,} rows in {csv_path}")
 # endregion
 
 # region: read soundscape info (coords, rec dates)
-# TODO
+
+
+def _read_soundscapes_info():
+    info = {}
+    info_dir = os.path.join(c["DATA_DIR"], "competition_data", "test_soundscapes")
+
+    # read coordinates, location
+    for p in glob(os.path.join(info_dir, "*.txt")):
+        name = os.path.basename(p)[:3]
+        with open(p, "r") as f:
+            contents = f.read()
+            lat = float(re.findall("Latitude: (.+)\\b", contents)[0])
+            lon = float(re.findall("Longitude: (.+)\\b", contents)[0])
+            location = re.findall("^.+\n.+", contents)[0].replace("\n", ", ")
+        info[name] = {"lat": lat, "lon": lon, "location": location}
+
+    return info
+
+
+soundscapes_info = _read_soundscapes_info()
 # endregion
 
 # region: add info fields
 
 newcols = {
+    "_to_s": [],
+    "_year": [],
+    "_month": [],
+    "_from_s": [],
     "filename": [],
     "_duration_s": [],
-    "_from_s": [],
-    "_to_s": [],
+    "_lat_coarse": [],
+    "_lon_coarse": [],
 }
 
 for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
-    # audio file
+    # audio file path/name
 
     file_glob = os.path.join(
         c["DATA_DIR"],
@@ -75,14 +98,40 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     file_path = glob(file_glob)
     assert len(file_path) == 1
     file_path = file_path[0]
-    newcols["filename"].append(os.path.basename(file_path))
+    file_name = os.path.basename(file_path)
+    newcols["filename"].append(file_name)
+
+    # date
+    date_s = re.findall("_(\\d+).ogg$", file_name)[0]
+    date = datetime.datetime.strptime(date_s, "%Y%m%d")
+    newcols["_month"].append(date.month)
+    newcols["_year"].append(date.month)
 
     # duration
-    newcols["_duration_s"].append(get_data_provider().get_audio_duration(file_path))
+    # newcols["_duration_s"].append(get_data_provider().get_audio_duration(file_path))
+    newcols["_duration_s"].append(600.0)  # !!!
 
     # from/to
     newcols["_from_s"].append(row.seconds - 5)
     newcols["_to_s"].append(row.seconds)
+
+    # lat/lon
+    newcols["_lat_coarse"].append(
+        coarsen_number(
+            soundscapes_info[row.site]["lat"],
+            bins=c["GEO_COORDINATES_BINS"],
+            min_val=-90,
+            max_val=90,
+        )
+    )
+    newcols["_lon_coarse"].append(
+        coarsen_number(
+            soundscapes_info[row.site]["lon"],
+            bins=c["GEO_COORDINATES_BINS"],
+            min_val=-180,
+            max_val=180,
+        )
+    )
 
 for k, v in newcols.items():
     df[k] = v

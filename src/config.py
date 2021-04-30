@@ -37,3 +37,6 @@ c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freq"]
 
 # torchaudio melspectrogram device: cpu or cuda
 c["TA_MELSPECTROGRAM_DEVICE"] = "cpu"
+
+# number of bins for latitude/longitude
+c["GEO_COORDINATES_BINS"] = 18
