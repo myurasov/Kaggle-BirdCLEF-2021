@@ -80,9 +80,10 @@ newcols = {
     "_month": [],
     "_from_s": [],
     "filename": [],
-    "_duration_s": [],
     "_lat_coarse": [],
     "_lon_coarse": [],
+    "_primary_labels": [],
+    "_secondary_labels": [None] * df.shape[0],
 }
 
 for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
@@ -105,11 +106,7 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     date_s = re.findall("_(\\d+).ogg$", file_name)[0]
     date = datetime.datetime.strptime(date_s, "%Y%m%d")
     newcols["_month"].append(date.month)
-    newcols["_year"].append(date.month)
-
-    # duration
-    # newcols["_duration_s"].append(get_data_provider().get_audio_duration(file_path))
-    newcols["_duration_s"].append(600.0)  # !!!
+    newcols["_year"].append(date.year)
 
     # from/to
     newcols["_from_s"].append(row.seconds - 5)
@@ -117,21 +114,28 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
 
     # lat/lon
     newcols["_lat_coarse"].append(
-        coarsen_number(
-            soundscapes_info[row.site]["lat"],
-            bins=c["GEO_COORDINATES_BINS"],
-            min_val=-90,
-            max_val=90,
+        int(
+            coarsen_number(
+                soundscapes_info[row.site]["lat"],
+                bins=c["GEO_COORDINATES_BINS"],
+                min_val=-90,
+                max_val=90,
+            )
         )
     )
     newcols["_lon_coarse"].append(
-        coarsen_number(
-            soundscapes_info[row.site]["lon"],
-            bins=c["GEO_COORDINATES_BINS"],
-            min_val=-180,
-            max_val=180,
+        int(
+            coarsen_number(
+                soundscapes_info[row.site]["lon"],
+                bins=c["GEO_COORDINATES_BINS"],
+                min_val=-180,
+                max_val=180,
+            )
         )
     )
+
+    # labels
+    newcols["_primary_labels"].append(" ".join(row.birds.split(" ")))
 
 for k, v in newcols.items():
     df[k] = v
@@ -139,7 +143,21 @@ for k, v in newcols.items():
 # endregion
 
 # region: save output df
-df = df.drop(columns=[])
+# df = df.drop(columns=["audio_id", "birds", "seconds", "site"])
+df = df[
+    [
+        "filename",
+        "_primary_labels",
+        "_secondary_labels",
+        "_from_s",
+        "_to_s",
+        "_year",
+        "_month",
+        "_lat_coarse",
+        "_lon_coarse",
+        "row_id",
+    ]
+]
 df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
 # endregion

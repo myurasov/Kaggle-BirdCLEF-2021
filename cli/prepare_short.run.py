@@ -137,9 +137,9 @@ print("* Converting labels...")
 primary_labels = []
 secondary_labels = []
 
-for ix, row in tqdm(df.iterrows()):
+for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     primary_labels.append(row.primary_label)
-    secondary_labels.append(" ".join(sorted(eval(row.secondary_labels))))
+    secondary_labels.append(" ".join(eval(row.secondary_labels)))
 
 df["_primary_labels"] = primary_labels
 df["_secondary_labels"] = secondary_labels
@@ -179,10 +179,16 @@ for ix, row in df.iterrows():
     lat = row.latitude
     lon = row.latitude
     coarse_lats.append(
-        coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-90, max_val=90)
+        int(
+            coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-90, max_val=90)
+        )
     )
     coarse_lons.append(
-        coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-180, max_val=180)
+        int(
+            coarsen_number(
+                lat, bins=c["GEO_COORDINATES_BINS"], min_val=-180, max_val=180
+            )
+        )
     )
 
 df["_lat_coarse"] = coarse_lats
@@ -249,23 +255,20 @@ if len(args.rectify_class_balance) == 2:
 # endregion
 
 # region: save output df
-out_df = out_df.drop(
-    columns=[
-        "url",
-        "type",
-        "time",
-        "date",
-        "author",
-        "license",
-        "latitude",
-        "longitude",
-        "common_name",
-        "primary_label",
-        "scientific_name",
-        "secondary_labels",
+out_df = out_df[
+    [
+        "filename",
+        "_primary_labels",
+        "_secondary_labels",
+        "_from_s",
+        "_to_s",
+        "_year",
+        "_month",
+        "_lat_coarse",
+        "_lon_coarse",
+        "rating",
     ]
-)
-
+]
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
 # endregion
