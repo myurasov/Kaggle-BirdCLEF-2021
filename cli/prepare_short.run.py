@@ -134,10 +134,15 @@ df = _filter_invalid_dates(df)
 # region: convert labels
 print("* Converting labels...")
 
+primary_labels = []
+secondary_labels = []
+
 for ix, row in tqdm(df.iterrows()):
-    ...
+    primary_labels.append(row.primary_label)
+    secondary_labels.append(" ".join(sorted(eval(row.secondary_labels))))
 
-
+df["_primary_labels"] = primary_labels
+df["_secondary_labels"] = secondary_labels
 # endregion
 
 # region: add date coarsened to month
@@ -255,7 +260,9 @@ out_df = out_df.drop(
         "latitude",
         "longitude",
         "common_name",
+        "primary_label",
         "scientific_name",
+        "secondary_labels",
     ]
 )
 
