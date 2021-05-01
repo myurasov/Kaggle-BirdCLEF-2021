@@ -14,7 +14,7 @@ class Test_MSG_Generator(unittest.TestCase):
         self._generator = MSG_Generator(
             df=pd.read_pickle(os.path.join(c["WORK_DIR"], "dataset.pickle")),
             wave_provider=get_wave_provider(c),
-            msg_maker=get_msg_provider(c),
+            msg_provider=get_msg_provider(c),
             batch_size=1,
             shuffle=False,
             augmentation=None,

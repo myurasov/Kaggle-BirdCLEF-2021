@@ -15,15 +15,15 @@ class MSG_Generator(keras.utils.Sequence):
         self,
         df: DataFrame,
         wave_provider: WaveProvider,
-        msg_maker: MSG_Provider,
+        msg_provider: MSG_Provider,
         shuffle=True,
         batch_size=32,
         augmentation=None,
     ):
         self._df = df
         self._shuffle = shuffle
-        self._msg_maker = msg_maker
         self._batch_size = batch_size
+        self._msg_provider = msg_provider
         self._augmentation = augmentation
         self._wave_provider = wave_provider
 
@@ -52,7 +52,7 @@ class MSG_Generator(keras.utils.Sequence):
             end_s=self._df.loc[ix]["_to_s"],
         )
 
-        x = self._msg_maker.msg(wave).astype(np.float16)
+        x = self._msg_provider.msg(wave).astype(np.float16)
         y = np.array(self._df._Y_labels.loc[ix], dtype=np.float16)
 
         return x, y
