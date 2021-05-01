@@ -1,9 +1,11 @@
 import hashlib
+import json
 import math
 import os
 import random
 import shutil
 from collections import namedtuple
+from pathlib import Path
 
 import IPython
 import numpy as np
@@ -86,3 +88,14 @@ def coarsen_number(number, bins=10, min_val=0.0, max_val=1.0):
     number = number / (max_val - min_val)
     bin_n = max(0, min(round(number * bins), bins))
     return (bin_n / bins) * (max_val - min_val) + min_val
+
+
+def read_json(filename):
+    json.loads(Path(filename).read_text())
+
+
+def write_json(data, filename):
+    print(
+        json.dumps(data, indent=4),
+        file=open(filename, "w"),
+    )

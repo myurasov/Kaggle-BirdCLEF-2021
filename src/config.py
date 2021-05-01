@@ -27,16 +27,16 @@ c["AUDIO_TARGET_LEN_S"] = 5
 
 c["MSG_N_FFT"] = 2048
 
-c["MSG_TARGET_SIZE"] = {"time": 256, "freq": 256}
+c["MSG_TARGET_SIZE"] = {"time": 512, "freq": 128}
 
 c["MSG_N_HOP_LENGTH"] = (
-    c["AUDIO_SR"] // c["MSG_TARGET_SIZE"]["time"] * c["AUDIO_TARGET_LEN_S"]
+    c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"] // (c["MSG_TARGET_SIZE"]["time"] - 1)
 )
 
 c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freq"]
 
 # torchaudio melspectrogram device: cpu or cuda
-c["TA_MELSPECTROGRAM_DEVICE"] = "cpu"
+c["TORCH_MELSPECTROGRAM_DEVICE"] = "cpu"
 
 # number of bins for latitude/longitude
 c["GEO_COORDINATES_BINS"] = 18

@@ -1,6 +1,6 @@
 from src.config import c
 from src.data_provider import DataProvider
-from torchaudio.transforms import MelSpectrogram
+from src.msg_maker import MSG_Maker
 
 # services cache
 _services = {}
@@ -22,24 +22,19 @@ def get_data_provider(
     return _services[key]
 
 
-def get_torch_melspectrogram(
+def get_msg_maker(
     config=c,
-    key="torch_melspectrogram",
-) -> MelSpectrogram:
+    key="msg_maker",
+) -> MSG_Maker:
 
     if key not in _services:
 
-        _services[key] = MelSpectrogram(
-            power=2.0,
-            center=True,
-            norm="slaney",
-            onesided=True,
-            win_length=None,
-            pad_mode="reflect",
+        _services[key] = MSG_Maker(
             n_fft=config["MSG_N_FFT"],
             n_mels=config["MSG_N_MELS"],
-            sample_rate=config["AUDIO_SR"],
             hop_length=config["MSG_N_HOP_LENGTH"],
-        ).to(config["TA_MELSPECTROGRAM_DEVICE"])
+            sample_rate=config["AUDIO_SR"],
+            device=config["TORCH_MELSPECTROGRAM_DEVICE"],
+        )
 
     return _services[key]

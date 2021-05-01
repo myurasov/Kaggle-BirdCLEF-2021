@@ -81,20 +81,17 @@ ENV KAGGLE_CONFIG_DIR ${APP_DIR}
 RUN pip install kaggle
 
 # python packages
+
+RUN pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 \
+    -f https://download.pytorch.org/whl/torch_stable.html
+
 RUN pip install pandas
 RUN pip install numpy
 RUN pip install matplotlib
 RUN pip install tqdm
 RUN apt-get install -y libsndfile1
 RUN pip install librosa
-RUN pip install pydub
-RUN apt-get install -y python3-dev libasound2-dev
-RUN pip install simpleaudio
-RUN apt-get install -y portaudio19-dev
-RUN pip install pyaudio
-
-RUN pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 \
-    -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install tables
 
 # mimic kaggle directory layout
 RUN mkdir -pv /kaggle/input/birdclef-2021 /kaggle/working

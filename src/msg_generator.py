@@ -3,6 +3,7 @@ from pandas import DataFrame
 from tensorflow import keras
 
 from src.data_provider import DataProvider
+from src.msg_maker import MSG_Maker
 
 
 class MSG_Generator(keras.utils.Sequence):
@@ -14,15 +15,17 @@ class MSG_Generator(keras.utils.Sequence):
         self,
         df: DataFrame,
         data_provider: DataProvider,
+        msg_maker: MSG_Maker,
         shuffle=True,
         batch_size=32,
-        augmentations=set(["mix", "wave", "msg"]),
+        augmentation=set(["mix", "wave", "msg"]),
     ):
         self._df = df
         self._shuffle = shuffle
+        self._msg_maker = msg_maker
         self._batch_size = batch_size
+        self._augmentation = augmentation
         self._data_provider = data_provider
-        self._augmentations = augmentations
 
     def __len__(self):
         return self._n_samples // self._batch_size
@@ -43,16 +46,15 @@ class MSG_Generator(keras.utils.Sequence):
             self._shuffle_samples()
 
     def _get_one(self, ix):
-
-        # TODO
-
         wave = self._data_provider.get_audio_fragment(
             file_name=self._df.loc[ix]["filename"],
             start_s=self._df.loc[ix]["_from_s"],
             end_s=self._df.loc[ix]["_to_s"],
         )
 
-        return wave, np.array([0, 0, 0, 0, 1], dtype=np.float16)  # !!!
+        msg = self._msg_maker.msg(wave)
+
+        return msg, np.array([0, 0, 0, 0, 1], dtype=np.float16)
 
     def _shuffle_samples(self):
         self._df = self._df.sample(frac=1).reset_index(drop=True)
