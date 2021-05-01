@@ -18,7 +18,7 @@ class MSG_Generator(keras.utils.Sequence):
         msg_maker: MSG_Maker,
         shuffle=True,
         batch_size=32,
-        augmentation=set(["mix", "wave", "msg"]),
+        augmentation=None,
     ):
         self._df = df
         self._shuffle = shuffle
@@ -39,7 +39,7 @@ class MSG_Generator(keras.utils.Sequence):
             b_X.append(x)
             b_Y.append(y)
 
-        return np.array(b_Y), np.array(b_Y)
+        return b_X, b_Y
 
     def on_epoch_end(self):
         if self._shuffle:
@@ -52,9 +52,10 @@ class MSG_Generator(keras.utils.Sequence):
             end_s=self._df.loc[ix]["_to_s"],
         )
 
-        msg = self._msg_maker.msg(wave)
+        x = self._msg_maker.msg(wave).astype(np.float16)
+        y = np.array(self._df._Y_labels.loc[ix], dtype=np.float16)
 
-        return msg, np.array([0, 0, 0, 0, 1], dtype=np.float16)
+        return x, y
 
     def _shuffle_samples(self):
         self._df = self._df.sample(frac=1).reset_index(drop=True)

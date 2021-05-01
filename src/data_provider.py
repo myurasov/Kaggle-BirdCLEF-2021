@@ -12,9 +12,11 @@ class DataProvider:
         src_dirs=[],
         cache_dir=None,
         audio_sr=32000,
+        normalize=False,
     ):
         self._audio_sr = audio_sr
         self._cache_dir = cache_dir
+        self._normalize = normalize
         self._src_dirs = self._resolve_src_dir_globs(src_dirs)
 
     def _resolve_src_dir_globs(self, src_dirs):
@@ -77,17 +79,23 @@ class DataProvider:
         if wave is None:
             # load
             wave, sr = librosa.load(file_path, sr=self._audio_sr)
-            wave = wave.astype(np.float16)
             assert sr == self._audio_sr
 
             # crop
             wave = wave[start_sample:end_sample]
+
+            # normalize
+            if self._normalize:
+                wave -= np.mean(wave)
+                wave /= np.std(wave)
 
             # check if the asked range is valid
             if (end_sample is not None) and (len(wave) != end_sample - start_sample):
                 raise Exception(
                     f'Range {start_s}-{end_s} doesn\'t exist in file "{file_name}"'
                 )
+
+            wave = wave.astype(np.float16)
 
             # save to cache
             if self._cache_dir is not None:

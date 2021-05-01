@@ -72,3 +72,4 @@
 - SWA <https://arxiv.org/pdf/1803.05407.pdf>, <https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/>
 - <https://github.com/iver56/audiomentations>
 - <https://ai.googleblog.com/2019/04/specaugment-new-data-augmentation.html>, <https://github.com/DemisEom/SpecAugment>
+- <https://enzokro.dev/spectrogram_normalizations/2020/09/10/Normalizing-spectrograms-for-deep-learning.html>

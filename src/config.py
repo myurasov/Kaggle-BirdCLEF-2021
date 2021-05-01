@@ -27,16 +27,19 @@ c["AUDIO_TARGET_LEN_S"] = 5
 
 c["MSG_N_FFT"] = 2048
 
-c["MSG_TARGET_SIZE"] = {"time": 512, "freq": 128}
+c["MSG_TARGET_SIZE"] = {"time": 256, "freqs": 256}
 
 c["MSG_N_HOP_LENGTH"] = (
     c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"] // (c["MSG_TARGET_SIZE"]["time"] - 1)
 )
 
-c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freq"]
+c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freqs"]
 
 # torchaudio melspectrogram device: cpu or cuda
 c["TORCH_MELSPECTROGRAM_DEVICE"] = "cpu"
+
+# normalize audio
+c["AUDIO_NORMALIZE"] = True
 
 # number of bins for latitude/longitude
 c["GEO_COORDINATES_BINS"] = 18

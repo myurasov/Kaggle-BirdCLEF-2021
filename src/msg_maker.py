@@ -13,8 +13,9 @@ class MSG_Maker:
         n_mels,
         hop_length,
         sample_rate,
+        target_msg_mels,
+        target_msg_time_steps,
         device="cpu",
-        target_msg_size=(256, 256),
     ):
 
         self._msg_transform = MelSpectrogram(
@@ -31,7 +32,8 @@ class MSG_Maker:
         ).to(device)
 
         self._device = device
-        self._target_msg_size = target_msg_size
+        self._target_msg_mels = target_msg_mels
+        self._target_msg_time_steps = target_msg_time_steps
 
     def msg(self, wave):
         wave = torch.tensor(wave.reshape([1, -1]).astype(np.float32)).to(self._device)
@@ -39,6 +41,13 @@ class MSG_Maker:
         msg = self._msg_transform(wave)[0].cpu().numpy()
         msg = librosa.power_to_db(msg)
 
-        print(msg.shape)
+        # if melspectrogram size mismatches with target, resize it
+        if msg.shape != (self._target_msg_mels, self._target_msg_time_steps):
+            msg = Image.fromarray(msg)
+            msg = msg.resize(
+                (self._target_msg_time_steps, self._target_msg_mels),
+                Image.BICUBIC,
+            )
+            msg = np.array(msg)
 
-        return msg
+        return msg.astype(np.float16)

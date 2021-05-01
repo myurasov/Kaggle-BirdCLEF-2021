@@ -14,9 +14,10 @@ def get_data_provider(
     if key not in _services:
 
         _services[key] = DataProvider(
-            src_dirs=config["SRC_DATA_DIRS"],
-            cache_dir=config["CACHE_DIR"],
             audio_sr=config["AUDIO_SR"],
+            cache_dir=config["CACHE_DIR"],
+            src_dirs=config["SRC_DATA_DIRS"],
+            normalize=config["AUDIO_NORMALIZE"],
         )
 
     return _services[key]
@@ -32,9 +33,11 @@ def get_msg_maker(
         _services[key] = MSG_Maker(
             n_fft=config["MSG_N_FFT"],
             n_mels=config["MSG_N_MELS"],
-            hop_length=config["MSG_N_HOP_LENGTH"],
             sample_rate=config["AUDIO_SR"],
+            hop_length=config["MSG_N_HOP_LENGTH"],
             device=config["TORCH_MELSPECTROGRAM_DEVICE"],
+            target_msg_mels=c["MSG_TARGET_SIZE"]["freqs"],
+            target_msg_time_steps=c["MSG_TARGET_SIZE"]["time"],
         )
 
     return _services[key]
