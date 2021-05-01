@@ -3,7 +3,7 @@ from pandas import DataFrame
 from tensorflow import keras
 
 from src.wave_provider import WaveProvider
-from src.msg_maker import MSG_Maker
+from src.msg_provider import MSG_Provider
 
 
 class MSG_Generator(keras.utils.Sequence):
@@ -15,7 +15,7 @@ class MSG_Generator(keras.utils.Sequence):
         self,
         df: DataFrame,
         wave_provider: WaveProvider,
-        msg_maker: MSG_Maker,
+        msg_maker: MSG_Provider,
         shuffle=True,
         batch_size=32,
         augmentation=None,

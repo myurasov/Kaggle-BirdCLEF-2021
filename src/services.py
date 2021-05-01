@@ -1,6 +1,6 @@
 from src.config import c
 from src.wave_provider import WaveProvider
-from src.msg_maker import MSG_Maker
+from src.msg_provider import MSG_Provider
 
 # services cache
 _services = {}
@@ -23,14 +23,14 @@ def get_wave_provider(
     return _services[key]
 
 
-def get_msg_maker(
+def get_msg_provider(
     config=c,
     key="msg_maker",
-) -> MSG_Maker:
+) -> MSG_Provider:
 
     if key not in _services:
 
-        _services[key] = MSG_Maker(
+        _services[key] = MSG_Provider(
             n_fft=config["MSG_N_FFT"],
             n_mels=config["MSG_N_MELS"],
             sample_rate=config["AUDIO_SR"],

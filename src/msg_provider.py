@@ -6,7 +6,7 @@ from torchaudio.transforms import MelSpectrogram
 from PIL import Image
 
 
-class MSG_Maker:
+class MSG_Provider:
     def __init__(
         self,
         n_fft,

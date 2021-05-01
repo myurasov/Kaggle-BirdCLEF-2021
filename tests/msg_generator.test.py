@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from src.config import c
 from src.msg_generator import MSG_Generator
-from src.services import get_wave_provider, get_msg_maker
+from src.services import get_wave_provider, get_msg_provider
 
 
 class Test_MSG_Generator(unittest.TestCase):
@@ -14,7 +14,7 @@ class Test_MSG_Generator(unittest.TestCase):
         self._generator = MSG_Generator(
             df=pd.read_pickle(os.path.join(c["WORK_DIR"], "dataset.pickle")),
             wave_provider=get_wave_provider(c),
-            msg_maker=get_msg_maker(c),
+            msg_maker=get_msg_provider(c),
             batch_size=1,
             shuffle=False,
             augmentation=None,
