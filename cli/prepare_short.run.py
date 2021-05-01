@@ -93,7 +93,9 @@ def _filter_by_rating(df, min_rating):
 
 def _filter_invalid_dates(df):
     """Filter-out invalid dates"""
-    to_drop = df[df.date == "0000-00-00"]
+    to_drop = df[
+        df.date.str.contains("-00-")
+    ]  # month is important, "00" day can be assumed as 01
     print(f"* Filtered out {to_drop.shape[0]:,} rows with invalid dates")
     return df.drop(index=to_drop.index)
 
