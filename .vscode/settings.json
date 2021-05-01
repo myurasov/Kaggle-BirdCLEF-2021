@@ -31,7 +31,8 @@
     "**/.DS_Store": true,
     "**/.Trash-0": true,
     "**/.virtual_documents": true,
-    "**/.ipynb_checkpoints": true
+    "**/.ipynb_checkpoints": true,
+    "**/__pycache__": true
   },
   "explorerExclude.backup": null,
   "python.pythonPath": "/usr/bin/python3"

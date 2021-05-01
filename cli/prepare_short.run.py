@@ -80,6 +80,7 @@ print(f"* Arguments:\n{pformat(vars(args))}")
 # region: bootstrap
 
 fix_random_seed(c["SEED"])
+os.makedirs(c["WORK_DIR"], exist_ok=True)
 os.chdir(c["WORK_DIR"])
 
 
@@ -284,6 +285,7 @@ out_df = out_df[
         "rating",
     ]
 ]
+out_df["_source"] = ["short"] * out_df.shape[0]
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
 # endregion
