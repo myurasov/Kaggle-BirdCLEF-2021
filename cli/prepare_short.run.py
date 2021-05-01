@@ -11,7 +11,7 @@ import pandas as pd
 from lib.utils import coarsen_number, fix_random_seed, list_indexes
 from src.config import c
 from src.data_utils import rectify_class_counts
-from src.services import get_data_provider
+from src.services import get_wave_provider
 from tqdm import tqdm
 
 # see README.md for details on the dataset creation
@@ -99,7 +99,7 @@ def _filter_invalid_dates(df):
 
 
 def _audio_file_path_to_duration(filename):
-    return get_data_provider().get_audio_duration(filename)
+    return get_wave_provider().get_audio_duration(filename)
 
 
 def _get_audio_file_durations(filenames):

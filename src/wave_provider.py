@@ -6,7 +6,7 @@ import librosa
 import numpy as np
 
 
-class DataProvider:
+class WaveProvider:
     def __init__(
         self,
         src_dirs=[],

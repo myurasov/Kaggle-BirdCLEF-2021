@@ -2,7 +2,7 @@ import numpy as np
 from pandas import DataFrame
 from tensorflow import keras
 
-from src.data_provider import DataProvider
+from src.wave_provider import WaveProvider
 from src.msg_maker import MSG_Maker
 
 
@@ -14,7 +14,7 @@ class MSG_Generator(keras.utils.Sequence):
     def __init__(
         self,
         df: DataFrame,
-        data_provider: DataProvider,
+        wave_provider: WaveProvider,
         msg_maker: MSG_Maker,
         shuffle=True,
         batch_size=32,
@@ -25,7 +25,7 @@ class MSG_Generator(keras.utils.Sequence):
         self._msg_maker = msg_maker
         self._batch_size = batch_size
         self._augmentation = augmentation
-        self._data_provider = data_provider
+        self._wave_provider = wave_provider
 
     def __len__(self):
         return self._n_samples // self._batch_size
@@ -46,7 +46,7 @@ class MSG_Generator(keras.utils.Sequence):
             self._shuffle_samples()
 
     def _get_one(self, ix):
-        wave = self._data_provider.get_audio_fragment(
+        wave = self._wave_provider.get_audio_fragment(
             file_name=self._df.loc[ix]["filename"],
             start_s=self._df.loc[ix]["_from_s"],
             end_s=self._df.loc[ix]["_to_s"],

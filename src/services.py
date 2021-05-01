@@ -1,19 +1,19 @@
 from src.config import c
-from src.data_provider import DataProvider
+from src.wave_provider import WaveProvider
 from src.msg_maker import MSG_Maker
 
 # services cache
 _services = {}
 
 
-def get_data_provider(
+def get_wave_provider(
     config=c,
-    key="data_provider",
-) -> DataProvider:
+    key="wave_provider",
+) -> WaveProvider:
 
     if key not in _services:
 
-        _services[key] = DataProvider(
+        _services[key] = WaveProvider(
             audio_sr=config["AUDIO_SR"],
             cache_dir=config["CACHE_DIR"],
             src_dirs=config["SRC_DATA_DIRS"],

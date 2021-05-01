@@ -1,12 +1,12 @@
 import unittest
 
-from src.services import get_data_provider
+from src.services import get_wave_provider
 from src.config_test import c
 
 
-class Test_DataProvider(unittest.TestCase):
+class TestWaveProvider(unittest.TestCase):
     def setUp(self):
-        self.dp = get_data_provider(c)
+        self.dp = get_wave_provider(c)
 
     def test_get_audio_fragment(self):
         # 16.7 second clip
