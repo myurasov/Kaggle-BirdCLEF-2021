@@ -1,11 +1,10 @@
 import numpy as np
+from lib.utils import coarsen_number
 from pandas import DataFrame
 from tensorflow import keras
 
-from src.wave_provider import WaveProvider
 from src.msg_provider import MSG_Provider
-
-from lib.utils import coarsen_number
+from src.wave_provider import WaveProvider
 
 
 class Generator(keras.utils.Sequence):
