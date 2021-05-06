@@ -78,8 +78,13 @@ class WaveProvider:
         # read from actual file
         if wave is None:
             # load
-            wave, sr = librosa.load(file_path, sr=self._audio_sr)
-            assert sr == self._audio_sr
+
+            if end_s is None:
+                wave, sr = librosa.load(file_path, sr=self._audio_sr)
+                assert sr == self._audio_sr
+            else:
+                # read from cached whole file
+                wave = self.get_audio_fragment(file_name, 0, None)
 
             # crop
             wave = wave[start_sample:end_sample]

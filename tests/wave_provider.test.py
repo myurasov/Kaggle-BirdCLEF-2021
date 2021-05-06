@@ -14,7 +14,7 @@ class TestWaveProvider(unittest.TestCase):
         wave = self.dp.get_audio_fragment("XC11209.ogg")
         self.assertEqual(len(wave), 532933)
 
-        wave = self.dp.get_audio_fragment("XC11209.ogg", 0, 5)
+        wave = self.dp.get_audio_fragment("XC11209.ogg", 10, 15)
         self.assertEqual(len(wave), c["AUDIO_SR"] * 5)
 
         with self.assertRaises(Exception) as context:
