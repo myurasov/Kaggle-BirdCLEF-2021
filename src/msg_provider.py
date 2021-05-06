@@ -1,9 +1,8 @@
 import librosa
 import numpy as np
 import torch
-from torchaudio.transforms import MelSpectrogram
-
 from PIL import Image
+from torchaudio.transforms import MelSpectrogram
 
 
 class MSG_Provider:

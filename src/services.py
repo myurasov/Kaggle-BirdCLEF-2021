@@ -1,6 +1,6 @@
 from src.config import c
-from src.wave_provider import WaveProvider
 from src.msg_provider import MSG_Provider
+from src.wave_provider import WaveProvider
 
 # services cache
 _services = {}

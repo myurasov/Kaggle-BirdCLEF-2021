@@ -1,7 +1,7 @@
 import unittest
 
-from src.services import get_msg_provider, get_wave_provider
 from src.config_test import c
+from src.services import get_msg_provider, get_wave_provider
 
 
 class Test_MSG_Provider(unittest.TestCase):

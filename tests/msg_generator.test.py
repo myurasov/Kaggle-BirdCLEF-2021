@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from src.config import c
 from src.generator import Generator
-from src.services import get_wave_provider, get_msg_provider
+from src.services import get_msg_provider, get_wave_provider
 
 
 class Test_MSG_Generator(unittest.TestCase):
