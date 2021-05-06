@@ -4,11 +4,12 @@ import argparse
 import datetime
 import os
 import re
+from collections import defaultdict
 from glob import glob
 from pprint import pformat
 
 import pandas as pd
-from lib.utils import coarsen_number, fix_random_seed
+from lib.utils import fix_random_seed
 from src.config import c
 from tqdm import tqdm
 
@@ -70,17 +71,9 @@ soundscapes_info = _read_soundscapes_info()
 
 # region: add info fields
 
-newcols = {
-    "_to_s": [],
-    "_year": [],
-    "_month": [],
-    "_from_s": [],
-    "filename": [],
-    "_lat_coarse": [],
-    "_lon_coarse": [],
-    "_primary_labels": [],
-    "_secondary_labels": [None] * df.shape[0],
-}
+newcols = defaultdict(list)
+newcols["_secondary_labels"] = [None] * df.shape[0]
+newcols["rating"] = [5.0] * df.shape[0]
 
 for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     # audio file path/name
@@ -109,26 +102,8 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     newcols["_to_s"].append(row.seconds)
 
     # lat/lon
-    newcols["_lat_coarse"].append(
-        int(
-            coarsen_number(
-                soundscapes_info[row.site]["lat"],
-                bins=c["GEO_COORDINATES_BINS"],
-                min_val=-90,
-                max_val=90,
-            )
-        )
-    )
-    newcols["_lon_coarse"].append(
-        int(
-            coarsen_number(
-                soundscapes_info[row.site]["lon"],
-                bins=c["GEO_COORDINATES_BINS"],
-                min_val=-180,
-                max_val=180,
-            )
-        )
-    )
+    newcols["latitude"].append(soundscapes_info[row.site]["lat"])
+    newcols["longitude"].append(soundscapes_info[row.site]["lon"])
 
     # labels
     newcols["_primary_labels"].append(" ".join(row.birds.split(" ")))
@@ -139,6 +114,9 @@ for k, v in newcols.items():
 # endregion
 
 # region: save output df
+
+df["_source"] = ["long"] * df.shape[0]
+
 df = df[
     [
         "filename",
@@ -148,12 +126,15 @@ df = df[
         "_to_s",
         "_year",
         "_month",
-        "_lat_coarse",
-        "_lon_coarse",
+        "latitude",
+        "longitude",
+        "rating",
+        "_source",
         "row_id",
     ]
 ]
-df["_source"] = ["long"] * df.shape[0]
+
 df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
+
 # endregion

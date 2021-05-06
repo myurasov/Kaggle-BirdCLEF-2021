@@ -8,7 +8,7 @@ from pprint import pformat
 
 import numpy as np
 import pandas as pd
-from lib.utils import coarsen_number, fix_random_seed, list_indexes
+from lib.utils import fix_random_seed, list_indexes
 from src.config import c
 from src.data_utils import rectify_class_counts
 from src.services import get_wave_provider
@@ -179,32 +179,6 @@ df["_year"] = years
 df["_month"] = months
 # endregion
 
-# region: add coarsened coords
-print("* Adding coarsened lat/lon...")
-
-coarse_lats = []
-coarse_lons = []
-
-for ix, row in df.iterrows():
-    lat = row.latitude
-    lon = row.latitude
-    coarse_lats.append(
-        int(
-            coarsen_number(lat, bins=c["GEO_COORDINATES_BINS"], min_val=-90, max_val=90)
-        )
-    )
-    coarse_lons.append(
-        int(
-            coarsen_number(
-                lat, bins=c["GEO_COORDINATES_BINS"], min_val=-180, max_val=180
-            )
-        )
-    )
-
-df["_lat_coarse"] = coarse_lats
-df["_lon_coarse"] = coarse_lons
-# endregion
-
 # region: sample fragments
 
 # calc audio files durations
@@ -219,6 +193,10 @@ df["_to_s"] = [None] * df.shape[0]
 # placeholder for output data
 out_df_rows = []
 out_df_col_ixs = list_indexes(list(df.columns))
+
+# sample with bird voice detection model
+if args.sample_with_detection:
+    raise NotImplementedError("Sampling with detection is not yet implented.")
 
 # sample with strides
 if args.sample_with_stride > 0:
@@ -273,6 +251,9 @@ if len(args.rectify_class_balance) == 2:
 # endregion
 
 # region: save output df
+
+out_df["_source"] = ["short"] * out_df.shape[0]
+
 out_df = out_df[
     [
         "filename",
@@ -282,12 +263,14 @@ out_df = out_df[
         "_to_s",
         "_year",
         "_month",
-        "_lat_coarse",
-        "_lon_coarse",
+        "latitude",
+        "longitude",
         "rating",
+        "_source",
     ]
 ]
-out_df["_source"] = ["short"] * out_df.shape[0]
+
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
+
 # endregion

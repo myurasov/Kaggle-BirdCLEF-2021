@@ -75,19 +75,19 @@ def show_keras_model(model: keras.Model, expand_nested=False):
     )
 
 
-def bin_number(number, bins=10, min_val=0.0, max_val=1.0):
+def bin_number(number, bins=10, val_range=[0.0, 1.0]):
     """Bin a float number"""
-    number -= min_val
-    number = number / (max_val - min_val)
+    number -= val_range[0]
+    number = number / (val_range[1] - val_range[0])
     return int(max(0, min(math.floor(number * bins), bins - 1)))
 
 
-def coarsen_number(number, bins=10, min_val=0.0, max_val=1.0):
+def coarsen_number(number, bins=10, val_range=[0.0, 1.0]):
     """Coarsen a float number"""
-    number -= min_val
-    number = number / (max_val - min_val)
+    number -= val_range[0]
+    number = number / (val_range[1] - val_range[0])
     bin_n = max(0, min(round(number * bins), bins))
-    return (bin_n / bins) * (max_val - min_val) + min_val
+    return (bin_n / bins) * (val_range[1] - val_range[0]) + val_range[0]
 
 
 def read_json(filename):
