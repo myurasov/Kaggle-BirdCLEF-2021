@@ -35,6 +35,9 @@ class Generator(keras.utils.Sequence):
         self._wave_provider = wave_provider
         self._geo_coordinates_bins = geo_coordinates_bins
 
+        if self._shuffle:
+            self._shuffle_samples()
+
     def __len__(self):
         return self._df.shape[0] // self._batch_size
 
@@ -67,12 +70,21 @@ class Generator(keras.utils.Sequence):
 
         # msg
 
-        if self._msg_provider is None:
+        if self._msg_provider is None:  # return waves
+
             x["input_wave"] = wave
-        else:
+
+        else:  # return melspectrograms
+
             msg = self._msg_provider.msg(wave).astype(np.float16)
+
+            # return as rgb uint8 image
             if self._msg_as_rgb:
-                msg = np.repeat(np.expand_dims(msg, 2), 3, 2)
+                # force normalization and convert to uint8 range
+                msg = (msg - np.mean(msg)) / np.std(msg) * 128
+                # duplicate across 3 channels
+                msg = np.repeat(np.expand_dims(msg.astype(np.uint8), 2), 3, 2)
+
             x["input_msg"] = msg
 
         # lat/lon

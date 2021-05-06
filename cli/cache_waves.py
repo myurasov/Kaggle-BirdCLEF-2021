@@ -5,6 +5,7 @@ import argparse
 import os
 import sys
 import unittest
+from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
 import numpy as np
@@ -32,20 +33,34 @@ args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
-# region: bootstrap
 fix_random_seed(c["SEED"])
 os.makedirs(c["WORK_DIR"], exist_ok=True)
 os.chdir(c["WORK_DIR"])
-# endregion
 
-g = Generator(
+#
+
+generator = Generator(
     df=pd.read_pickle(args.in_pickle),
     wave_provider=get_wave_provider(c),
     msg_provider=None,
     batch_size=1,
-    shuffle=False,
+    shuffle=True,
     augmentation=None,
 )
 
-for i in tqdm(range(g.__len__())):
-    _, _, _ = g.__getitem__(i)
+
+def _mapping(i):
+    _, _, _ = generator.__getitem__(i)
+
+
+with Pool(cpu_count()) as pool:
+    list(
+        tqdm(
+            pool.imap(
+                _mapping,
+                range(generator.__len__()),
+            ),
+            total=generator.__len__(),
+            smoothing=0,
+        )
+    )

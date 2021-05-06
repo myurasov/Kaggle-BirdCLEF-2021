@@ -34,6 +34,7 @@ def get_msg_provider(
             n_fft=config["MSG_N_FFT"],
             n_mels=config["MSG_N_MELS"],
             sample_rate=config["AUDIO_SR"],
+            normalize=config["MSG_NORMALIZE"],
             hop_length=config["MSG_N_HOP_LENGTH"],
             device=config["TORCH_MELSPECTROGRAM_DEVICE"],
             target_msg_mels=c["MSG_TARGET_SIZE"]["freqs"],

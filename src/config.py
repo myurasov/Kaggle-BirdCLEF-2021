@@ -35,6 +35,8 @@ c["MSG_N_HOP_LENGTH"] = (
 
 c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freqs"]
 
+c["MSG_NORMALIZE"] = True
+
 # torchaudio melspectrogram device: cpu or cuda
 c["TORCH_MELSPECTROGRAM_DEVICE"] = "cpu"
 
