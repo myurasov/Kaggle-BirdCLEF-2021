@@ -63,14 +63,14 @@ parser.add_argument(
     default=[1.5, 0.25],
     nargs="+",
     help="Randomly drop rows with too many entries (> mean*[0]). "
-    + "Repeat rows with too little entries (< mean*[1]).",
+    + 'Repeat rows with too little entries (< mean*[1]). Set to "0" to disable',
 )
 
 parser.add_argument(
     "--max_from_clip",
     type=int,
     default=10,
-    help="Maximum number of samples from a single clip.",
+    help="Maximum number of samples from a single clip. Set to 0 for no limit.",
 )
 
 args = parser.parse_args()
@@ -161,7 +161,7 @@ print("* Adding coarsened dates...")
 months = []
 years = []
 
-for ix, row in df.iterrows():
+for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     date_s = row.date
 
     # they have invented month zero and day zero...
@@ -218,9 +218,10 @@ if args.sample_with_stride > 0:
             clip_rows.append(clip_row)
 
         # limit max number per audio clip
-        if len(clip_rows) > args.max_from_clip:
-            np.random.shuffle(clip_rows)
-            clip_rows = clip_rows[: args.max_from_clip]
+        if args.max_from_clip > 0:
+            if len(clip_rows) > args.max_from_clip:
+                np.random.shuffle(clip_rows)
+                clip_rows = clip_rows[: args.max_from_clip]
 
         out_df_rows += clip_rows
 

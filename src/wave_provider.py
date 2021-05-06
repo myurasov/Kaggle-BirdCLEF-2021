@@ -83,14 +83,14 @@ class WaveProvider:
                 wave, sr = librosa.load(file_path, sr=self._audio_sr)
                 assert sr == self._audio_sr
 
-                # normalize - when reading the entire file only
+                # normalize - when reading from the whole file only
                 if self._normalize:
                     assert wave.dtype == np.float32
                     wave -= np.mean(wave)
                     wave /= np.std(wave)
 
             else:
-                # read from cached whole file
+                # read from a possibly cached whole file
                 wave = self.get_audio_fragment(file_name, 0, None)
 
             # crop

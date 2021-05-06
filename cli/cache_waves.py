@@ -1,19 +1,15 @@
 #!/usr/bin/python
 
-
 import argparse
 import os
-import sys
-import unittest
 from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
-import numpy as np
 import pandas as pd
-from lib.utils import fix_random_seed, list_indexes, write_json
+from lib.utils import fix_random_seed
 from src.config import c
 from src.generator import Generator
-from src.services import get_msg_provider, get_wave_provider
+from src.services import get_wave_provider
 from tqdm import tqdm
 
 # region: read arguments
