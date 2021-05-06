@@ -81,6 +81,7 @@ class Generator(keras.utils.Sequence):
             # return as rgb uint8 image
             if self._msg_as_rgb:
                 # force normalization and convert to uint8 range
+                msg = msg.astype(np.float32)
                 msg = (msg - np.mean(msg)) / np.std(msg) * 128
                 # duplicate across 3 channels
                 msg = np.repeat(np.expand_dims(msg.astype(np.uint8), 2), 3, 2)
