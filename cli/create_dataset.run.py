@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # merge datasets (short, long, external)
-# add folds
+# TODO: add folds
 # save class information
 
 import argparse

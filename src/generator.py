@@ -36,7 +36,7 @@ class Generator(keras.utils.Sequence):
         self._geo_coordinates_bins = geo_coordinates_bins
 
     def __len__(self):
-        return self._n_samples // self._batch_size
+        return self._df.shape[0] // self._batch_size
 
     def __getitem__(self, batch_ix):
         assert batch_ix < self._df.shape[0]
