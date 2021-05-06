@@ -10,7 +10,7 @@ from lib.utils import coarsen_number
 
 class Generator(keras.utils.Sequence):
     """
-    Generator for melspectrogram-based training
+    Generator
     """
 
     def __init__(
