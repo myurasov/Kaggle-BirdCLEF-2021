@@ -97,6 +97,9 @@ RUN pip install tables
 RUN mkdir -pv /kaggle/input/birdclef-2021 /kaggle/working
 RUN ln -s ${APP_DIR}/_data/competition_data /kaggle/input/birdclef-2021
 
+# needed for the proper random seed fix
+ENV PYTHONHASHSEED=777
+
 # copy external resources
 COPY docker/res /
 

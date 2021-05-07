@@ -30,7 +30,10 @@ def dict_to_struct(d):
 
 
 def fix_random_seed(seed=777):
-    os.environ["PYTHONHASHSEED"] = str(seed)
+
+    # set in Dokerfile
+    # os.environ["PYTHONHASHSEED"] = str(seed)
+
     random.seed(seed)
     np.random.seed(seed)
     tf.random.set_seed(seed)
