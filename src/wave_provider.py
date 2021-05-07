@@ -1,6 +1,7 @@
 import os
 from glob import glob
 from hashlib import md5
+import warnings
 
 import librosa
 import numpy as np
@@ -87,7 +88,11 @@ class WaveProvider:
                 if self._normalize:
                     assert wave.dtype == np.float32
                     wave -= np.mean(wave)
-                    wave /= np.std(wave)
+                    std = np.std(wave)
+                    if std != 0:
+                        wave /= np.std(wave)
+                    else:
+                        warnings.warn(f'SDT=0 in "{file_path}"', UserWarning)
 
             else:
                 # read from a possibly cached whole file

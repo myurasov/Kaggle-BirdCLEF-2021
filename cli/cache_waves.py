@@ -46,7 +46,7 @@ generator = Generator(
 
 
 def _mapping(i):
-    _, _, _ = generator.__getitem__(i)
+    generator.__getitem__(i)
 
 
 with Pool(cpu_count()) as pool:
