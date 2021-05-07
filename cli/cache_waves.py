@@ -2,7 +2,6 @@
 
 import argparse
 import os
-from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
 import pandas as pd
@@ -44,22 +43,6 @@ generator = Generator(
     augmentation=None,
 )
 
-
-def _mapping(i):
+# multiprocessing corrupts numpy files...
+for i in tqdm(range(generator.__len__()), smoothing=0):
     generator.__getitem__(i)
-
-
-with Pool(cpu_count()) as pool:
-    list(
-        tqdm(
-            pool.imap(
-                _mapping,
-                range(generator.__len__()),
-            ),
-            total=generator.__len__(),
-            smoothing=0,
-        )
-    )
-
-# for i in range(0, generator.__len__()):
-#     generator.__getitem__(i)

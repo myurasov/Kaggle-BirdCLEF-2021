@@ -82,8 +82,7 @@ class WaveProvider:
             if os.path.isfile(cache_path + ".npy"):
                 wave = np.load(cache_path + ".npy")
 
-        if wave is None:
-            # load
+        if wave is None:  # wave wasn't read from cache
 
             if range_seconds is None:
                 # read from actual file only when no range is specified
