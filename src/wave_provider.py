@@ -53,22 +53,28 @@ class WaveProvider:
 
         return librosa.get_duration(filename=file_path)
 
-    def get_audio_fragment(self, file_name, start_s=0, end_s=None):
+    def get_audio_fragment(self, file_name, range_seconds=None):
         """Get audio fragment by file name"""
 
         file_path = self._find_src_file(file_name)
-
-        start_sample = int(start_s * self._audio_sr)
-        end_sample = None if end_s is None else int(end_s * self._audio_sr)
 
         wave = None
         cache_key = ""
         cache_dir = ""
         cache_path = ""
 
+        range_samples = (
+            None
+            if range_seconds is None
+            else [
+                int(self._audio_sr * range_seconds[0]),
+                int(self._audio_sr * range_seconds[1]),
+            ]
+        )
+
         # try reading from cache
         if self._cache_dir is not None:
-            cache_key = f"{file_path}:sr={self._audio_sr}:{start_sample=}:{end_sample=}"
+            cache_key = f"{file_path}:sr={self._audio_sr}:{range_samples=}"
             cache_key = md5(cache_key.encode()).hexdigest()
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
             cache_dir = os.path.join(cache_dir, cache_key[0], cache_key[1])
@@ -76,18 +82,20 @@ class WaveProvider:
             if os.path.isfile(cache_path):
                 wave = np.load(cache_path + ".npy")
 
-        # read from actual file
         if wave is None:
             # load
 
-            if end_s is None:
+            if range_seconds is None:
+                # read from actual file only when no range is specified
                 wave, sr = librosa.load(file_path, sr=self._audio_sr)
                 assert sr == self._audio_sr
 
-                # normalize - when reading from the whole file only
+                # normalize when reading from the whole file
                 if self._normalize:
                     assert wave.dtype == np.float32
+
                     wave -= np.mean(wave)
+
                     std = np.std(wave)
                     if std != 0:
                         wave /= np.std(wave)
@@ -96,16 +104,19 @@ class WaveProvider:
 
             else:
                 # read from a possibly cached whole file
-                wave = self.get_audio_fragment(file_name, 0, None)
+                wave = self.get_audio_fragment(file_name=file_name, range_seconds=None)
 
             # crop
-            wave = wave[start_sample:end_sample]
+            if range_samples is not None:
+                wave = wave[range_samples[0] : range_samples[1]]
 
             # check if the asked range is valid
-            if (end_sample is not None) and (len(wave) != end_sample - start_sample):
-                raise Exception(
-                    f'Range {start_s}-{end_s} doesn\'t exist in file "{file_name}"'
-                )
+            if range_samples is not None:
+                if len(wave) != range_samples[1] - range_samples[0]:
+                    raise Exception(
+                        f"Range {range_seconds[0]}-{range_seconds[1]} doesn't exist"
+                        + f' in file "{file_name}"'
+                    )
 
             wave = wave.astype(np.float16)
 

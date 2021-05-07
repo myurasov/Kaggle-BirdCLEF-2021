@@ -63,8 +63,7 @@ class Generator(keras.utils.Sequence):
 
         wave = self._wave_provider.get_audio_fragment(
             file_name=self._df.loc[ix]["filename"],
-            start_s=self._df.loc[ix]["_from_s"],
-            end_s=self._df.loc[ix]["_to_s"],
+            range_seconds=[self._df.loc[ix]["_from_s"], self._df.loc[ix]["_to_s"]],
         )
 
         # msg

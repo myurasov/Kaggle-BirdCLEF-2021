@@ -11,14 +11,14 @@ class TestWaveProvider(unittest.TestCase):
     def test_get_audio_fragment(self):
         # 16.7 second clip
 
-        wave = self.dp.get_audio_fragment("XC11209.ogg")
+        wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=None)
         self.assertEqual(len(wave), 532933)
 
-        wave = self.dp.get_audio_fragment("XC11209.ogg", 10, 15)
+        wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=[10, 15])
         self.assertEqual(len(wave), c["AUDIO_SR"] * 5)
 
         with self.assertRaises(Exception) as context:
-            wave = self.dp.get_audio_fragment("XC11209.ogg", 0, 50)
+            wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=[0, 50])
         self.assertGreater(str(context.exception).find("Range"), -1)
         self.assertGreater(str(context.exception).find("doesn't exist"), -1)
 
