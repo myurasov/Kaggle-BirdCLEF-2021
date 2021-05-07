@@ -100,7 +100,7 @@ class WaveProvider:
                     if std != 0:
                         wave /= np.std(wave)
                     else:
-                        warnings.warn(f'SDT=0 in "{file_path}"', UserWarning)
+                        warnings.warn(f'STD=0 in "{file_path}"', UserWarning)
 
             else:
                 # read from a possibly cached whole file
