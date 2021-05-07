@@ -79,7 +79,7 @@ class WaveProvider:
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
             cache_dir = os.path.join(cache_dir, cache_key[0], cache_key[1])
             cache_path = os.path.join(cache_dir, cache_key)
-            if os.path.isfile(cache_path):
+            if os.path.isfile(cache_path + ".npy"):
                 wave = np.load(cache_path + ".npy")
 
         if wave is None:

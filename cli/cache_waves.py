@@ -60,3 +60,6 @@ with Pool(cpu_count()) as pool:
             smoothing=0,
         )
     )
+
+# for i in range(0, generator.__len__()):
+#     generator.__getitem__(i)

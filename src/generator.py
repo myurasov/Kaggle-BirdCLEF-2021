@@ -62,8 +62,11 @@ class Generator(keras.utils.Sequence):
         # wave
 
         wave = self._wave_provider.get_audio_fragment(
-            file_name=self._df.loc[ix]["filename"],
-            range_seconds=[self._df.loc[ix]["_from_s"], self._df.loc[ix]["_to_s"]],
+            file_name=self._df.loc[ix]["filename"],  # type: ignore
+            range_seconds=[
+                self._df.loc[ix]["_from_s"],  # type: ignore
+                self._df.loc[ix]["_to_s"],  # type: ignore
+            ],
         )
 
         # msg
@@ -88,8 +91,8 @@ class Generator(keras.utils.Sequence):
 
         # lat/lon
 
-        x["input_latitude"] = float(self._df.loc[ix].latitude)
-        x["input_longitude"] = float(self._df.loc[ix].longitude)
+        x["input_latitude"] = float(self._df.loc[ix]["latitude"])  # type: ignore
+        x["input_longitude"] = float(self._df.loc[ix]["longitude"])  # type: ignore
 
         if self._geo_coordinates_bins is not None:
             x["input_latitude"] = coarsen_number(
@@ -104,15 +107,15 @@ class Generator(keras.utils.Sequence):
             )
 
         # date
-        x["input_year"] = int(self._df.loc[ix]._year)
-        x["input_month"] = int(self._df.loc[ix]._year)
+        x["input_year"] = int(self._df.loc[ix]["_year"])  # type: ignore
+        x["input_month"] = int(self._df.loc[ix]["_month"])  # type: ignore
 
         y = np.array(self._df._Y_labels.loc[ix], dtype=np.float16)
 
         # sample weight
         sw = 1.0
         if self._rating_as_sw:
-            sw = self._df.loc[ix]["rating"] / 5.0
+            sw = self._df.loc[ix]["rating"] / 5.0  # type: ignore
 
         return x, y, sw
 
