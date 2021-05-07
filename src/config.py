@@ -29,7 +29,7 @@ c["MSG_N_FFT"] = 2048
 
 c["MSG_TARGET_SIZE"] = {"time": 256, "freqs": 256}
 
-c["MSG_N_HOP_LENGTH"] = (
+c["MSG_HOP_LENGTH"] = (
     c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"] // (c["MSG_TARGET_SIZE"]["time"] - 1)
 )
 
