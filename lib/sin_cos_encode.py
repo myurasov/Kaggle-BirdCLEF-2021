@@ -22,7 +22,7 @@ class SinCosEncode(keras.layers.Layer):
         super(SinCosEncode, self).__init__(**kwargs)
         self.val_range = val_range
 
-    def call(self, inputs, training=None):
+    def call(self, inputs):
 
         inputs_nomalized = (
             (inputs - self.val_range[0])
