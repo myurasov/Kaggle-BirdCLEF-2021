@@ -114,27 +114,8 @@ for k, v in newcols.items():
 # endregion
 
 # region: save output df
-
 df["_source"] = ["long"] * df.shape[0]
-
-df = df[
-    [
-        "filename",
-        "_primary_labels",
-        "_secondary_labels",
-        "_from_s",
-        "_to_s",
-        "_year",
-        "_month",
-        "latitude",
-        "longitude",
-        "rating",
-        "_source",
-        "row_id",
-    ]
-]
-
+df = df[c["DATASET_COLS"] + ["row_id"]]
 df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
-
 # endregion

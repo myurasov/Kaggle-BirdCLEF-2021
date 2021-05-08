@@ -252,26 +252,8 @@ if len(args.rectify_class_balance) == 2:
 # endregion
 
 # region: save output df
-
 out_df["_source"] = ["short"] * out_df.shape[0]
-
-out_df = out_df[
-    [
-        "filename",
-        "_primary_labels",
-        "_secondary_labels",
-        "_from_s",
-        "_to_s",
-        "_year",
-        "_month",
-        "latitude",
-        "longitude",
-        "rating",
-        "_source",
-    ]
-]
-
+out_df = out_df[c["DATASET_COLS"]]
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
-
 # endregion

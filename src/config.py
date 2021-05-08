@@ -45,3 +45,21 @@ c["AUDIO_NORMALIZE"] = True
 
 # number of bins for latitude/longitude
 c["GEO_COORDINATES_BINS"] = 18
+
+# columns that should be present in the DF that can be joined into a dataset
+c["DATASET_COLS"] = [
+    "filename",
+    "_primary_labels",
+    "_secondary_labels",
+    "_from_s",
+    "_to_s",
+    "_year",
+    "_month",
+    "latitude",
+    "longitude",
+    "rating",
+    "_source",
+]
+
+# files to exclude from the dataset
+c["EXCLUDE_FILES"] = ["XC579430.ogg", "XC590621.ogg"]
