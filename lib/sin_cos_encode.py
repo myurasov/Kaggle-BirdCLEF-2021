@@ -5,13 +5,13 @@ from tensorflow import keras
 
 class SinCosEncode(keras.layers.Layer):
     """
-    Encodes cyclkical value as pair of sin/cos
+    Encodes cyclical value as pair of sin/cos
 
     Example:
 
     ```python
         i_month = keras.layers.Input(shape=(1,), dtype="float32")
-        x = SinCos(val_range=[1, 12])(i_month)
+        x = SinCosEncode(val_range=[1, 12])(i_month)
         m = keras.Model(inputs=[i_month], outputs=[x])
         print(np.array(m.predict(np.arange(1, 13))))
     ```

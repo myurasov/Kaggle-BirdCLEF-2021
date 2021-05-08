@@ -1,15 +1,8 @@
-import os
 import unittest
 
 import numpy as np
-import pandas as pd
-from src.config import c
-from src.generator import Generator
-from src.services import get_msg_provider, get_wave_provider
-
-
-from tensorflow import keras
 from lib.sin_cos_encode import SinCosEncode
+from tensorflow import keras
 
 
 class Test_SinCos_Layer(unittest.TestCase):
