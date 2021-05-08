@@ -78,6 +78,21 @@ def show_keras_model(model: keras.Model, expand_nested=False):
     )
 
 
+def save_keras_model(model, filename="model.svg", expand_nested=False, **kwargs):
+    """Save Keras model visualization to SVG file"""
+    with open(filename, "wb+") as f:
+        f.write(
+            keras.utils.model_to_dot(
+                model=model,
+                show_shapes=True,
+                show_dtype=True,
+                show_layer_names=True,
+                expand_nested=expand_nested,
+                **kwargs,
+            ).create_svg()
+        )
+
+
 def bin_number(number, bins=10, val_range=[0.0, 1.0]):
     """Bin a float number"""
     number -= val_range[0]
