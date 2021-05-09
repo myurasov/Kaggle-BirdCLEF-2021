@@ -3,9 +3,16 @@
 import argparse
 import os
 from pprint import pformat
+import sys
 
 import pandas as pd
-from lib.utils import create_dir, fix_random_seed, read_json, save_keras_model
+from lib.utils import (
+    create_dir,
+    fix_random_seed,
+    read_json,
+    save_keras_model,
+    write_json,
+)
 from src.config import c
 from src.generator import Generator
 from src.models import build_model
@@ -159,4 +166,62 @@ print(f"* Model output size: {model.output.shape[1]}")
 
 # save picture
 save_keras_model(model, f"{checkpoint_path}/model.png", dpi=75, rankdir="LR")
+# endregion
+
+# region: save train run metadata
+train_meta_file = f"{checkpoint_path}.meta.json"
+
+write_json(
+    {
+        "args": vars(args),
+        "cmd": " ".join(sys.argv),
+        "labels": meta["labels"],
+    },
+    train_meta_file,
+)
+
+print(f"* Saved train run metadata to {train_meta_file}")
+# endregion
+
+# region: create generators
+
+input_shape = None
+input_type = None
+train_g = None
+val_g = None
+
+try:
+    input_shape = model.get_layer("i_msg").input_shape[0][1:]
+    input_type = "melspectrogram"
+
+    train_g = Generator(
+        train_df,
+        wave_provider=get_wave_provider(c),
+        msg_provider=get_msg_provider(c),
+        batch_size=args.batch,
+        shuffle=True,
+        augmentation=None,
+        msg_as_rgb=3 == input_shape[-1],
+        rating_as_sw=True,
+        geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
+    )
+
+    val_g = Generator(
+        val_df,
+        wave_provider=get_wave_provider(c),
+        msg_provider=get_msg_provider(c),
+        batch_size=args.batch,
+        shuffle=False,
+        augmentation=None,
+        msg_as_rgb=3 == input_shape[-1],
+        rating_as_sw=True,
+        geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
+    )
+
+
+except ValueError:
+    raise RuntimeError("Unsupported input type")
+
+print(f"* Model input: {input_type} of size {input_shape}")
+
 # endregion

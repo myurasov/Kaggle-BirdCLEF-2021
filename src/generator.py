@@ -42,21 +42,35 @@ class Generator(keras.utils.Sequence):
 
     def __getitem__(self, batch_ix):
         assert batch_ix < self._df.shape[0]
-        b_x, b_y, b_sw = [], [], []
+        b_x_dict, b_y, b_sw = {}, [], []
 
         for i in range(self._batch_size):
-            x, y, s = self._get_one(i + self._batch_size * batch_ix)
-            b_x.append(x)
+            x_dict, y, s = self._get_one(i + self._batch_size * batch_ix)
+
+            # single x is dictionary of <input>:<value>
+            # but, batch needs to be a dictionaty of <input>:np.array(<values>)
+            for k, v in x_dict.items():
+                if k not in b_x_dict:
+                    b_x_dict[k] = []
+                b_x_dict[k].append(v)
+
             b_y.append(y)
             b_sw.append(s)
 
-        return b_x, b_y, b_sw
+        for k, v in b_x_dict.items():
+            b_x_dict[k] = np.array(v)
+
+        b_y = np.array(b_y)
+        b_sw = np.array(b_sw)
+
+        return b_x_dict, b_y, b_sw
 
     def on_epoch_start(self):
         if self._shuffle:
             self._shuffle_samples()
 
     def _get_one(self, ix):
+
         x = {}
 
         # wave
@@ -73,7 +87,7 @@ class Generator(keras.utils.Sequence):
 
         if self._msg_provider is None:  # return waves
 
-            x["input_wave"] = wave
+            x["i_wave"] = wave
 
         else:  # return melspectrograms
 
@@ -87,30 +101,34 @@ class Generator(keras.utils.Sequence):
                 # duplicate across 3 channels
                 msg = np.repeat(np.expand_dims(msg.astype(np.uint8), 2), 3, 2)
 
-            x["input_msg"] = msg
+            x["i_msg"] = msg
 
         # lat/lon
 
-        x["input_latitude"] = float(self._df.loc[ix]["latitude"])  # type: ignore
-        x["input_longitude"] = float(self._df.loc[ix]["longitude"])  # type: ignore
+        x["i_lat"] = float(self._df.loc[ix]["latitude"])  # type: ignore
+        x["i_lon"] = float(self._df.loc[ix]["longitude"])  # type: ignore
 
         if self._geo_coordinates_bins is not None:
-            x["input_latitude"] = coarsen_number(
-                x["input_latitude"],
+            x["i_lat"] = coarsen_number(
+                x["i_lat"],
                 bins=self._geo_coordinates_bins,
                 val_range=[-90, 90],
             )
-            x["input_longitude"] = coarsen_number(
-                x["input_longitude"],
+            x["i_lon"] = coarsen_number(
+                x["i_lon"],
                 bins=self._geo_coordinates_bins,
                 val_range=[-180, 180],
             )
 
-        # date
-        x["input_year"] = int(self._df.loc[ix]["_year"])  # type: ignore
-        x["input_month"] = int(self._df.loc[ix]["_month"])  # type: ignore
+        x["i_lat"] = np.array(x["i_lat"], dtype=np.float32)
+        x["i_lon"] = np.array(x["i_lon"], dtype=np.float32)
 
-        y = np.array(self._df._Y_labels.loc[ix], dtype=np.float16)
+        # date
+        x["i_year"] = np.array(self._df.loc[ix]["_year"], dtype=np.int32)  # type: ignore
+        x["i_month"] = np.array(self._df.loc[ix]["_month"], dtype=np.int32)  # type: ignore
+
+        # y
+        y = np.array(self._df._y.loc[ix], dtype=np.float16)
 
         # sample weight
         sw = 1.0
