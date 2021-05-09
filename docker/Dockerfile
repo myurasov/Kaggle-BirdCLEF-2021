@@ -92,6 +92,7 @@ RUN pip install tqdm
 RUN apt-get install -y libsndfile1
 RUN pip install librosa
 RUN pip install tables
+RUN pip install tfa-nightly
 
 # mimic kaggle directory layout
 RUN mkdir -pv /kaggle/input/birdclef-2021 /kaggle/working

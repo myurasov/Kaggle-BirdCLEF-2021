@@ -23,6 +23,15 @@ class Test_MSG_Provider(unittest.TestCase):
             ),
         )
 
+    def test_2(self):
+        wave = self._wave_provider.get_audio_fragment(
+            "XC602886.ogg", range_seconds=[0, 5]
+        )
+
+        msg = self._msg_provider.msg(wave)
+
+        print(msg)
+
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")

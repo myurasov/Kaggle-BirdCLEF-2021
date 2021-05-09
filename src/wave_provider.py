@@ -94,12 +94,15 @@ class WaveProvider:
                     assert wave.dtype == np.float32
 
                     wave -= np.mean(wave)
-
                     std = np.std(wave)
+
                     if std != 0:
                         wave /= np.std(wave)
                     else:
-                        warnings.warn(f'STD=0 in "{file_path}"', UserWarning)
+                        warnings.warn(
+                            f'{self.__class__.__name__}: STD=0 in "{file_path}"',
+                            UserWarning,
+                        )
 
             else:
                 # read from a possibly cached whole file

@@ -4,14 +4,15 @@ from tensorflow import keras
 
 
 def build_model(name, n_classes) -> keras.models.Model:
-    """Name convetion mgs|wave_body_options"""
-    name_parts = name.split("_")
+    """Name convetion mgs|wave_body_option1_option2_.."""
+    input_type, body, *options = name.split("_")
 
-    if name_parts[0] == "msg":
+    if input_type == "msg":
 
         mb = MSG_Model_Builder(
             n_classes=n_classes,
-            body=name_parts[1],
+            body=body,
+            imagenet_weights="imagenet" in options,
         )
 
         return mb.build()
@@ -26,6 +27,7 @@ class MSG_Model_Builder:
         self,
         n_classes,
         body="enb0",
+        imagenet_weights=False,
         extra_dense_layers=[
             1,
             1024,
@@ -34,6 +36,7 @@ class MSG_Model_Builder:
         self._body = body
         self._n_classes = n_classes
         self._extra_dense_layers = extra_dense_layers
+        self._imagenet_weights = imagenet_weights
 
     def build(self) -> keras.models.Model:
 
@@ -52,7 +55,7 @@ class MSG_Model_Builder:
 
             x = getattr(keras.applications, f"EfficientNetB{self._body[-1]}")(
                 include_top=False,
-                weights=None,
+                weights="imagenet" if self._imagenet_weights else None,
             )(i_msg)
 
             f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)

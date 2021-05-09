@@ -45,9 +45,9 @@ class MSG_Provider:
         if self._normalize:
             assert msg.dtype == np.float32
             msg -= np.mean(msg)
-            mean = np.mean(msg)
-            if mean != 0:
-                msg /= mean
+            std = np.std(msg)
+            if std != 0:
+                msg /= std
 
         # if melspectrogram size mismatches with target, resize it
         if msg.shape != (self._target_msg_mels, self._target_msg_time_steps):

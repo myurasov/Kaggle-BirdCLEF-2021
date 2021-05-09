@@ -6,7 +6,9 @@ import shutil
 import sys
 from pprint import pformat
 
+import numpy as np
 import pandas as pd
+import tensorflow_addons as tfa
 from lib.keras_tb_logger import TensorBoard_Logger, gpu_temp_logger, lr_logger
 from lib.utils import (
     create_dir,
@@ -45,7 +47,7 @@ parser.add_argument(
 parser.add_argument(
     "--model",
     type=str,
-    default="msg_enb0",
+    default="msg_enb0_imagenet",
     help="Model",
 )
 
@@ -159,6 +161,8 @@ else:
     args.run = f"{args.run}.fold_{args.val_fold:.0f}"
 
 assert val_df.shape[0] + train_df.shape[0] == df.shape[0]
+train_df.reset_index(inplace=True, drop=True)
+val_df.reset_index(inplace=True, drop=True)
 print(f"* Training set size: {train_df.shape[0]}")
 print(f"* Validation set size: {val_df.shape[0]}")
 # endregion
@@ -272,7 +276,7 @@ callbacks.append(
 
 callbacks.append(
     keras.callbacks.ModelCheckpoint(
-        checkpoint_path + ".h5",
+        checkpoint_path + f"/{args.run}.h5",
         verbose=1,
         save_freq="epoch",
         monitor="val_loss",
@@ -288,11 +292,20 @@ callbacks.append(
 model.compile(
     optimizer=keras.optimizers.Adam(learning_rate=args.lr),
     loss="binary_crossentropy",
+    metrics=[
+        tfa.metrics.F1Score(
+            num_classes=len(meta["labels"]),
+            threshold=0.5,
+            average="micro",
+        ),
+    ],
 )
 
 steps_per_epoch = (
     args.samples_per_epoch // args.batch if args.samples_per_epoch > 0 else None
 )
+
+np.seterr(all="raise")
 
 model.fit(
     x=train_g,

@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from lib.utils import coarsen_number
 from pandas import DataFrame
@@ -97,7 +99,17 @@ class Generator(keras.utils.Sequence):
             if self._msg_as_rgb:
                 # force normalization and convert to uint8 range
                 msg = msg.astype(np.float32)
-                msg = (msg - np.mean(msg)) / np.std(msg) * 128
+                msg -= np.mean(msg)
+                std = np.std(msg)
+                if std != 0:
+                    msg /= std
+                else:
+                    warnings.warn(
+                        f"{self.__class__.__name__}: STD=0 in"
+                        + f' "{self._df.loc[ix]["filename"]}"',  # type: ignore
+                        UserWarning,
+                    )
+                msg *= 128
                 # duplicate across 3 channels
                 msg = np.repeat(np.expand_dims(msg.astype(np.uint8), 2), 3, 2)
 

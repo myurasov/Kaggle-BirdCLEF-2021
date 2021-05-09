@@ -228,7 +228,7 @@ if args.sample_with_stride > 0:
 
 # create output df
 out_df = pd.DataFrame(out_df_rows, columns=df.columns)
-out_df = out_df.reset_index()
+out_df = out_df.reset_index(drop=True)
 print(f"* Total {len(out_df_rows):,} clips")
 
 # endregion
