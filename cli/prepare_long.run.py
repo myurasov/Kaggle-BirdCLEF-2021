@@ -28,6 +28,13 @@ parser.add_argument(
     help="Output CSV file path",
 )
 
+parser.add_argument(
+    "--split_multilabel",
+    type=int,
+    default=1,
+    help="Split multi-label items into multiple rows",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -43,6 +50,7 @@ csv_path = os.path.join(
     c["DATA_DIR"], "competition_data", "train_soundscape_labels.csv"
 )
 df = pd.read_csv(csv_path)
+df.audio_id = df.audio_id.astype("str")
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")
 # endregion
 
@@ -67,6 +75,32 @@ def _read_soundscapes_info():
 
 
 soundscapes_info = _read_soundscapes_info()
+# endregion
+
+# region: split multilabel rows into separate single-label ones
+
+extra_df = pd.DataFrame()
+
+if args.split_multilabel:
+    print("Splitting multilabel rows...")
+    n_extra_rows = 0
+
+    for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
+        if " " in row.birds:
+            birds = row.birds.split(" ")
+
+            if len(birds) > 1:
+                n_extra_rows += len(birds) - 1
+                df = df.drop(ix)
+
+                for bird in birds:
+                    row.birds = bird
+                    # row.audio_id = str(row.audio_id)
+                    extra_df = extra_df.append(row, ignore_index=True)
+
+df = df.append(extra_df[df.columns], ignore_index=True)  # type: ignore
+# newdf.to_csv("newdf.csv", index=True)
+
 # endregion
 
 # region: add info fields
