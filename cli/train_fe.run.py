@@ -2,10 +2,12 @@
 
 import argparse
 import os
-from pprint import pformat
+import shutil
 import sys
+from pprint import pformat
 
 import pandas as pd
+from lib.keras_tb_logger import TensorBoard_Logger, gpu_temp_logger, lr_logger
 from lib.utils import (
     create_dir,
     fix_random_seed,
@@ -54,6 +56,13 @@ parser.add_argument(
     help="Validation fold. Use float value <1 for a val split rather than fold.",
 )
 
+# parser.add_argument(
+#     "--aug",
+#     type=int,
+#     default=0,
+#     help="Augmentation level",
+# )
+
 parser.add_argument(
     "--batch",
     type=int,
@@ -65,6 +74,13 @@ parser.add_argument(
     "--epochs",
     type=int,
     default=100,
+)
+
+parser.add_argument(
+    "--samples_per_epoch",
+    type=int,
+    default=0,
+    help="Number of samples per each epoch. 0 = all available samples.",
 )
 
 parser.add_argument(
@@ -81,26 +97,6 @@ parser.add_argument(
     help="Inital LR",
 )
 
-parser.add_argument(
-    "--multiprocessing",
-    type=int,
-    default=1,
-    help="Number of generator threads",
-)
-
-parser.add_argument(
-    "--amp",
-    type=int,
-    default=0,
-    help="Enable AMP?",
-)
-
-parser.add_argument(
-    "--aug",
-    type=int,
-    default=0,
-    help="Augmentation level",
-)
 
 parser.add_argument(
     "--lr_factor",
@@ -114,6 +110,20 @@ parser.add_argument(
     type=int,
     default=3,
     help="LR reduction patience",
+)
+
+parser.add_argument(
+    "--amp",
+    type=int,
+    default=0,
+    help="Enable AMP?",
+)
+
+parser.add_argument(
+    "--multiprocessing",
+    type=int,
+    default=1,
+    help="Number of generator threads",
 )
 
 args = parser.parse_args()
@@ -169,7 +179,7 @@ save_keras_model(model, f"{checkpoint_path}/model.png", dpi=75, rankdir="LR")
 # endregion
 
 # region: save train run metadata
-train_meta_file = f"{checkpoint_path}.meta.json"
+train_meta_file = f"{checkpoint_path}/meta.json"
 
 write_json(
     {
@@ -223,5 +233,76 @@ except ValueError:
     raise RuntimeError("Unsupported input type")
 
 print(f"* Model input: {input_type} of size {input_shape}")
+
+# endregion
+
+# region: callbacks
+
+callbacks = []
+
+callbacks.append(
+    keras.callbacks.EarlyStopping(
+        patience=args.early_stop_patience,
+        restore_best_weights=True,
+        verbose=1,
+    )
+)
+
+callbacks.append(
+    TensorBoard_Logger(
+        log_dir=td_dir,
+        histogram_freq=0,
+        loggers=[
+            lr_logger,
+            gpu_temp_logger,
+        ],
+    )
+)
+
+callbacks.append(
+    keras.callbacks.ReduceLROnPlateau(
+        monitor="val_loss",
+        factor=args.lr_factor,
+        patience=args.lr_patience,
+        min_lr=1e-9,
+        verbose=1,
+    )
+)
+
+callbacks.append(
+    keras.callbacks.ModelCheckpoint(
+        checkpoint_path + ".h5",
+        verbose=1,
+        save_freq="epoch",
+        monitor="val_loss",
+        save_best_only=True,
+        save_weights_only=False,
+    )
+)
+
+# endregion
+
+# region: finally do something useful
+
+model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=args.lr),
+    loss="binary_crossentropy",
+)
+
+steps_per_epoch = (
+    args.samples_per_epoch // args.batch if args.samples_per_epoch > 0 else None
+)
+
+model.fit(
+    x=train_g,
+    validation_data=val_g,
+    epochs=args.epochs,
+    steps_per_epoch=steps_per_epoch,
+    callbacks=callbacks,
+    use_multiprocessing=args.multiprocessing > 1,
+    workers=args.multiprocessing,
+    max_queue_size=1,
+    verbose=1,
+)
 
 # endregion

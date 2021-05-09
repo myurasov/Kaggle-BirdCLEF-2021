@@ -18,10 +18,10 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument(
-    "--in_pickle",
+    "--dataset",
     type=str,
     default="dataset.pickle",
-    help="Input pickle DF file",
+    help="Input DF file",
 )
 
 args = parser.parse_args()
@@ -34,8 +34,10 @@ os.chdir(c["WORK_DIR"])
 
 #
 
+df = getattr(pd, f'read_{args.dataset.split(".")[-1].lower()}')(args.dataset)
+
 generator = Generator(
-    df=pd.read_pickle(args.in_pickle),
+    df=df,
     wave_provider=get_wave_provider(c),
     msg_provider=None,
     batch_size=1,
