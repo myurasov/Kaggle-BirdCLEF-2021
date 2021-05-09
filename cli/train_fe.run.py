@@ -56,6 +56,7 @@ parser.add_argument(
     help="Validation fold. Use float value <1 for a val split rather than fold.",
 )
 
+# TODO
 # parser.add_argument(
 #     "--aug",
 #     type=int,
@@ -66,7 +67,7 @@ parser.add_argument(
 parser.add_argument(
     "--batch",
     type=int,
-    default=2,
+    default=32,
     help="Batch size",
 )
 
