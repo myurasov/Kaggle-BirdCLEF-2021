@@ -19,7 +19,7 @@ class MSG_Provider:
     ):
 
         self._msg_transform = MelSpectrogram(
-            power=2.0,
+            power=3.0,  # TODO: check how it looks
             center=True,
             norm="slaney",
             onesided=True,

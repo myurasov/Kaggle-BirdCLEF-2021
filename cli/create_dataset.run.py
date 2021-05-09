@@ -84,6 +84,7 @@ print(f"* Total rows: {df.shape[0]:,}")
 excluded_df = df[df["filename"].isin(c["EXCLUDE_FILES"])]
 df = df.drop(excluded_df.index)
 print(f"* Removed {excluded_df.shape[0]} rows with bad files")
+df.reset_index(inplace=True)
 # endregion
 
 # region: rectify class balance
@@ -102,7 +103,6 @@ if len(args.rectify_class_balance) == 2:
     )
 
     print(f"* Total {df.shape[0]:,} clips")
-
 # endregion
 
 # region: read and convert labels

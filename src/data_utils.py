@@ -41,6 +41,7 @@ def rectify_class_counts(df, class_col, max_items, min_items):
             assert to_drop.shape[0] == count - min_items
             res_df = res_df.drop(to_drop.index)
 
+    res_df.reset_index(inplace=True)
     return res_df
 
 

@@ -10,7 +10,9 @@ class Test_MSG_Provider(unittest.TestCase):
         self._msg_provider = get_msg_provider(c)
 
     def test_1(self):
-        wave = self._wave_provider.get_audio_fragment("XC11209.ogg", 0, 5)
+        wave = self._wave_provider.get_audio_fragment(
+            "XC11209.ogg", range_seconds=[0, 5]
+        )
         msg = self._msg_provider.msg(wave)
 
         self.assertEqual(
