@@ -60,7 +60,7 @@ parser.add_argument(
 parser.add_argument(
     "--rectify_class_balance",
     type=float,
-    default=[1.5, 0.25],
+    default=[0],
     nargs="+",
     help="Randomly drop rows with too many entries (> mean*[0]). "
     + 'Repeat rows with too little entries (< mean*[1]). Set to "0" to disable',
@@ -155,8 +155,8 @@ df["_primary_labels"] = primary_labels
 df["_secondary_labels"] = secondary_labels
 # endregion
 
-# region: add date coarsened to month
-print("* Adding coarsened dates...")
+# region: add month, year
+print("* Adding monts and years...")
 
 months = []
 years = []

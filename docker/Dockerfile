@@ -33,19 +33,19 @@ RUN npm install -g n && n lts
 RUN pip install --upgrade pip
 
 # jupyter lab
-RUN pip install jupyterlab==v3.0.12
+RUN pip install jupyterlab==v3.0.14
 
 # jupyterlab_code_formatter extension
-RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.5 --no-build
-RUN pip install jupyterlab_code_formatter==v1.4.5
+RUN jupyter labextension install @ryantam626/jupyterlab_code_formatter@v1.4.10 --no-build
+RUN pip install jupyterlab_code_formatter==v1.4.10
 RUN jupyter server extension enable --py jupyterlab_code_formatter
 RUN pip install isort yapf black
 
 # plotly jl extension
 RUN pip install "ipywidgets>=7.5"
-RUN jupyter labextension install jupyterlab-plotly@4.14.3 --no-build
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget@4.14.3 --no-build
-RUN pip install plotly==4.14.3
+RUN jupyter labextension install jupyterlab-plotly --no-build
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget --no-build
+RUN pip install plotly
 
 # lsp jl extension
 # https://github.com/krassowski/jupyterlab-lsp

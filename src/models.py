@@ -10,9 +10,14 @@ class MSG_Model_Builder:
         self,
         n_classes,
         body="enb0",
+        extra_dense_layers=[
+            1,
+            1024,
+        ],  # number and dimensions for extra dense layers in the head. None = no extra layers.
     ):
         self._body = body
         self._n_classes = n_classes
+        self._extra_dense_layers = extra_dense_layers
 
     def build(self):
 
@@ -105,10 +110,20 @@ class MSG_Model_Builder:
         )
 
         # classifier head
+        x = features
 
-        output_classes = keras.layers.Dense(
-            self._n_classes, name="output_classes", activation="sigmoid"
-        )(features)
+        if self._extra_dense_layers is not None:
+            for _ in range(self._extra_dense_layers[0]):
+                x = keras.layers.Dense(
+                    self._extra_dense_layers[1],
+                    activation="relu",
+                )(x)
+
+        o_classes = keras.layers.Dense(
+            self._n_classes,
+            name="o_classes",
+            activation="sigmoid",
+        )(x)
 
         # model
 
@@ -120,5 +135,5 @@ class MSG_Model_Builder:
                 i_lat,
                 i_lon,
             ],
-            outputs=[output_classes],
+            outputs=[o_classes],
         )

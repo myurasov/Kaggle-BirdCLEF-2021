@@ -99,7 +99,6 @@ if args.split_multilabel:
                     extra_df = extra_df.append(row, ignore_index=True)
 
 df = df.append(extra_df[df.columns], ignore_index=True)  # type: ignore
-# newdf.to_csv("newdf.csv", index=True)
 
 # endregion
 
