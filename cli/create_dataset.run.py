@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from lib.utils import fix_random_seed, list_indexes, write_json
 from src.config import c
-from src.data_utils import rectify_class_counts
+from src.data_utils import rectify_class_counts, add_folds
 from tqdm import tqdm
 
 # region: read arguments
@@ -53,6 +53,14 @@ parser.add_argument(
     + 'Repeat rows with too little entries (< mean*[1]). Set to "0" to disable',
 )
 
+parser.add_argument(
+    "--folds",
+    type=int,
+    default=5,
+    help="Number of folds",
+)
+
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -71,6 +79,12 @@ for csv in args.in_csvs:
     print(f'* Added "{csv}" with {curr_df.shape[0]:,} rows')  # type: ignore
 
 print(f"* Total rows: {df.shape[0]:,}")
+
+# region: filter out "bad" sound files
+excluded_df = df[df["filename"].isin(c["EXCLUDE_FILES"])]
+df = df.drop(excluded_df.index)
+print(f"* Removed {excluded_df.shape[0]} rows with bad files")
+# endregion
 
 # region: rectify class balance
 
@@ -93,42 +107,46 @@ if len(args.rectify_class_balance) == 2:
 
 # region: read and convert labels
 
-# read primary and secondary labels
+# region: split into folds based on _primary_labels
+df = add_folds(df, args.folds, "_primary_labels")
+# endregion
 
-labels = set()
+# read and convert primary and secondary labels
+
+classes = set()
 
 for col in ["_primary_labels", "_secondary_labels"]:
     df[[col]] = df[[col]].fillna(value="")
-    labels.update(set(" ".join(df[col].unique()).split(" ")))
+    classes.update(set(" ".join(df[col].unique()).split(" ")))
 
-if "" in labels:
-    labels.remove("")
+if "" in classes:
+    classes.remove("")
 
-labels = sorted(list(labels))
-print(f"* Total labels: {len(labels):,}")
+classes = sorted(list(classes))
+print(f"* Total classes: {len(classes):,}")
 
-# convert to one-hots
+# convert labels to one-hots
 print("* Converting labels to one-hots...")
 
-Y_labels = []
-labels_ixs = list_indexes(labels)
+Y = []
+class_ixs = list_indexes(classes)
 
 for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
-    Y_labels.append(np.zeros((len(labels)), dtype=np.float16))
+    Y.append(np.zeros((len(classes)), dtype=np.float16))
 
     # secondary
     row_labels = row._secondary_labels.split(" ")
     for row_label in row_labels:
         if row_label != "":
-            Y_labels[-1][labels_ixs[row_label]] = args.secondary_label_p
+            Y[-1][class_ixs[row_label]] = args.secondary_label_p
 
     # primary
     row_labels = row._primary_labels.split(" ")
     for row_label in row_labels:
         if row_label != "":
-            Y_labels[-1][labels_ixs[row_label]] = 1
+            Y[-1][class_ixs[row_label]] = 1.0
 
-df["_Y_labels"] = Y_labels
+df["_y"] = Y
 
 # endregion
 
@@ -138,7 +156,7 @@ write_json(
     data={
         "cmd": " ".join(sys.argv),
         "args": vars(args),
-        "labels": labels,
+        "labels": classes,
     },
 )
 
