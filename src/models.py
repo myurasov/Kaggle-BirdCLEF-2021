@@ -1,8 +1,11 @@
-from lib.sin_cos_encode import SinCosEncode
+import tensorflow.keras.backend as K
+from lib.sin_cos_layer import SinCos
 from tensorflow import keras
 
 
 class MSG_Model_Builder:
+    """Builds spectrogram-based model"""
+
     def __init__(
         self,
         n_classes,
@@ -17,77 +20,87 @@ class MSG_Model_Builder:
 
         if self._body[:3] == "enb":  # EfficientNetB#
 
-            msg_input_size = [224, 240, 260, 300, 380, 456, 528, 600][
-                int(self._body[-1])
-            ]
-            msg_input_size = (msg_input_size, msg_input_size, 3)
+            msg_i_size = [224, 240, 260, 300, 380, 456, 528, 600][int(self._body[-1])]
+            msg_i_size = (msg_i_size, msg_i_size, 3)
 
-            input_msg = keras.layers.Input(
-                shape=msg_input_size,
+            i_msg = keras.layers.Input(
+                shape=msg_i_size,
                 dtype="uint8",
-                name="input_msg",
+                name="i_msg",
             )
 
-            x = getattr(keras.applications, f"EfficientNetB{int(self._body[-1])}")(
+            x = getattr(keras.applications, f"EfficientNetB{self._body[-1]}")(
                 include_top=False,
                 weights=None,
-            )(input_msg)
+            )(i_msg)
 
-            feature_msg = keras.layers.GlobalAveragePooling2D(name="feature_msg")(x)
+            f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)
 
         else:
-            raise ValueError(f'Unsupported "body" value "{self._body}"')
+            raise ValueError(f'Unsupported "body" parameter value "{self._body}"')
 
         # year
-        input_year = feature_year = keras.layers.Input(
+        i_year = keras.layers.Input(
             shape=(1,),
-            dtype="float32",
-            name="input_year",
+            dtype="int32",
+            name="i_year",
         )
 
         # month
 
-        input_month = keras.layers.Input(
+        i_month = keras.layers.Input(
             shape=(1,),
-            dtype="float32",
-            name="input_month",
+            dtype="int32",
+            name="i_month",
         )
 
-        feature_month_sincos = SinCosEncode(  # type: ignore
+        f_month_sincos = SinCos(  # type: ignore
             val_range=[1, 12],
-            name="feature_month_sincos",
-        )(input_month)
+            name="f_month_sincos",
+        )(i_month)
 
-        # latitude
+        # date
 
-        input_latitude = feature_latitude = keras.layers.Input(
+        f_date = keras.layers.Lambda(
+            # x[1] is year, x[0] is month
+            lambda x: K.cast(x[1] * 12 + x[0], "float32"),
+            name="f_date",
+        )([i_year, i_month])
+
+        # lat
+
+        i_lat = keras.layers.Input(
             shape=(1,),
             dtype="float32",
-            name="input_latitude",
+            name="i_lat",
         )
 
-        # longitude
+        f_lat = keras.layers.Lambda(lambda x: x / 90.0, name="f_lat",)(
+            i_lat
+        )  # normalize to -1..1
 
-        input_longitude = keras.layers.Input(
+        # lon
+
+        i_lon = keras.layers.Input(
             shape=(1,),
             dtype="float32",
-            name="input_longitude",
+            name="i_lon",
         )
 
-        feature_longitude_sincos = SinCosEncode(  # type: ignore
+        f_lon_sincos = SinCos(  # type: ignore
             val_range=[-180, 180],
-            name="feature_longitude_sincos",
-        )(input_longitude)
+            name="f_lon_sincos",
+        )(i_lon)
 
         # combine all the features
 
         features = keras.layers.Concatenate(axis=1, name="features",)(
             [
-                feature_msg,
-                feature_year,
-                feature_month_sincos,
-                feature_latitude,
-                feature_longitude_sincos,
+                f_msg,
+                f_date,
+                f_month_sincos,
+                f_lat,
+                f_lon_sincos,
             ]
         )
 
@@ -101,11 +114,11 @@ class MSG_Model_Builder:
 
         self.model = keras.models.Model(
             inputs=[
-                input_msg,
-                input_year,
-                input_month,
-                input_latitude,
-                input_longitude,
+                i_msg,
+                i_year,
+                i_month,
+                i_lat,
+                i_lon,
             ],
             outputs=[output_classes],
         )

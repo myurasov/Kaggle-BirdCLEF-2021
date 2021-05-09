@@ -79,17 +79,23 @@ def show_keras_model(model: keras.Model, expand_nested=False):
 
 
 def save_keras_model(model, filename="model.svg", expand_nested=False, **kwargs):
-    """Save Keras model visualization to SVG file"""
+    """Save Keras model visualization to image file"""
+
+    dot = keras.utils.model_to_dot(
+        model=model,
+        show_shapes=True,
+        show_dtype=True,
+        show_layer_names=True,
+        expand_nested=expand_nested,
+        **kwargs,
+    )
+
     with open(filename, "wb+") as f:
         f.write(
-            keras.utils.model_to_dot(
-                model=model,
-                show_shapes=True,
-                show_dtype=True,
-                show_layer_names=True,
-                expand_nested=expand_nested,
-                **kwargs,
-            ).create_svg()
+            getattr(
+                dot,
+                "create_" + filename[-3:].lower(),
+            )()
         )
 
 

@@ -3,7 +3,7 @@ import tensorflow.keras.backend as K
 from tensorflow import keras
 
 
-class SinCosEncode(keras.layers.Layer):
+class SinCos(keras.layers.Layer):
     """
     Encodes cyclical value as pair of sin/cos
 
@@ -19,7 +19,7 @@ class SinCosEncode(keras.layers.Layer):
     """
 
     def __init__(self, val_range=[0, 1], **kwargs):
-        super(SinCosEncode, self).__init__(**kwargs)
+        super(SinCos, self).__init__(**kwargs)
         self.val_range = val_range
 
     def call(self, inputs):
