@@ -115,7 +115,7 @@ def coarsen_number(number, bins=10, val_range=[0.0, 1.0]):
 
 
 def read_json(filename):
-    json.loads(Path(filename).read_text())
+    return json.loads(Path(filename).read_text())
 
 
 def write_json(data, filename):

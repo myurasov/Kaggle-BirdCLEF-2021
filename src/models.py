@@ -3,6 +3,22 @@ from lib.sin_cos_layer import SinCos
 from tensorflow import keras
 
 
+def build_model(name, n_classes) -> keras.models.Model:
+    """Name convetion mgs|wave_body_options"""
+    name_parts = name.split("_")
+
+    if name_parts[0] == "msg":
+
+        mb = MSG_Model_Builder(
+            n_classes=n_classes,
+            body=name_parts[1],
+        )
+
+        return mb.build()
+
+    raise ValueError(f'Model "{name}" can\'t be built')
+
+
 class MSG_Model_Builder:
     """Builds spectrogram-based model"""
 
@@ -19,7 +35,7 @@ class MSG_Model_Builder:
         self._n_classes = n_classes
         self._extra_dense_layers = extra_dense_layers
 
-    def build(self):
+    def build(self) -> keras.models.Model:
 
         # msg branch
 
@@ -137,3 +153,5 @@ class MSG_Model_Builder:
             ],
             outputs=[o_classes],
         )
+
+        return self.model

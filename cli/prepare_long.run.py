@@ -82,7 +82,7 @@ soundscapes_info = _read_soundscapes_info()
 extra_df = pd.DataFrame()
 
 if args.split_multilabel:
-    print("Splitting multilabel rows...")
+    print("* Splitting multilabel rows...")
     n_extra_rows = 0
 
     for ix, row in tqdm(df.iterrows(), total=df.shape[0]):

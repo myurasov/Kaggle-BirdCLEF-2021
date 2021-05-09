@@ -31,10 +31,10 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--out_pickle",
+    "--out",
     type=str,
     default="dataset.pickle",
-    help="Output pickle file",
+    help="Output DataFrame file",
 )
 
 parser.add_argument(
@@ -152,7 +152,7 @@ df["_y"] = Y
 
 # save metadata
 write_json(
-    filename=args.out_pickle + ".json",
+    filename=args.out + ".json",
     data={
         "cmd": " ".join(sys.argv),
         "args": vars(args),
@@ -161,5 +161,5 @@ write_json(
 )
 
 # save csv
-print(f'* Saving to "{args.out_pickle}"...')
-df.to_pickle(args.out_pickle)
+print(f'* Saving to "{args.out}"...')
+getattr(df, f'to_{args.out.split(".")[-1].lower()}')(args.out)
