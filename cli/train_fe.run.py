@@ -2,7 +2,6 @@
 
 import argparse
 import os
-import shutil
 import sys
 from pprint import pformat
 
@@ -22,7 +21,6 @@ from src.generator import Generator
 from src.models import build_model
 from src.services import get_msg_provider, get_wave_provider
 from tensorflow import keras
-from tqdm import tqdm
 
 # region: read arguments
 parser = argparse.ArgumentParser(
@@ -143,7 +141,7 @@ print(f"* Arguments:\n{pformat(vars(args))}")
 #
 # args.samples_per_epoch = 32000
 # args.model = "msg_enb0"
-# args.val_fold = 0.01
+args.val_fold = 0.001
 #
 
 # region: bootstrap
@@ -315,18 +313,21 @@ model.compile(
     optimizer=keras.optimizers.Adam(learning_rate=args.lr),
     loss="binary_crossentropy",
     metrics=[
+        # TODO: replace with https://www.kaggle.com/shonenkov/competition-metrics
         tfa.metrics.F1Score(
             num_classes=len(meta["labels"]),
             threshold=0.5,
-            average="macro",
+            average="micro",
         ),
     ],
 )
 
+# calc steps (batches) per epoch
 steps_per_epoch = (
     args.samples_per_epoch // args.batch if args.samples_per_epoch > 0 else None
 )
 
+# raise exceptions on all errors
 np.seterr(all="raise")
 
 model.fit(
