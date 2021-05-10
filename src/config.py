@@ -24,18 +24,7 @@ c["AUDIO_SR"] = 32000
 c["AUDIO_TARGET_LEN_S"] = 5
 
 # parameters for melspectrogram computation
-
 c["MSG_N_FFT"] = 2048
-
-# TODO: set this dinamically based on model input size
-c["MSG_TARGET_SIZE"] = {"time": 256, "freqs": 256}
-
-c["MSG_HOP_LENGTH"] = (
-    c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"] // (c["MSG_TARGET_SIZE"]["time"] - 1)
-)
-
-c["MSG_N_MELS"] = c["MSG_TARGET_SIZE"]["freqs"]
-
 c["MSG_NORMALIZE"] = True
 
 # torchaudio melspectrogram device: cpu or cuda

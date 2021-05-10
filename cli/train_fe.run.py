@@ -216,33 +216,37 @@ input_shape = None
 input_type = None
 train_g = None
 val_g = None
+wave_p = None
+msg_p = None
 
 try:
     input_shape = model.get_layer("i_msg").input_shape[0][1:]
     input_type = "melspectrogram"
+    wave_p = get_wave_provider(c)
+    msg_p = get_msg_provider(c, n_mels=input_shape[0], time_steps=input_shape[1])
 
     train_g = Generator(
-        train_df,
-        wave_provider=get_wave_provider(c),
-        msg_provider=get_msg_provider(c),
-        batch_size=args.batch,
+        df=train_df,
         shuffle=True,
         augmentation=None,
-        msg_as_rgb=3 == input_shape[-1],
         rating_as_sw=True,
+        msg_provider=msg_p,
+        wave_provider=wave_p,
+        batch_size=args.batch,
+        msg_as_rgb=3 == input_shape[-1],
         geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
     )
 
     val_g = Generator(
-        val_df,
-        wave_provider=get_wave_provider(c),
-        msg_provider=get_msg_provider(c),
-        batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
+        df=val_df,
         shuffle=False,
         augmentation=None,
-        msg_as_rgb=3 == input_shape[-1],
         rating_as_sw=True,
+        msg_provider=msg_p,
+        wave_provider=wave_p,
+        msg_as_rgb=3 == input_shape[-1],
         geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
+        batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
     )
 
 

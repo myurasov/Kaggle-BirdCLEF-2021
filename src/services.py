@@ -25,20 +25,23 @@ def get_wave_provider(
 
 def get_msg_provider(
     config=c,
+    n_mels=256,
+    time_steps=256,
     key="msg_maker",
 ) -> MSG_Provider:
 
     if key not in _services:
 
         _services[key] = MSG_Provider(
+            n_mels=n_mels,
+            target_n_mels=n_mels,
+            time_steps=time_steps,
             n_fft=config["MSG_N_FFT"],
-            n_mels=config["MSG_N_MELS"],
+            target_time_steps=time_steps,
             sample_rate=config["AUDIO_SR"],
             normalize=config["MSG_NORMALIZE"],
-            hop_length=config["MSG_HOP_LENGTH"],
+            audio_len_seconds=c["AUDIO_TARGET_LEN_S"],
             device=config["TORCH_MELSPECTROGRAM_DEVICE"],
-            target_msg_mels=c["MSG_TARGET_SIZE"]["freqs"],
-            target_msg_time_steps=c["MSG_TARGET_SIZE"]["time"],
         )
 
     return _services[key]

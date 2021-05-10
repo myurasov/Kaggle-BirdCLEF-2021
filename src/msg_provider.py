@@ -1,3 +1,5 @@
+import warnings
+
 import librosa
 import numpy as np
 import torch
@@ -10,16 +12,19 @@ class MSG_Provider:
         self,
         n_fft,
         n_mels,
-        hop_length,
+        time_steps,
         sample_rate,
-        target_msg_mels,
-        target_msg_time_steps,
+        audio_len_seconds,
+        target_n_mels,
+        target_time_steps,
         normalize=False,
         device="cpu",
     ):
 
+        hop_length = sample_rate * audio_len_seconds // (time_steps - 1)
+
         self._msg_transform = MelSpectrogram(
-            power=3.0,  # TODO: check how it looks
+            power=3.0,  # TODO: check how it looks vs 2.0
             center=True,
             norm="slaney",
             onesided=True,
@@ -33,8 +38,8 @@ class MSG_Provider:
 
         self._device = device
         self._normalize = normalize
-        self._target_msg_mels = target_msg_mels
-        self._target_msg_time_steps = target_msg_time_steps
+        self._target_n_mels = target_n_mels
+        self._target_time_steps = target_time_steps
 
     def msg(self, wave):
         wave = torch.tensor(wave.reshape([1, -1]).astype(np.float32)).to(self._device)
@@ -50,10 +55,11 @@ class MSG_Provider:
                 msg /= std
 
         # if melspectrogram size mismatches with target, resize it
-        if msg.shape != (self._target_msg_mels, self._target_msg_time_steps):
+        if msg.shape != (self._target_n_mels, self._target_time_steps):
+            warnings.warn("MelSpectrogram is resized", UserWarning)
             msg = Image.fromarray(msg)
             msg = msg.resize(
-                (self._target_msg_time_steps, self._target_msg_mels),
+                (self._target_time_steps, self._target_n_mels),
                 Image.BICUBIC,
             )
             msg = np.array(msg)
