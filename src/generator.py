@@ -73,6 +73,13 @@ class Generator(keras.utils.Sequence):
 
     def _get_one(self, ix):
 
+        # sample weight
+        sw = 1.0
+        if self._rating_as_sw:
+            sw = self._df.loc[ix]["rating"] / 5.0  # type: ignore
+
+        # x
+
         x = {}
 
         # wave
@@ -104,9 +111,12 @@ class Generator(keras.utils.Sequence):
                 if std != 0:
                     msg /= std
                 else:
+                    sw = 0.0  # bad sample - set sample weight to zero
                     warnings.warn(
                         f"{self.__class__.__name__}: STD=0 in"
-                        + f' "{self._df.loc[ix]["filename"]}"',  # type: ignore
+                        + f' "{self._df.loc[ix]["filename"]}" '  # type: ignore
+                        + f' " in seconds {self._df.loc[ix]["_from_s"]}-'  # type: ignore
+                        + f'{self._df.loc[ix]["_to_s"]}"',  # type: ignore
                         UserWarning,
                     )
                 msg *= 128
@@ -141,11 +151,6 @@ class Generator(keras.utils.Sequence):
 
         # y
         y = np.array(self._df._y.loc[ix], dtype=np.float16)
-
-        # sample weight
-        sw = 1.0
-        if self._rating_as_sw:
-            sw = self._df.loc[ix]["rating"] / 5.0  # type: ignore
 
         return x, y, sw
 
