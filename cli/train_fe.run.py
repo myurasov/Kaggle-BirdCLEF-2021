@@ -141,7 +141,7 @@ print(f"* Arguments:\n{pformat(vars(args))}")
 #
 # args.samples_per_epoch = 32000
 # args.model = "msg_enb0"
-args.val_fold = 0.001
+# args.val_fold = 0.001
 #
 
 # region: bootstrap
