@@ -256,9 +256,9 @@ except ValueError:
 
 print(f"* Model input: {input_type} of size {input_shape}")
 
-print("* Preloading validation data...")
 val_x, val_y, val_sw = None, None, None
 if args.preload_val_data:
+    print("* Preloading validation data...")
     val_x, val_y, val_sw = val_g.__getitem__(0)
 
 # endregion
@@ -337,7 +337,7 @@ model.fit(
     callbacks=callbacks,
     use_multiprocessing=args.multiprocessing > 1,
     workers=args.multiprocessing,
-    max_queue_size=1,
+    max_queue_size=4,
     verbose=1,
 )
 

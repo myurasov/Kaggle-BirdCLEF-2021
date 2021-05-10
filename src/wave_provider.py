@@ -14,10 +14,12 @@ class WaveProvider:
         cache_dir=None,
         audio_sr=32000,
         normalize=False,
+        warn_on_silence=False,
     ):
         self._audio_sr = audio_sr
         self._cache_dir = cache_dir
         self._normalize = normalize
+        self._warn_on_silence = warn_on_silence
         self._src_dirs = self._resolve_src_dir_globs(src_dirs)
 
     def _resolve_src_dir_globs(self, src_dirs):
@@ -92,18 +94,10 @@ class WaveProvider:
                 # normalize when reading from the whole file
                 if self._normalize:
                     assert wave.dtype == np.float32
-
                     wave -= np.mean(wave)
                     std = np.std(wave)
-
                     if std != 0:
                         wave /= np.std(wave)
-                    else:
-                        warnings.warn(
-                            f'{self.__class__.__name__}: STD=0 in "{file_path}"',
-                            UserWarning,
-                        )
-
             else:
                 # read from a possibly cached whole file
                 wave = self.get_audio_fragment(file_name=file_name, range_seconds=None)
@@ -111,6 +105,14 @@ class WaveProvider:
             # crop
             if range_samples is not None:
                 wave = wave[range_samples[0] : range_samples[1]]
+
+                # check if fragment contains silence
+                if self._warn_on_silence and np.std(wave) == 0:
+                    warnings.warn(
+                        f'{self.__class__.__name__}: "{file_path}" seems to contain'
+                        + f" only silence in seconds {range_seconds}",
+                        UserWarning,
+                    )
 
             # check if the asked range is valid
             if range_samples is not None:

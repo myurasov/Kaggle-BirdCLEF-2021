@@ -17,21 +17,20 @@ c["SRC_DATA_DIRS"] = [
     c["DATA_DIR"] + "/competition_data/train_soundscapes",
 ]
 
-# audio sampling rate
+# audio params
 c["AUDIO_SR"] = 32000
-
-# audio sample length
+c["AUDIO_NORMALIZE"] = True
 c["AUDIO_TARGET_LEN_S"] = 5
+c["AUDIO_QUALITY_WARNINGS"] = True
 
 # parameters for melspectrogram computation
 c["MSG_N_FFT"] = 2048
-c["MSG_NORMALIZE"] = True
+c["MSG_NORMALIZE"] = False  # -mean, /std
+c["MSG_FREQ_RANGE"] = [0, 16000]
+c["MSG_POWER"] = 3.0
 
 # torchaudio melspectrogram device: cpu or cuda
 c["TORCH_MELSPECTROGRAM_DEVICE"] = "cpu"
-
-# normalize audio
-c["AUDIO_NORMALIZE"] = True
 
 # number of bins for latitude/longitude
 c["GEO_COORDINATES_BINS"] = 18

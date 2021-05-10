@@ -1,7 +1,7 @@
 import warnings
 
 import numpy as np
-from lib.utils import coarsen_number
+from lib.utils import coarsen_number, float2d_to_rgb
 from pandas import DataFrame
 from tensorflow import keras
 
@@ -100,28 +100,11 @@ class Generator(keras.utils.Sequence):
 
         else:  # return melspectrograms
 
-            msg = self._msg_provider.msg(wave).astype(np.float16)
+            msg = self._msg_provider.msg(wave).astype(np.float32)
 
             # return as rgb uint8 image
             if self._msg_as_rgb:
-                # force normalization and convert to uint8 range
-                msg = msg.astype(np.float32)
-                msg -= np.mean(msg)
-                std = np.std(msg)
-                if std != 0:
-                    msg /= std
-                else:
-                    sw = 0.0  # bad sample - set sample weight to zero
-                    warnings.warn(
-                        f"{self.__class__.__name__}: STD=0 in"
-                        + f' "{self._df.loc[ix]["filename"]}"'  # type: ignore
-                        + f' in seconds {self._df.loc[ix]["_from_s"]}-'  # type: ignore
-                        + f'{self._df.loc[ix]["_to_s"]}',  # type: ignore
-                        UserWarning,
-                    )
-                msg *= 128
-                # duplicate across 3 channels
-                msg = np.repeat(np.expand_dims(msg.astype(np.uint8), 2), 3, 2)
+                msg = float2d_to_rgb(msg)
 
             x["i_msg"] = msg
 

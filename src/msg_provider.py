@@ -17,14 +17,19 @@ class MSG_Provider:
         audio_len_seconds,
         target_n_mels,
         target_time_steps,
+        f_min=0,
+        f_max=None,
+        power=2,
         normalize=False,
         device="cpu",
     ):
+        if f_max is None:
+            f_max = sample_rate // 2
 
         hop_length = sample_rate * audio_len_seconds // (time_steps - 1)
 
         self._msg_transform = MelSpectrogram(
-            power=3.0,  # TODO: check how it looks vs 2.0
+            power=power,
             center=True,
             norm="slaney",
             onesided=True,
@@ -34,6 +39,8 @@ class MSG_Provider:
             n_mels=n_mels,
             sample_rate=sample_rate,
             hop_length=hop_length,
+            f_min=f_min,
+            f_max=f_max,
         ).to(device)
 
         self._device = device
@@ -48,7 +55,7 @@ class MSG_Provider:
         msg = librosa.power_to_db(msg)
 
         if self._normalize:
-            assert msg.dtype == np.float32
+            assert msg.dtype == np.float32 or msg.dtype == np.float64
             msg -= np.mean(msg)
             std = np.std(msg)
             if std != 0:
@@ -64,4 +71,4 @@ class MSG_Provider:
             )
             msg = np.array(msg)
 
-        return msg.astype(np.float16)
+        return msg.astype(np.float32)

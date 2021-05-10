@@ -1,5 +1,6 @@
 import unittest
 
+import numpy as np
 from src.config_test import c
 from src.services import get_wave_provider
 
@@ -13,6 +14,7 @@ class TestWaveProvider(unittest.TestCase):
 
         wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=None)
         self.assertEqual(len(wave), 532933)
+        self.assertEqual(wave.dtype, np.float16)
 
         wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=[10, 15])
         self.assertEqual(len(wave), c["AUDIO_SR"] * 5)

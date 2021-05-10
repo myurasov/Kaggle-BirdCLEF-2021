@@ -123,3 +123,17 @@ def write_json(data, filename):
         json.dumps(data, indent=4),
         file=open(filename, "w"),
     )
+
+
+def float2d_to_rgb(a):
+    """Convert float 2d array to RGB uint8 image"""
+    a = a.astype(np.float32)
+    a -= np.min(a)
+    amax = np.max(a)
+    if amax != 0:
+        a /= amax
+    a = a * 255
+    a = a.astype(np.uint8)
+    a = np.expand_dims(a, 2)
+    a = np.repeat(a, 3, 2)
+    return a
