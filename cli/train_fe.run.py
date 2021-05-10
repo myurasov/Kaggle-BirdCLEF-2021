@@ -58,6 +58,13 @@ parser.add_argument(
     help="Validation fold. Use float value <1 for a val split rather than fold.",
 )
 
+parser.add_argument(
+    "--preload_val_data",
+    type=int,
+    default=1,
+    help="Preload validation generator into memory to speed up validation runs.",
+)
+
 # TODO
 # parser.add_argument(
 #     "--aug",
@@ -132,6 +139,11 @@ parser.add_argument(
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
+
+#####
+args.samples_per_epoch = 32000
+args.model = "msg_enb0"
+args.val_fold = 0.01
 
 # region: bootstrap
 fix_random_seed(c["SEED"])
@@ -225,7 +237,7 @@ try:
         val_df,
         wave_provider=get_wave_provider(c),
         msg_provider=get_msg_provider(c),
-        batch_size=args.batch,
+        batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
         shuffle=False,
         augmentation=None,
         msg_as_rgb=3 == input_shape[-1],
@@ -238,6 +250,11 @@ except ValueError:
     raise RuntimeError("Unsupported input type")
 
 print(f"* Model input: {input_type} of size {input_shape}")
+
+print("* Preloading validation data...")
+val_x, val_y, val_sw = None, None, None
+if args.preload_val_data:
+    val_x, val_y, val_sw = val_g.__getitem__(0)
 
 # endregion
 
@@ -296,7 +313,7 @@ model.compile(
         tfa.metrics.F1Score(
             num_classes=len(meta["labels"]),
             threshold=0.5,
-            average="micro",
+            average="macro",
         ),
     ],
 )
@@ -309,7 +326,7 @@ np.seterr(all="raise")
 
 model.fit(
     x=train_g,
-    validation_data=val_g,
+    validation_data=(val_x, val_y, val_sw) if args.preload_val_data else val_g,
     epochs=args.epochs,
     steps_per_epoch=steps_per_epoch,
     callbacks=callbacks,

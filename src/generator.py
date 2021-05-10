@@ -114,9 +114,9 @@ class Generator(keras.utils.Sequence):
                     sw = 0.0  # bad sample - set sample weight to zero
                     warnings.warn(
                         f"{self.__class__.__name__}: STD=0 in"
-                        + f' "{self._df.loc[ix]["filename"]}" '  # type: ignore
-                        + f' " in seconds {self._df.loc[ix]["_from_s"]}-'  # type: ignore
-                        + f'{self._df.loc[ix]["_to_s"]}"',  # type: ignore
+                        + f' "{self._df.loc[ix]["filename"]}"'  # type: ignore
+                        + f' in seconds {self._df.loc[ix]["_from_s"]}-'  # type: ignore
+                        + f'{self._df.loc[ix]["_to_s"]}',  # type: ignore
                         UserWarning,
                     )
                 msg *= 128

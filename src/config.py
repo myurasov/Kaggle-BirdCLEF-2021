@@ -27,6 +27,7 @@ c["AUDIO_TARGET_LEN_S"] = 5
 
 c["MSG_N_FFT"] = 2048
 
+# TODO: set this dinamically based on model input size
 c["MSG_TARGET_SIZE"] = {"time": 256, "freqs": 256}
 
 c["MSG_HOP_LENGTH"] = (
