@@ -140,10 +140,11 @@ args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
-#####
-args.samples_per_epoch = 32000
-args.model = "msg_enb0"
-args.val_fold = 0.01
+#
+# args.samples_per_epoch = 32000
+# args.model = "msg_enb0"
+# args.val_fold = 0.01
+#
 
 # region: bootstrap
 fix_random_seed(c["SEED"])
