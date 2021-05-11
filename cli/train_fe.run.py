@@ -206,11 +206,11 @@ model = build_model(args.model, len(meta["labels"]))
 print(f"* Model output size: {model.output.shape[1]}")
 
 # save picture
-save_keras_model(model, f"{checkpoint_path}/model.png", dpi=75, rankdir="LR")
+save_keras_model(model, f"{checkpoint_path}/{args.run}.png", dpi=75, rankdir="LR")
 # endregion
 
 # region: save train run metadata
-train_meta_file = f"{checkpoint_path}/meta.json"
+train_meta_file = f"{checkpoint_path}/{args.run}.json"
 
 write_json(
     {
