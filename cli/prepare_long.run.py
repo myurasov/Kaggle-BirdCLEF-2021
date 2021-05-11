@@ -39,8 +39,7 @@ parser.add_argument(
 parser.add_argument(
     "--in_csv",
     type=str,
-    default="fake_test.csv",
-    # default="train_soundscape_labels.csv",
+    default="train_soundscape_labels.csv",
     help="Split multi-label items into multiple rows",
 )
 
