@@ -17,7 +17,7 @@ rm -rf .git
 
 kaggle datasets init
 sed -i "s/INSERT_TITLE_HERE/${DATASET_ID}/" dataset-metadata.json 
-sed -i "s/INSERT_SLUG_HERE/${DATASET_ID}" dataset-metadata.json 
+sed -i "s/INSERT_SLUG_HERE/${DATASET_ID}/" dataset-metadata.json 
 
 # second option should be used afer initial creation
 # kaggle datasets create --dir-mode zip
