@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 # merge datasets (short, long, external)
-# TODO: add folds
 # save class information
 
 import argparse
@@ -59,7 +58,6 @@ parser.add_argument(
     default=5,
     help="Number of folds",
 )
-
 
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")

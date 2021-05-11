@@ -1,10 +1,7 @@
 {
-    // Terminal
-    // @jupyterlab/terminal-extension:plugin
-    // Terminal settings.
-    // *************************************
-
-    // Theme
-    // The theme for the terminal.
-    "theme": "dark"
+    "fontSize": 12,
+    "theme": "dark",
+    "fontFamily": "Menlo, monospace",
+    "lineHeight": 1.25,
+    "scrollback": 5000
 }

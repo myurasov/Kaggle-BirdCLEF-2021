@@ -134,6 +134,13 @@ parser.add_argument(
     help="Number of generator threads",
 )
 
+parser.add_argument(
+    "--weight_by_rareness",
+    type=int,
+    default=1,
+    help="Use primary label rareness for sample weighting",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -229,6 +236,7 @@ try:
         shuffle=True,
         augmentation=None,
         rating_as_sw=True,
+        rareness_as_sw=args.weight_by_rareness > 0,
         msg_provider=msg_p,
         wave_provider=wave_p,
         batch_size=args.batch,
@@ -240,7 +248,8 @@ try:
         df=val_df,
         shuffle=False,
         augmentation=None,
-        rating_as_sw=True,
+        rating_as_sw=False,
+        rareness_as_sw=False,
         msg_provider=msg_p,
         wave_provider=wave_p,
         msg_as_rgb=3 == input_shape[-1],

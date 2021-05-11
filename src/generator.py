@@ -24,9 +24,9 @@ class Generator(keras.utils.Sequence):
         augmentation=None,
         msg_as_rgb=True,  # return melspectrogram as rgb image
         rating_as_sw=True,  # use rating/5 as sample weight
+        rareness_as_sw=True,  # use 1/<class_freq> as sw. multiplied by rating if both are set.
         geo_coordinates_bins=None,  # number of bins for coarsening lat/lon
     ):
-        self._df = df
         self._shuffle = shuffle
         self._batch_size = batch_size
         self._msg_as_rgb = msg_as_rgb
@@ -34,10 +34,26 @@ class Generator(keras.utils.Sequence):
         self._augmentation = augmentation
         self._rating_as_sw = rating_as_sw
         self._wave_provider = wave_provider
+        self._rareness_as_sw = rareness_as_sw
+        self._df = df.copy().reset_index(drop=True)
         self._geo_coordinates_bins = geo_coordinates_bins
 
+        # shuffle before first epoch for non-model.fit uses
         if self._shuffle:
             self._shuffle_samples()
+
+        # compute rareness sample weighting coefficients
+        if self._rareness_as_sw is not None:
+            rareness_sws = np.array(
+                list(
+                    df["_primary_labels"].replace(
+                        dict(df["_primary_labels"].value_counts())
+                    )
+                ),
+                dtype=np.float64,
+            )
+            rareness_sws /= np.max(rareness_sws)
+            self._df["_rareness_sw"] = rareness_sws
 
     def __len__(self):
         return self._df.shape[0] // self._batch_size
@@ -76,7 +92,9 @@ class Generator(keras.utils.Sequence):
         # sample weight
         sw = 1.0
         if self._rating_as_sw:
-            sw = self._df.loc[ix]["rating"] / 5.0  # type: ignore
+            sw *= self._df.loc[ix]["rating"] / 5.0  # type: ignore
+        if self._rareness_as_sw:
+            sw *= self._df.loc[ix]["_rareness_sw"]  # type: ignore
 
         # x
 
