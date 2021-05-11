@@ -30,11 +30,7 @@ class MSG_Provider:
 
         self._msg_transform = MelSpectrogram(
             power=power,
-            center=True,
-            norm="slaney",
-            onesided=True,
             win_length=None,
-            pad_mode="reflect",
             n_fft=n_fft,
             n_mels=n_mels,
             sample_rate=sample_rate,
