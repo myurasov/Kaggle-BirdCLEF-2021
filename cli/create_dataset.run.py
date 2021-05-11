@@ -78,11 +78,22 @@ for csv in args.in_csvs:
 
 print(f"* Total rows: {df.shape[0]:,}")
 
-# region: filter out "bad" sound files
+# region: cleanup
+
+#  filter out "bad" sound files,
 excluded_df = df[df["filename"].isin(c["EXCLUDE_FILES"])]
 df = df.drop(excluded_df.index)
 print(f"* Removed {excluded_df.shape[0]} rows with bad files")
 df.reset_index(inplace=True, drop=True)
+
+# merge "rocpig1" and "rocpig"
+df["_secondary_labels"] = list(
+    map(
+        lambda x: x.replace("rocpig1", "rocpig") if type(x) == str else x,
+        list(df["_secondary_labels"]),
+    )
+)
+
 # endregion
 
 # region: rectify class balance
