@@ -9,3 +9,4 @@ kaggle.json
 docker/res/root/.jupyter/migrated
 iframe_figures/
 /__*
+kaggle/__repo__
