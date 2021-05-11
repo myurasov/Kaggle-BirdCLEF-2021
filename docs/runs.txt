@@ -22,6 +22,6 @@ cli/create_dataset.run.py --in_csvs short-B.csv long-B.csv --secondary_label_p 0
 
 cli/cache_waves.py --dataset dataset-B.pickle
 
-cli/train_fe.run.py --run B1_norarenessw --dataset dataset-B.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 16000 --model msg_enb4_imagenet --amp 1 --val_fold 0.2 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_loss
+cli/train_fe.run.py --run B1_norarenessw --dataset dataset-B.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 16000 --model msg_enb4_imagenet --amp 1 --val_fold 0.1 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_loss
 
-cli/train_fe.run.py --run B1 --dataset dataset-B.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 16000 --model msg_enb4_imagenet --amp 1 --val_fold 0.2 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 1 --monitor_metric val_loss
+cli/train_fe.run.py --run B1 --dataset dataset-B.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 16000 --model msg_enb4_imagenet --amp 1 --val_fold 0.1 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 1 --monitor_metric val_loss
