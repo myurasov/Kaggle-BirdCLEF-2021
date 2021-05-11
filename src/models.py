@@ -48,16 +48,25 @@ class MSG_Model_Builder:
 
         if self._body[:3] == "enb":  # EfficientNetB#
 
-            msg_i_size = [224, 240, 260, 300, 380, 456, 528, 600][int(self._body[-1])]
-            msg_i_size = (msg_i_size, msg_i_size, 3)
+            if self._body[:3] == "enb":
+                self._body == "EfficientNetB" + self._body[-1]
+                input_shape = [224, 240, 260, 300, 380, 456, 528, 600]
+                input_shape = input_shape[int(self._body[-1])]
+                input_shape = (input_shape, input_shape, 3)
+                input_dtype = "uint8"
+            elif self._body.lower() == "resnet50":
+                input_shape = (224, 224, 3)
+                input_dtype = "float16"
+            else:
+                raise ValueError(f'Unsupported body type "{self._body}"')
 
             i_msg = keras.layers.Input(
-                shape=msg_i_size,
-                dtype="uint8",
+                shape=input_shape,
+                dtype=input_dtype,
                 name="i_msg",
             )
 
-            x = getattr(keras.applications, f"EfficientNetB{self._body[-1]}")(
+            x = getattr(keras.applications, self._body)(
                 include_top=False,
                 weights="imagenet" if self._imagenet_weights else None,
             )(i_msg)
