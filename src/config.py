@@ -21,7 +21,7 @@ c["SRC_DATA_DIRS"] = [
 c["AUDIO_SR"] = 32000
 c["AUDIO_NORMALIZE"] = True
 c["AUDIO_TARGET_LEN_S"] = 5
-c["AUDIO_QUALITY_WARNINGS"] = True
+c["AUDIO_QUALITY_WARNINGS"] = False
 
 # parameters for melspectrogram computation
 c["MSG_N_FFT"] = 2048

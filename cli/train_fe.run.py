@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import shlex
 import sys
 from pprint import pformat
 
@@ -21,6 +22,9 @@ from src.generator import Generator
 from src.models import build_model
 from src.services import get_msg_provider, get_wave_provider
 from tensorflow import keras
+
+# args for debugging
+_debug_args = None
 
 # region: read arguments
 parser = argparse.ArgumentParser(
@@ -149,14 +153,11 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+if _debug_args is not None:
+    args = parser.parse_args(shlex.split(_debug_args))
+
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
-
-#
-# args.samples_per_epoch = 32000
-# args.model = "msg_enb0"
-# args.val_fold = 0.001
-#
 
 # region: bootstrap
 fix_random_seed(c["SEED"])

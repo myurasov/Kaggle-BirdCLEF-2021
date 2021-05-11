@@ -107,7 +107,7 @@ class WaveProvider:
                 wave = wave[range_samples[0] : range_samples[1]]
 
                 # check if fragment contains silence
-                if self._warn_on_silence and np.std(wave) == 0:
+                if self._warn_on_silence and np.std(wave.astype(np.float32)) == 0:
                     warnings.warn(
                         f'{self.__class__.__name__}: "{file_path}" seems to contain'
                         + f" only silence in seconds {range_seconds}",
