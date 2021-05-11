@@ -85,12 +85,7 @@ class MSG_Model_Builder:
         )(i_month)
 
         # date
-
-        f_date = keras.layers.Lambda(
-            # x[1] is year, x[0] is month
-            lambda x: K.cast(x[1] * 12 + x[0], "float32"),
-            name="f_date",
-        )([i_year, i_month])
+        f_date = YMToDate(name="f_date")([i_year, i_month])  # type: ignore
 
         # lat
 
@@ -100,9 +95,7 @@ class MSG_Model_Builder:
             name="i_lat",
         )
 
-        f_lat = keras.layers.Lambda(lambda x: x / 90.0, name="f_lat",)(
-            i_lat
-        )  # normalize to -1..1
+        f_lat = Div(by=90, name="f_lat")(i_lat)  # type: ignore
 
         # lon
 
@@ -159,3 +152,24 @@ class MSG_Model_Builder:
         )
 
         return self.model
+
+
+class Div(keras.layers.Layer):
+    def __init__(self, by, **kwargs):
+        super(Div, self).__init__(**kwargs)
+        self._by = by
+
+    def call(self, inputs):
+        return inputs / self._by
+
+    def get_config(self):
+        return {"by": self._by}
+
+
+class YMToDate(keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super(YMToDate, self).__init__(**kwargs)
+
+    def call(self, inputs):
+        # inputs[1] is year, inputs[0] is month
+        return K.cast(inputs[1] * 12 + inputs[0], "float32")
