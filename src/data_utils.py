@@ -1,4 +1,7 @@
 import math
+import os
+import re
+from glob import glob
 
 import numpy as np
 from pandas import DataFrame
@@ -79,3 +82,21 @@ def add_folds(df: DataFrame, n_folds, labels_col) -> DataFrame:
 
     df["_fold"] = folds
     return df
+
+
+def read_soundscapes_info(info_dir):
+    """Read soundscapes information from txt files"""
+
+    info = {}
+
+    # read coordinates, location
+    for p in glob(os.path.join(info_dir, "*.txt")):
+        name = os.path.basename(p)[:3]
+        with open(p, "r") as f:
+            contents = f.read()
+            lat = float(re.findall("Latitude: (.+)\\b", contents)[0])
+            lon = float(re.findall("Longitude: (.+)\\b", contents)[0])
+            location = re.findall("^.+\n.+", contents)[0].replace("\n", ", ")
+        info[name] = {"lat": lat, "lon": lon, "location": location}
+
+    return info

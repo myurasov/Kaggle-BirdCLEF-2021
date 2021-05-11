@@ -1,10 +1,10 @@
 #!/bin/bash
 
-DATA_DIR=`python -c "from src.config import c; print(c['DATA_DIR'])"`
+COMPETITION_DATA=`python -c "from src.config import c; print(c['COMPETITION_DATA'])"`
 
 # competion data
 
-DST_DIR="${DATA_DIR}/competition_data"
+DST_DIR="${DATA_DIR}"
 
 if [ ! -d $DST_DIR ]
 then

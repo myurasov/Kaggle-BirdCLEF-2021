@@ -9,6 +9,7 @@ from glob import glob
 from pprint import pformat
 
 import pandas as pd
+from data_utils import read_soundscapes_info
 from lib.utils import fix_random_seed
 from src.config import c
 from tqdm import tqdm
@@ -45,36 +46,18 @@ os.makedirs(c["WORK_DIR"], exist_ok=True)
 os.chdir(c["WORK_DIR"])
 # endregion
 
-# region: read sounscapes csv
-csv_path = os.path.join(
-    c["DATA_DIR"], "competition_data", "train_soundscape_labels.csv"
-)
+# region: read sounscapes csv and info
+csv_path = os.path.join(c["COMPETITION_DATA"], "train_soundscape_labels.csv")
 df = pd.read_csv(csv_path)
 df.audio_id = df.audio_id.astype("str")
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")
-# endregion
 
-# region: read soundscape info (coords, rec dates)
-
-
-def _read_soundscapes_info():
-    info = {}
-    info_dir = os.path.join(c["DATA_DIR"], "competition_data", "test_soundscapes")
-
-    # read coordinates, location
-    for p in glob(os.path.join(info_dir, "*.txt")):
-        name = os.path.basename(p)[:3]
-        with open(p, "r") as f:
-            contents = f.read()
-            lat = float(re.findall("Latitude: (.+)\\b", contents)[0])
-            lon = float(re.findall("Longitude: (.+)\\b", contents)[0])
-            location = re.findall("^.+\n.+", contents)[0].replace("\n", ", ")
-        info[name] = {"lat": lat, "lon": lon, "location": location}
-
-    return info
-
-
-soundscapes_info = _read_soundscapes_info()
+soundscapes_info = read_soundscapes_info(
+    os.path.join(
+        c["COMPETITION_DATA"],
+        "test_soundscapes",
+    )
+)
 # endregion
 
 # region: split multilabel rows into separate single-label ones
@@ -112,8 +95,7 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     # audio file path/name
 
     file_glob = os.path.join(
-        c["DATA_DIR"],
-        "competition_data",
+        c["COMPETITION_DATA"],
         "train_soundscapes",
         f"{row.audio_id}*.ogg",
     )

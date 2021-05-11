@@ -101,6 +101,9 @@ RUN ln -s ${APP_DIR}/_data/competition_data /kaggle/input/birdclef-2021
 # needed for the proper random seed fix
 ENV PYTHONHASHSEED=777
 
+# tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
+RUN jupyter server extension disable nbclassic
+
 # copy external resources
 COPY docker/res /
 
