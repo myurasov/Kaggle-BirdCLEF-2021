@@ -26,7 +26,7 @@ if is_kaggle:
 # list of source data dirs (globs can be used)
 c["SRC_DATA_DIRS"] = [
     c["COMPETITION_DATA"] + "/train_short_audio/*",
-    c["COMPETITION_DATA"] + "/train_soundscapes",
+    c["COMPETITION_DATA"] + "/*_soundscapes",
 ]
 
 # audio params

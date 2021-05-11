@@ -41,7 +41,7 @@ generator = Generator(
     wave_provider=get_wave_provider(c),
     msg_provider=None,
     batch_size=1,
-    shuffle=False,
+    shuffle=True,
     augmentation=None,
 )
 

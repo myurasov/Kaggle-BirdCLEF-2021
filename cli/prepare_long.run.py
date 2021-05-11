@@ -36,6 +36,14 @@ parser.add_argument(
     help="Split multi-label items into multiple rows",
 )
 
+parser.add_argument(
+    "--in_csv",
+    type=str,
+    default="fake_test.csv",
+    # default="train_soundscape_labels.csv",
+    help="Split multi-label items into multiple rows",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -47,10 +55,14 @@ os.chdir(c["WORK_DIR"])
 # endregion
 
 # region: read sounscapes csv and info
-csv_path = os.path.join(c["COMPETITION_DATA"], "train_soundscape_labels.csv")
+csv_path = os.path.join(c["COMPETITION_DATA"], args.in_csv)
 df = pd.read_csv(csv_path)
 df.audio_id = df.audio_id.astype("str")
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")
+
+# add dummy 'birds' column for test file
+if "birds" not in df.columns:
+    df["birds"] = ["nocall"] * df.shape[0]
 
 soundscapes_info = read_soundscapes_info(
     os.path.join(
@@ -62,9 +74,9 @@ soundscapes_info = read_soundscapes_info(
 
 # region: split multilabel rows into separate single-label ones
 
-extra_df = pd.DataFrame()
-
 if args.split_multilabel:
+    extra_df = pd.DataFrame()
+
     print("* Splitting multilabel rows...")
     n_extra_rows = 0
 
@@ -81,7 +93,8 @@ if args.split_multilabel:
                     # row.audio_id = str(row.audio_id)
                     extra_df = extra_df.append(row, ignore_index=True)
 
-df = df.append(extra_df[df.columns], ignore_index=True)  # type: ignore
+    if extra_df.shape[0] > 0:
+        df = df.append(extra_df[df.columns], ignore_index=True)  # type: ignore
 
 # endregion
 
@@ -96,12 +109,12 @@ for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
 
     file_glob = os.path.join(
         c["COMPETITION_DATA"],
-        "train_soundscapes",
+        "*_soundscapes",
         f"{row.audio_id}*.ogg",
     )
 
-    file_path = glob(file_glob)
-    assert len(file_path) == 1
+    file_path = glob(file_glob, recursive=True)
+    assert len(file_path) > 0
     file_path = file_path[0]
     file_name = os.path.basename(file_path)
     newcols["filename"].append(file_name)
