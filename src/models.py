@@ -131,6 +131,7 @@ class MSG_Model_Builder:
                     self._extra_dense_layers[1],
                     activation="relu",
                 )(x)
+                x = keras.layers.Dropout(0.5)(x)
 
         o_classes = keras.layers.Dense(
             self._n_classes,
