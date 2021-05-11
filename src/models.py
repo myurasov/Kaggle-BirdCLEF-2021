@@ -13,6 +13,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             n_classes=n_classes,
             body=body,
             imagenet_weights="imagenet" in options,
+            extra_dense_layers=None if "noxdense" in options else [1, 1024],
         )
 
         return mb.build()
