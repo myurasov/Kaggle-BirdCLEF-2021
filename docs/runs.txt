@@ -1,0 +1,25 @@
+# A
+
+cli/prepare_short.run.py --min_rating 4 --max_from_clip 10 --no_rating_value 3 --rectify_class_balance 0 --sample_with_stride 5
+
+cli/prepare_long.run.py --split_multilabel 1
+
+cli/create_dataset.run.py --secondary_label_p 0.33 --folds 10 --rectify_class_balance 1.5 0.25
+
+cli/cache_waves.py --dataset dataset.pickle
+
+cli/train_fe.run.py --run A1 --lr_patience 3 --samples_per_epoch 10240 --model msg_enb4_imagenet --amp 1 --val_fold 0.1 --batch 64 --preload_val_data 1 --multiprocessing 4 --epochs 500 --weight_by_rareness 0 --monitor_metric val_loss
+
+cli/train_fe.run.py --run A1_b7 --lr_patience 3 --samples_per_epoch 10240 --model msg_enb7_imagenet --amp 1 --val_fold 0.1 --batch 8 --preload_val_data 1 --multiprocessing 4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_loss
+
+# B
+
+cli/prepare_short.run.py --min_rating 3 --max_from_clip 10 --no_rating_value 3 --rectify_class_balance 0 --sample_with_stride 5 --out_csv short-B.csv
+
+cli/prepare_long.run.py --split_multilabel 1 --out_csv long-B.csv
+
+cli/create_dataset.run.py --in_csvs short-B.csv long-B.csv --secondary_label_p 0.33 --folds 10 --rectify_class_balance 2.5 0.25 --out dataset-B.pickle
+
+cli/cache_waves.py --dataset dataset-B.pickle
+
+cli/train_fe.run.py --run B1_nowbr --dataset dataset-B.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 32000 --model msg_enb2_imagenet --amp 1 --val_fold 1 --batch 128 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_loss
