@@ -49,7 +49,7 @@ class MSG_Model_Builder:
         if self._body[:3] == "enb":  # EfficientNetB#
 
             if self._body[:3] == "enb":
-                self._body == "EfficientNetB" + self._body[-1]
+                self._body = "EfficientNetB" + self._body[-1]
                 input_shape = [224, 240, 260, 300, 380, 456, 528, 600]
                 input_shape = input_shape[int(self._body[-1])]
                 input_shape = (input_shape, input_shape, 3)
