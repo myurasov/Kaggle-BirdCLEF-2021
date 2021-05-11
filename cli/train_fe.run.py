@@ -316,6 +316,7 @@ callbacks.append(
     keras.callbacks.ModelCheckpoint(
         checkpoint_path + f"/{args.run}.h5",
         verbose=1,
+        mode="max",
         save_freq="epoch",
         save_best_only=True,
         save_weights_only=False,

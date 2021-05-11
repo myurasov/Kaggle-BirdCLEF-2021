@@ -36,4 +36,8 @@ class SinCos(keras.layers.Layer):
         )
 
     def get_config(self):
+        # config = super(SinCos, self).get_config()
+        # config.update({"val_range": self.val_range})
+        # return config
+
         return {"val_range": self.val_range}
