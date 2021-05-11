@@ -76,7 +76,7 @@ class WaveProvider:
 
         # try reading from cache
         if self._cache_dir is not None:
-            cache_key = f"{file_path}:sr={self._audio_sr}:{range_samples=}"
+            cache_key = f"{file_path}:sr={self._audio_sr}:range_samples={range_samples}"
             cache_key = md5(cache_key.encode()).hexdigest()
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
             cache_dir = os.path.join(cache_dir, cache_key[0], cache_key[1])

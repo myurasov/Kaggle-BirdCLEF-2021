@@ -35,7 +35,7 @@ def get_msg_provider(
 ) -> MSG_Provider:
 
     if key is None:
-        key = f"msg_provider:{n_mels=}:{time_steps=}"
+        key = f"msg_provider:n_mels={n_mels}:time_steps={time_steps}"
 
     if key not in _services:
 
