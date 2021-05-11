@@ -1,3 +1,8 @@
+import os
+
+# we're on kaggle
+is_kaggle = "KAGGLE_CONTAINER_NAME" in os.environ
+
 c = {}
 
 c["SEED"] = 123
@@ -5,8 +10,14 @@ c["SEED"] = 123
 # input data dir
 c["DATA_DIR"] = "/app/_data"
 
+if is_kaggle:
+    c["DATA_DIR"] = "/kaggle/input/birdclef-2021"
+
 # where to put generated data
 c["WORK_DIR"] = "/app/_work"
+
+if is_kaggle:
+    c["WORK_DIR"] = "/tmp/_work"
 
 # cache directory
 c["CACHE_DIR"] = c["WORK_DIR"] + "/cache"
