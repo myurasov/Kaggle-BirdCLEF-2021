@@ -350,9 +350,11 @@ np.seterr(all="raise")
 
 # multiprocessing options
 if "x" not in args.multiprocessing:
-    # use queue of 4 by default
-    args.multiprocessing += "x4"
+    # use queue of 1 by default
+    args.multiprocessing += "x1"
 mp_workers, mp_queue = list(map(int, args.multiprocessing.split("x")))
+
+print(f"* Using {mp_workers} workers and queue of {mp_queue}")
 
 model.fit(
     x=train_g,
