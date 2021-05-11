@@ -70,7 +70,7 @@ parser.add_argument(
 parser.add_argument(
     "--preload_val_data",
     type=int,
-    default=1,
+    default=0,
     help="Preload validation generator into memory to speed up validation runs.",
 )
 
