@@ -283,15 +283,6 @@ if args.preload_val_data:
 callbacks = []
 
 callbacks.append(
-    keras.callbacks.EarlyStopping(
-        monitor=args.monitor_metric,
-        patience=args.early_stop_patience,
-        restore_best_weights=True,
-        verbose=1,
-    )
-)
-
-callbacks.append(
     TensorBoard_Logger(
         log_dir=td_dir,
         histogram_freq=0,
@@ -325,6 +316,16 @@ callbacks.append(
         save_freq="epoch",
         save_best_only=True,
         save_weights_only=False,
+        verbose=1,
+    )
+)
+
+callbacks.append(
+    keras.callbacks.EarlyStopping(
+        monitor=args.monitor_metric,
+        mode=monitoring_mode,
+        patience=args.early_stop_patience,
+        restore_best_weights=True,
         verbose=1,
     )
 )
