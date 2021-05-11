@@ -140,9 +140,9 @@ parser.add_argument(
 
 parser.add_argument(
     "--multiprocessing",
-    type=int,
-    default=1,
-    help="Number of generator threads",
+    type=str,
+    default="1",
+    help='Number of generator threads and workers in "<threads>x<workers>" format',
 )
 
 parser.add_argument(
@@ -348,15 +348,21 @@ steps_per_epoch = (
 # raise exceptions on all errors
 np.seterr(all="raise")
 
+# multiprocessing options
+if "x" not in args.multiprocessing:
+    # use queue of 4 by default
+    args.multiprocessing += "x4"
+mp_workers, mp_queue = list(map(int, args.multiprocessing.split("x")))
+
 model.fit(
     x=train_g,
     validation_data=(val_x, val_y, val_sw) if args.preload_val_data else val_g,
     epochs=args.epochs,
     steps_per_epoch=steps_per_epoch,
     callbacks=callbacks,
-    use_multiprocessing=args.multiprocessing > 1,
-    workers=args.multiprocessing,
-    max_queue_size=4,
+    use_multiprocessing=mp_workers > 1,
+    workers=mp_workers,
+    max_queue_size=mp_queue,
     verbose=1,
 )
 
