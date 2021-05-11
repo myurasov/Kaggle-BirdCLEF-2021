@@ -56,8 +56,10 @@ def md5_file(path):
     with open(path, "rb") as f:
         hash = hashlib.md5()
 
-        while chunk := f.read(2 << 20):
+        chunk = f.read(2 << 20)
+        while chunk:
             hash.update(chunk)
+            chunk = f.read(2 << 20)
 
     return hash.hexdigest()
 
