@@ -50,6 +50,13 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--monitor_metric",
+    type=str,
+    default="val_f1_score",
+    help="Metric to monitor for loss scaling and best model selection",
+)
+
+parser.add_argument(
     "--val_fold",
     type=float,
     default=1,
@@ -276,6 +283,7 @@ callbacks = []
 
 callbacks.append(
     keras.callbacks.EarlyStopping(
+        monitor=args.monitor_metric,
         patience=args.early_stop_patience,
         restore_best_weights=True,
         verbose=1,
@@ -295,7 +303,7 @@ callbacks.append(
 
 callbacks.append(
     keras.callbacks.ReduceLROnPlateau(
-        monitor="val_loss",
+        monitor=args.monitor_metric,
         factor=args.lr_factor,
         patience=args.lr_patience,
         min_lr=1e-9,
@@ -308,9 +316,9 @@ callbacks.append(
         checkpoint_path + f"/{args.run}.h5",
         verbose=1,
         save_freq="epoch",
-        monitor="val_loss",
         save_best_only=True,
         save_weights_only=False,
+        monitor=args.monitor_metric,
     )
 )
 
