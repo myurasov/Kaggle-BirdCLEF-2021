@@ -14,6 +14,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             body=body,
             imagenet_weights="imagenet" in options,
             extra_dense_layers=None if "noxdense" in options else [1, 1024],
+            dropout=0.5 if "drops" in options else None,
         )
 
         return mb.build()
@@ -33,11 +34,13 @@ class MSG_Model_Builder:
             1,
             1024,
         ],  # number and dimensions for extra dense layers in the head. None = no extra layers.
+        dropout=None,
     ):
         self._body = body
+        self._dropout = dropout
         self._n_classes = n_classes
-        self._extra_dense_layers = extra_dense_layers
         self._imagenet_weights = imagenet_weights
+        self._extra_dense_layers = extra_dense_layers
 
     def build(self) -> keras.models.Model:
 
@@ -125,13 +128,19 @@ class MSG_Model_Builder:
         # classifier head
         x = features
 
+        if self._dropout is not None:
+            x = keras.layers.Dropout(self._dropout)(x)
+
         if self._extra_dense_layers is not None:
             for _ in range(self._extra_dense_layers[0]):
+
                 x = keras.layers.Dense(
                     self._extra_dense_layers[1],
                     activation="relu",
                 )(x)
-                x = keras.layers.Dropout(0.5)(x)
+
+                if self._dropout is not None:
+                    x = keras.layers.Dropout(self._dropout)(x)
 
         o_classes = keras.layers.Dense(
             self._n_classes,
