@@ -62,7 +62,7 @@ print(f"* Total {df.shape[0]:,} rows in {csv_path}")
 
 # add dummy 'birds' column for test file
 if "birds" not in df.columns:
-    df["birds"] = ["nocall"] * df.shape[0]
+    df["birds"] = [""] * df.shape[0]
 
 soundscapes_info = read_soundscapes_info(
     os.path.join(
