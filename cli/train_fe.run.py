@@ -302,7 +302,7 @@ callbacks.append(
     )
 )
 
-monitoring_mode = "min" if args.monitor_metric.find("loss") else "max"
+monitoring_mode = "min" if args.monitor_metric.find("loss") != -1 else "max"
 print(f"* Monitoring {args.monitor_metric} in {monitoring_mode.upper()} mode")
 
 callbacks.append(
