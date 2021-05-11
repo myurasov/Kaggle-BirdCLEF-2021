@@ -9,13 +9,13 @@ c["SEED"] = 123
 
 # input data dir
 c["DATA_DIR"] = "/app/_data"
-
+#
 if is_kaggle:
     c["DATA_DIR"] = "/kaggle/input/birdclef-2021"
 
 # where to put generated data
 c["WORK_DIR"] = "/app/_work"
-
+#
 if is_kaggle:
     c["WORK_DIR"] = "/tmp/_work"
 
@@ -27,6 +27,12 @@ c["SRC_DATA_DIRS"] = [
     c["DATA_DIR"] + "/competition_data/train_short_audio/*",
     c["DATA_DIR"] + "/competition_data/train_soundscapes",
 ]
+#
+if is_kaggle:
+    c["SRC_DATA_DIRS"] = [
+        c["DATA_DIR"] + "/train_short_audio/*",
+        c["DATA_DIR"] + "/train_soundscapes",
+    ]
 
 # audio params
 c["AUDIO_SR"] = 32000
