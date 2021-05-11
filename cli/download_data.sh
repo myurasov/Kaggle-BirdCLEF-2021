@@ -4,7 +4,7 @@ COMPETITION_DATA=`python -c "from src.config import c; print(c['COMPETITION_DATA
 
 # competion data
 
-DST_DIR="${DATA_DIR}"
+DST_DIR="${COMPETITION_DATA}"
 
 if [ ! -d $DST_DIR ]
 then
