@@ -302,28 +302,30 @@ callbacks.append(
     )
 )
 
-callbacks.append(
-    keras.callbacks.ReduceLROnPlateau(
-        monitor=args.monitor_metric,
-        factor=args.lr_factor,
-        patience=args.lr_patience,
-        min_lr=1e-9,
-        verbose=1,
-    )
-)
-
 monitoring_mode = "min" if args.monitor_metric.find("loss") else "max"
 print(f"* Monitoring {args.monitor_metric} in {monitoring_mode.upper()} mode")
 
 callbacks.append(
+    keras.callbacks.ReduceLROnPlateau(
+        monitor=args.monitor_metric,
+        mode=monitoring_mode,
+        factor=args.lr_factor,
+        patience=args.lr_patience,
+        min_lr=1e-6,
+        verbose=1,
+    )
+)
+
+
+callbacks.append(
     keras.callbacks.ModelCheckpoint(
         checkpoint_path + f"/{args.run}.h5",
-        verbose=1,
+        monitor=args.monitor_metric,
         mode=monitoring_mode,
         save_freq="epoch",
         save_best_only=True,
         save_weights_only=False,
-        monitor=args.monitor_metric,
+        verbose=1,
     )
 )
 
