@@ -35,6 +35,13 @@ parser.add_argument(
     help="Extend date range by this much months",
 )
 
+parser.add_argument(
+    "--only_months",
+    type=int,
+    default=0,
+    help="Filter only by months, ignore years",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -101,26 +108,46 @@ dates_df = pd.read_csv(
 # convert dates to ym dates (y*12+m)
 dates_df["_ym_date_"] = list(map(_str_date_to_ym_date, dates_df["date"]))  # type: ignore
 
+# convert dates to just months
+dates_df["_month_"] = list(map(lambda x: (x // 100) % 100, dates_df["date"]))  # type: ignore
+
 classes = set()
 
 for k, v in ss_info.items():
+
+    months = sorted(list(dates_df[dates_df["site"] == k]["_month_"]))  # type: ignore
     dates = sorted(list(dates_df[dates_df["site"] == k]["date"]))  # type: ignore
     ym_dates = sorted(list(dates_df[dates_df["site"] == k]["_ym_date_"]))  # type: ignore
+
+    df = _add_distance(df, ss_info[k]["lat"], ss_info[k]["lon"])
+
+    if args.only_months:
+        range_desc = (
+            f" {months[0]} and {months[-1]} (+-{args.time_tolerance_months}) months:"
+        )
+
+        site_classes = set(
+            df[
+                (df["_distance_"] <= args.miles)
+                & (df["_month_"] >= months[0] - args.time_tolerance_months)
+                & (df["_month_"] <= months[-1] + args.time_tolerance_months)
+            ]["_primary_labels"]
+        )
+    else:
+        range_desc = f" {dates[0]//100} and {dates[-1]//100} (+-{args.time_tolerance_months} months):"
+
+        site_classes = set(
+            df[
+                (df["_distance_"] <= args.miles)
+                & (df["_ym_date_"] >= ym_dates[0] - args.time_tolerance_months)
+                & (df["_ym_date_"] <= ym_dates[-1] + args.time_tolerance_months)
+            ]["_primary_labels"]
+        )
 
     print(
         f"\n* Within {args.miles} miles from {k} ({ss_info[k]['location']}"
         + f" @ {ss_info[k]['lat']}, {ss_info[k]['lon']}) between"
-        + f" {dates[0]//100} and {dates[-1]//100} (+-{args.time_tolerance_months} months):"
-    )
-
-    df = _add_distance(df, ss_info[k]["lat"], ss_info[k]["lon"])
-
-    site_classes = set(
-        df[
-            (df["_distance_"] <= args.miles)
-            & (df["_ym_date_"] >= ym_dates[0] - args.time_tolerance_months)
-            & (df["_ym_date_"] <= ym_dates[1] + args.time_tolerance_months)
-        ]["_primary_labels"]
+        + range_desc
     )
 
     print(
@@ -130,6 +157,6 @@ for k, v in ss_info.items():
     classes.update(site_classes)
 
 print(
-    f"\nTotal: {len(classes)} classes:",
+    f"\n* Total: {len(classes)} classes:",
     pformat(sorted(list(classes)), compact=True),
 )
