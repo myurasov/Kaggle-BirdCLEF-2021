@@ -85,6 +85,11 @@ df = getattr(pd, f'read_{args.dataset.split(".")[-1].lower()}')(
     args.dataset
 ).reset_index(drop=True)
 
+# add ym dates
+df["_ym_date_"] = list(
+    map(lambda x: df.loc[x]["_year"] * 12 + df.loc[x]["_month"], df.index)
+)
+
 # read soundscapes info
 ss_info = read_soundscapes_info(c["COMPETITION_DATA"] + "/test_soundscapes")
 
@@ -94,23 +99,37 @@ dates_df = pd.read_csv(
 )
 
 # convert dates to ym dates (y*12+m)
-dates_df["date"] = list(map(_str_date_to_ym_date, dates_df["date"]))  # type: ignore
+dates_df["_ym_date_"] = list(map(_str_date_to_ym_date, dates_df["date"]))  # type: ignore
 
 classes = set()
 
 for k, v in ss_info.items():
     dates = sorted(list(dates_df[dates_df["site"] == k]["date"]))  # type: ignore
-    ss_info[k]["ymdate_range"] = [dates[0], dates[-1]]
+    ym_dates = sorted(list(dates_df[dates_df["site"] == k]["_ym_date_"]))  # type: ignore
 
     print(
-        f"* Within {args.miles} miles from {k} ({ss_info[k]['location']}"
-        + f" @ {ss_info[k]['lat']}, {ss_info[k]['lon']}):"
+        f"\n* Within {args.miles} miles from {k} ({ss_info[k]['location']}"
+        + f" @ {ss_info[k]['lat']}, {ss_info[k]['lon']}) between"
+        + f" {dates[0]//100} and {dates[-1]//100} (+-{args.time_tolerance_months} months):"
     )
 
-    df_dist = _add_distance(df, ss_info[k]["lat"], ss_info[k]["lon"])
-    classes = set(df_dist[df_dist["_distance_"] <= args.miles]["_primary_labels"])
-    classes.update(classes)
+    df = _add_distance(df, ss_info[k]["lat"], ss_info[k]["lon"])
 
-    print(f"{len(classes)} classes:", classes)
+    site_classes = set(
+        df[
+            (df["_distance_"] <= args.miles)
+            & (df["_ym_date_"] >= ym_dates[0] - args.time_tolerance_months)
+            & (df["_ym_date_"] <= ym_dates[1] + args.time_tolerance_months)
+        ]["_primary_labels"]
+    )
 
-print(f"\nTotal: {len(classes)} classes:", classes)
+    print(
+        f"{len(site_classes)} classes:",
+        pformat(sorted(list(site_classes)), compact=True),
+    )
+    classes.update(site_classes)
+
+print(
+    f"\nTotal: {len(classes)} classes:",
+    pformat(sorted(list(classes)), compact=True),
+)
