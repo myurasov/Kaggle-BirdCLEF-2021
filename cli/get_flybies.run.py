@@ -129,12 +129,15 @@ for k, v in ss_info.items():
         site_classes = set(
             df[
                 (df["_distance_"] <= args.miles)
-                & (df["_month_"] >= months[0] - args.time_tolerance_months)
-                & (df["_month_"] <= months[-1] + args.time_tolerance_months)
+                & (df["_month"] >= months[0] - args.time_tolerance_months)
+                & (df["_month"] <= months[-1] + args.time_tolerance_months)
             ]["_primary_labels"]
         )
     else:
-        range_desc = f" {dates[0]//100} and {dates[-1]//100} (+-{args.time_tolerance_months} months):"
+        range_desc = (
+            f" {dates[0]//100} and {dates[-1]//100}"
+            + f" (+-{args.time_tolerance_months} months):"
+        )
 
         site_classes = set(
             df[
