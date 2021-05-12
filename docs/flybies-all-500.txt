@@ -1,0 +1,58 @@
+$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1
+
+* Arguments:
+{'dataset': 'dataset-all-m1.pickle',
+ 'miles': 500.0,
+ 'time_tolerance_months': 1.0}
+
+* Within 500.0 miles from SNE (Sierra Nevada, California, USA @ 38.49, -119.95) between 201805 and 201805 (+-1.0 months):
+53 classes: ['amekes', 'amerob', 'astfly', 'bkhgro', 'bnhcow', 'bulori', 'calqua', 'casfin',
+ 'caster1', 'casvir', 'chswar', 'clanut', 'comyel', 'cowscj1', 'dusfly',
+ 'eucdov', 'gnttow', 'gocspa', 'haiwoo', 'herwar', 'houfin', 'houwre', 'killde',
+ 'larspa', 'lazbun', 'lesgol', 'linspa', 'macwar', 'mouqua', 'norfli', 'normoc',
+ 'nutwoo', 'oaktit', 'orcwar', 'plsvir', 'rebnut', 'reshaw', 'rethaw', 'savspa',
+ 'sonspa', 'sposan', 'spotow', 'stejay', 'swathr', 'towsol', 'treswa', 'warvir',
+ 'weskin', 'westan', 'wewpew', 'whcspa', 'wlswar', 'wooduc']
+
+* Within 500.0 miles from SSW (Ithaca, New York, USA @ 42.47, -76.45) between 201702 and 201708 (+-1.0 months):
+36 classes: ['amecro', 'amegfi', 'amerob', 'belkin1', 'bkcchi', 'blujay', 'bnhcow',
+ 'brncre', 'brnthr', 'cangoo', 'carchi', 'carwre', 'comgra', 'daejun', 'dowwoo',
+ 'foxspa', 'gockin', 'haiwoo', 'houwre', 'killde', 'mallar3', 'marwre',
+ 'nocall', 'norcar', 'norfli', 'pilwoo', 'rebwoo', 'rewbla', 'sonspa', 'swaspa',
+ 'treswa', 'tuftit', 'whbnut', 'whtspa', 'wlswar', 'yebsap']
+
+* Within 500.0 miles from COR (Alajuela, San Ramón, Costa Rica @ 10.12, -84.51) between 201909 and 201910 (+-1.0 months):
+31 classes: ['bobfly1', 'brcvir1', 'brnjay', 'bucmot2', 'clcrob', 'crfpar', 'grasal1',
+ 'grekis', 'grhcha1', 'hofwoo1', 'leafly', 'lotman1', 'melbla1', 'nocall',
+ 'obnthr1', 'orcpar', 'orfpar', 'plawre1', 'reevir1', 'rehbar1', 'rtlhum',
+ 'rubwre1', 'rucwar', 'runwre1', 'scbwre1', 'sthwoo1', 'tropar', 'veery',
+ 'wesant1', 'whcpar', 'yehcar1']
+
+* Within 500.0 miles from COL (Jardín, Departamento de Antioquia, Colombia @ 5.57, -75.85) between 201909 and 201911 (+-1.0 months):
+37 classes: ['andsol1', 'azaspi1', 'banana', 'bkmtou1', 'blcjay1', 'blsspa1', 'brcvir1',
+ 'chcant2', 'colcha1', 'coltro1', 'compot1', 'eawpew', 'grasal1', 'grekis',
+ 'houwre', 'lesvio1', 'obnthr1', 'orbspa1', 'orcpar', 'pabspi1', 'pirfly1',
+ 'roahaw', 'rubpep1', 'rucspa1', 'rumfly1', 'scbwre1', 'scptyr1', 'soulap1',
+ 'spvear1', 'strsal1', 'thbeup1', 'trogna1', 'tromoc', 'whiwre1', 'whtdov',
+ 'whwbec1', 'wilfly']
+
+Total: 140 classes: ['amecro', 'amegfi', 'amekes', 'amerob', 'andsol1', 'astfly', 'azaspi1',
+ 'banana', 'belkin1', 'bkcchi', 'bkhgro', 'bkmtou1', 'blcjay1', 'blsspa1',
+ 'blujay', 'bnhcow', 'bobfly1', 'brcvir1', 'brncre', 'brnjay', 'brnthr',
+ 'bucmot2', 'bulori', 'calqua', 'cangoo', 'carchi', 'carwre', 'casfin',
+ 'caster1', 'casvir', 'chcant2', 'chswar', 'clanut', 'clcrob', 'colcha1',
+ 'coltro1', 'comgra', 'compot1', 'comyel', 'cowscj1', 'crfpar', 'daejun',
+ 'dowwoo', 'dusfly', 'eawpew', 'eucdov', 'foxspa', 'gnttow', 'gockin', 'gocspa',
+ 'grasal1', 'grekis', 'grhcha1', 'haiwoo', 'herwar', 'hofwoo1', 'houfin',
+ 'houwre', 'killde', 'larspa', 'lazbun', 'leafly', 'lesgol', 'lesvio1',
+ 'linspa', 'lotman1', 'macwar', 'mallar3', 'marwre', 'melbla1', 'mouqua',
+ 'nocall', 'norcar', 'norfli', 'normoc', 'nutwoo', 'oaktit', 'obnthr1',
+ 'orbspa1', 'orcpar', 'orcwar', 'orfpar', 'pabspi1', 'pilwoo', 'pirfly1',
+ 'plawre1', 'plsvir', 'rebnut', 'rebwoo', 'reevir1', 'rehbar1', 'reshaw',
+ 'rethaw', 'rewbla', 'roahaw', 'rtlhum', 'rubpep1', 'rubwre1', 'rucspa1',
+ 'rucwar', 'rumfly1', 'runwre1', 'savspa', 'scbwre1', 'scptyr1', 'sonspa',
+ 'soulap1', 'sposan', 'spotow', 'spvear1', 'stejay', 'sthwoo1', 'strsal1',
+ 'swaspa', 'swathr', 'thbeup1', 'towsol', 'treswa', 'trogna1', 'tromoc',
+ 'tropar', 'tuftit', 'veery', 'warvir', 'wesant1', 'weskin', 'westan', 'wewpew',
+ 'whbnut', 'whcpar', 'whcspa', 'whiwre1', 'whtdov', 'whtspa', 'whwbec1',
+ 'wilfly', 'wlswar', 'wooduc', 'yebsap', 'yehcar1']
