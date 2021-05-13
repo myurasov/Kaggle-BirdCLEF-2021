@@ -1,7 +1,8 @@
-$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 0 --only_months 1
+$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 0 --only_months 1 > docs/flybies-all-500mi-only_months-0mo_tolerance.txt
 
 * Arguments:
 {'dataset': 'dataset-all-m1.pickle',
+ 'last_n_years': 0,
  'miles': 500.0,
  'only_months': 1,
  'time_tolerance_months': 0.0}

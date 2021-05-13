@@ -1,4 +1,4 @@
-$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1 --only_months 1 --last_n_years 10
+$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1 --only_months 1 --last_n_years 10 > docs/flybies-all-500mi-last_10y-1mo_tolerance.txt
 
 * Arguments:
 {'dataset': 'dataset-all-m1.pickle',

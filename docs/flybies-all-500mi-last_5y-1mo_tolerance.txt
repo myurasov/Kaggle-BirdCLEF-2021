@@ -1,4 +1,4 @@
-$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1 --only_months 1 --last_n_years 5
+$ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1 --only_months 1 --last_n_years 5 > docs/flybies-all-500mi-last_5y-1mo_tolerance.txt
 
 * Arguments:
 {'dataset': 'dataset-all-m1.pickle',
@@ -123,21 +123,3 @@ $ cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tole
  'wrenti', 'y00475', 'yebcha', 'yebela1', 'yebfly', 'yebori1', 'yebsap',
  'yebsee1', 'yefgra1', 'yehbla', 'yehcar1', 'yelwar', 'yerwar', 'yeteup1',
  'yetvir']
- 'rebnut', 'rebsap', 'rebwoo', 'redcro',
- 'reevir1', 'rehbar1', 'relpar', 'reshaw', 'rethaw', 'rewbla', 'ribgul',
- 'rinkin1', 'roahaw', 'robgro', 'rocpig', 'royter1', 'rthhum', 'rtlhum',
- 'ruboro1', 'rubpep1', 'rubwre1', 'ruckin', 'rucspa1', 'rucwar', 'rucwar1',
- 'rudpig', 'rufhum', 'rugdov', 'rumfly1', 'runwre1', 'rutjac1', 'saffin',
- 'sancra', 'sander', 'savspa', 'saypho', 'scamac1', 'scatan', 'scbwre1',
- 'scptyr1', 'scrtan1', 'semplo', 'shicow', 'sibtan2', 'sltred', 'smbani',
- 'sobtyr1', 'socfly1', 'solsan', 'sonspa', 'soulap1', 'sposan', 'spotow',
- 'spvear1', 'stejay', 'sthant1', 'sthwoo1', 'strcuc1', 'strfly1', 'strsal1',
- 'stvhum2', 'sumtan', 'swaspa', 'swathr', 'tenwar', 'thbeup1', 'thswar1',
- 'towsol', 'treswa', 'trogna1', 'trokin', 'tromoc', 'tropar', 'tuftit', 'veery',
- 'vigswa', 'warvir', 'wbwwre1', 'webwoo1', 'wegspa1', 'wesant1', 'wesblu',
- 'weskin', 'wesmea', 'westan', 'wewpew', 'whbman1', 'whbnut', 'whcpar',
- 'whcspa', 'whevir', 'whfpar1', 'whiwre1', 'whtdov', 'whtspa', 'whwbec1',
- 'whwdov', 'wilfly', 'willet1', 'wilsni1', 'wiltur', 'wlswar', 'wooduc',
- 'woothr', 'wrenti', 'y00475', 'yebcha', 'yebela1', 'yebfly', 'yebori1',
- 'yebsap', 'yebsee1', 'yefgra1', 'yegvir', 'yehbla', 'yehcar1', 'yelwar',
- 'yeofly1', 'yerwar', 'yeteup1', 'yetvir']
