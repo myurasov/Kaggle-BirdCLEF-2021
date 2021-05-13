@@ -63,4 +63,13 @@ c["DATASET_COLS"] = [
 ]
 
 # files to exclude from the dataset
-c["EXCLUDE_FILES"] = ["XC579430.ogg", "XC590621.ogg"]
+c["EXCLUDE_FILES"] = [
+    "XC579430.ogg",  # silence
+    "XC590621.ogg",  # silence
+    "XC359315.ogg",  # year 201
+    "XC207317.ogg",  # year 201
+    "XC493567.ogg",  # year 201
+    "XC493567.ogg",  # year 201
+    "XC600308.ogg",  # year 202
+    "XC452323.ogg",  # year 199
+]
