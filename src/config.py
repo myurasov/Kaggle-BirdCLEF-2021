@@ -35,6 +35,11 @@ c["AUDIO_NORMALIZE"] = True
 c["AUDIO_TARGET_LEN_S"] = 5
 c["AUDIO_QUALITY_WARNINGS"] = False
 
+# whether to cache cut fragments, and not only entire waves
+c["CACHE_AUDIO_FRAGMENTS"] = True
+if is_kaggle:
+    c["CACHE_AUDIO_FRAGMENTS"] = False
+
 # parameters for melspectrogram computation
 c["MSG_N_FFT"] = 2048
 c["MSG_NORMALIZE"] = False  # -mean, /std

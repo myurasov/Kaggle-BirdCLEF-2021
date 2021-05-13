@@ -14,11 +14,13 @@ class WaveProvider:
         cache_dir=None,
         audio_sr=32000,
         normalize=False,
+        cache_fragments=True,
         warn_on_silence=False,
     ):
         self._audio_sr = audio_sr
         self._cache_dir = cache_dir
         self._normalize = normalize
+        self._cache_fragments = cache_fragments
         self._warn_on_silence = warn_on_silence
         self._src_dirs = self._resolve_src_dir_globs(src_dirs)
 
@@ -77,55 +79,54 @@ class WaveProvider:
         # try reading from cache
         if self._cache_dir is not None:
             cache_key = f"{file_path}:sr={self._audio_sr}:range_samples={range_samples}"
-            cache_key = md5(cache_key.encode()).hexdigest()
+            cache_key_md5 = md5(cache_key.encode()).hexdigest()
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
-            cache_dir = os.path.join(cache_dir, cache_key[0], cache_key[1])
-            cache_path = os.path.join(cache_dir, cache_key)
+            cache_dir = os.path.join(cache_dir, cache_key_md5[0], cache_key_md5[1])
+            cache_path = os.path.join(cache_dir, cache_key_md5)
             if os.path.isfile(cache_path + ".npy"):
                 wave = np.load(cache_path + ".npy")
+                return wave
 
-        if wave is None:  # wave wasn't read from cache
+        if range_seconds is None:
+            # read from actual file only when no range is specified
+            wave, sr = librosa.load(file_path, sr=self._audio_sr)
+            assert sr == self._audio_sr
 
-            if range_seconds is None:
-                # read from actual file only when no range is specified
-                wave, sr = librosa.load(file_path, sr=self._audio_sr)
-                assert sr == self._audio_sr
+            # normalize when reading from the whole file
+            if self._normalize:
+                assert wave.dtype == np.float32
+                wave -= np.mean(wave)
+                std = np.std(wave)
+                if std != 0:
+                    wave /= np.std(wave)
+        else:
+            # read from a possibly cached whole file
+            wave = self.get_audio_fragment(file_name=file_name, range_seconds=None)
 
-                # normalize when reading from the whole file
-                if self._normalize:
-                    assert wave.dtype == np.float32
-                    wave -= np.mean(wave)
-                    std = np.std(wave)
-                    if std != 0:
-                        wave /= np.std(wave)
-            else:
-                # read from a possibly cached whole file
-                wave = self.get_audio_fragment(file_name=file_name, range_seconds=None)
-
-            # crop
-            if range_samples is not None:
-                wave = wave[range_samples[0] : range_samples[1]]
-
-                # check if fragment contains silence
-                if self._warn_on_silence and np.std(wave.astype(np.float32)) == 0:
-                    warnings.warn(
-                        f'{self.__class__.__name__}: "{file_path}" seems to contain'
-                        + f" only silence in seconds {range_seconds}",
-                        UserWarning,
-                    )
+        # crop
+        if range_samples is not None:
+            wave = wave[range_samples[0] : range_samples[1]]
 
             # check if the asked range is valid
-            if range_samples is not None:
-                if len(wave) != range_samples[1] - range_samples[0]:
-                    raise Exception(
-                        f"Range {range_seconds[0]}-{range_seconds[1]} doesn't exist"
-                        + f' in file "{file_name}"'
-                    )
+            if len(wave) != range_samples[1] - range_samples[0]:
+                raise Exception(
+                    f"Range {range_seconds[0]}-{range_seconds[1]} doesn't exist"
+                    + f' in file "{file_name}"'
+                )
 
-            wave = wave.astype(np.float16)
+            # check if fragment contains silence
+            if self._warn_on_silence and np.std(wave.astype(np.float32)) == 0:
+                warnings.warn(
+                    f'{self.__class__.__name__}: "{file_path}" seems to contain'
+                    + f" only silence in seconds {range_seconds}",
+                    UserWarning,
+                )
 
-            # save to cache
-            if self._cache_dir is not None:
+        wave = wave.astype(np.float16)
+
+        # save to cache
+        if self._cache_dir is not None:
+            if self._cache_fragments or range_seconds is None:
                 if not os.path.isdir(cache_dir):
                     os.makedirs(cache_dir)
                 np.save(cache_path, wave)

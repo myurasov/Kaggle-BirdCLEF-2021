@@ -21,6 +21,7 @@ def get_wave_provider(
             cache_dir=config["CACHE_DIR"],
             src_dirs=config["SRC_DATA_DIRS"],
             normalize=config["AUDIO_NORMALIZE"],
+            cache_fragments=config["CACHE_AUDIO_FRAGMENTS"],
             warn_on_silence=config["AUDIO_QUALITY_WARNINGS"],
         )
 

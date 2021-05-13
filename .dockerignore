@@ -30,3 +30,4 @@
 **/.ipynb_checkpoints
 **/__pycache__
 README.md
+tests/res/__cache__
