@@ -111,14 +111,41 @@ def predictions_to_text_labels(
     labels,
     default_label=None,
     max_labels=None,
+    priority_to_nocall=False,
 ):
-    """Convert predictions to text labels"""
+    """
+    Convert predictions to text labels
+
+    ```python
+    predictions_to_text_labels(
+        [
+            [0, 0.75, 1],
+            [0.55, 0.75, 0.6],
+        ],
+        ["a", "b", "nocall"],
+    )
+
+    # ['nocall', 'a b']
+    ```
+    """
 
     res = []
+    predictions = np.array(predictions)
     labels = np.array(labels)
 
     for i in range(len(predictions)):
-        label = " ".join(sorted(labels[np.nonzero(predictions[i] > 0.5)])[:max_labels])
+        label = set(labels[np.nonzero(predictions[i] > 0.5)])
+
+        if "nocall" in label and len(label) > 1:
+
+            if priority_to_nocall or labels[np.argmax(predictions[i])] == "nocall":
+                # leave "nocall" on multi-predictions only if it's the strongest one
+                # or priority_to_nocall is True
+                label = set(["nocall"])
+            else:
+                label.remove("nocall")
+
+        label = " ".join(sorted(list(label)[:max_labels]))
 
         if "" == label and default_label is not None:
             label = default_label
@@ -135,7 +162,7 @@ def normalize_soundscapes_df(
     source="long",
     quiet=False,
 ):
-    """Prepare soundscapes df to contain c["DATASET_COLS"] cols + 'row_id'"""
+    """Prepare soundscapes df to contain c["DATASET_COLS"] cols + 'row_id' + 'site'"""
 
     soundscapes_info = read_soundscapes_info(
         os.path.join(
@@ -191,6 +218,42 @@ def normalize_soundscapes_df(
     for k, v in newcols.items():
         df[k] = v
 
-    df = df[c["DATASET_COLS"] + ["row_id"]]
+    df = df[c["DATASET_COLS"] + ["row_id", "site"]]
 
     return df
+
+
+def geofilter_predictions(df, Y_pred, site_labels, labels, downgrade_const=0.501):
+    """
+    Filter predictions by dot-multiplying on the matrix
+    with 1 at classes occuring in specific site
+    (based on site_labels={'<site>': [<labels>]} dict).
+
+    df should contain 'site' column
+
+    ```python
+    from src.geo_filter import filters as geo_filters
+
+    Y_pred_geofiltered = geofilter_predictions(
+        df=df,
+        Y_pred=Y_pred,
+        site_labels=geo_filters["all-500mi-0mo_tolerance"],
+        labels=meta["labels"],
+        downgrade_const=0.0,
+    )
+    ```
+    """
+
+    res = np.copy(Y_pred)
+    site_filters = {}
+
+    for site, site_labels in site_labels.items():
+        ones_at = list(map(lambda x: labels.index(x), site_labels))
+        site_filter = np.repeat(downgrade_const, len(labels))
+        site_filter[np.array(ones_at)] = 1.0
+        site_filters[site] = site_filter
+
+    for i, site in enumerate(list(df["site"])):
+        res[i] *= site_filters[site]
+
+    return res

@@ -27,6 +27,7 @@ class Generator(keras.utils.Sequence):
         rareness_as_sw=True,  # use 1/<class_freq> as sw. multiplied by rating if both are set.
         geo_coordinates_bins=None,  # number of bins for coarsening lat/lon
     ):
+        self._df = df.copy()
         self._shuffle = shuffle
         self._batch_size = batch_size
         self._msg_as_rgb = msg_as_rgb
@@ -35,12 +36,7 @@ class Generator(keras.utils.Sequence):
         self._rating_as_sw = rating_as_sw
         self._wave_provider = wave_provider
         self._rareness_as_sw = rareness_as_sw
-        self._df = df.copy().reset_index(drop=True)
         self._geo_coordinates_bins = geo_coordinates_bins
-
-        # shuffle before first epoch for non-model.fit uses
-        if self._shuffle:
-            self._shuffle_samples()
 
         # compute rareness sample weighting coefficients
         if self._rareness_as_sw is not None:
@@ -54,6 +50,17 @@ class Generator(keras.utils.Sequence):
             )
             rareness_sws /= np.max(rareness_sws)
             self._df["_rareness_sw"] = rareness_sws
+
+        # if we're in prediction mode, we have no Y column
+        if "_y" not in self._df:
+            self._df["_y"] = [0] * self._df.shape[0]
+
+        # reset index - just in case
+        self._df.reset_index(inplace=True, drop=True)
+
+        # shuffle before first epoch for non-model.fit uses
+        if self._shuffle:
+            self._shuffle_samples()
 
     def __len__(self):
         return self._df.shape[0] // self._batch_size
@@ -151,7 +158,7 @@ class Generator(keras.utils.Sequence):
         x["i_month"] = np.array(self._df.loc[ix]["_month"], dtype=np.int32)  # type: ignore
 
         # y
-        y = np.array(self._df._y.loc[ix], dtype=np.float16)
+        y = np.array(self._df.loc[ix]["_y"], dtype=np.float16)  # type: ignore
 
         return x, y, sw
 

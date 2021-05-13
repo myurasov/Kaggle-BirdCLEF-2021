@@ -1,7 +1,7 @@
 import os
 
-# we're on kaggle
-is_kaggle = ("KAGGLE_CONTAINER_NAME" in os.environ) or ("__KAGGLE__" in os.environ)
+# we're on kaggle - needs to be set up manually
+is_kaggle = "__KAGGLE__" in os.environ
 
 c = {}
 
