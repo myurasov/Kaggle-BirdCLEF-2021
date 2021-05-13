@@ -6,6 +6,7 @@
 _data/
 _work/
 kaggle.json
+kaggle.json.*
 docker/res/root/.jupyter/migrated
 iframe_figures/
 /__*
