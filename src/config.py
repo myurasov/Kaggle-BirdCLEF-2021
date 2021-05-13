@@ -1,7 +1,7 @@
 import os
 
 # we're on kaggle
-is_kaggle = "KAGGLE_CONTAINER_NAME" in os.environ
+is_kaggle = ("KAGGLE_CONTAINER_NAME" in os.environ) or ("__KAGGLE__" in os.environ)
 
 c = {}
 

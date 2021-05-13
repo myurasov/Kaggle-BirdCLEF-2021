@@ -95,8 +95,11 @@ RUN pip install tables
 RUN pip install tfa-nightly
 
 # mimic kaggle directory layout
-RUN mkdir -pv /kaggle/input/birdclef-2021 /kaggle/working
+RUN mkdir -pv /kaggle/input /kaggle/working
 RUN ln -s ${APP_DIR}/_data/competition_data /kaggle/input/birdclef-2021
+RUN ln -s ${APP_DIR} /kaggle/input/bc21-code
+RUN ln -s ${APP_DIR}/_work/kaggle_models/ /kaggle/input/bc21-models
+ENV KAGGLE_KERNEL_RUN_TYPE=Interactive
 
 # needed for the proper random seed fix
 ENV PYTHONHASHSEED=777

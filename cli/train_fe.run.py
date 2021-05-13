@@ -217,6 +217,7 @@ write_json(
         "args": vars(args),
         "cmd": " ".join(sys.argv),
         "labels": meta["labels"],
+        "config": c,
     },
     train_meta_file,
 )

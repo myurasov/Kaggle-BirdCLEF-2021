@@ -1,11 +1,15 @@
+import datetime
 import math
 import os
 import re
+from collections import defaultdict
 from glob import glob
 
 import numpy as np
 from pandas import DataFrame
 from tqdm import tqdm
+
+from src.config import c
 
 
 def rectify_class_counts(df, class_col, max_items, min_items):
@@ -100,3 +104,93 @@ def read_soundscapes_info(info_dir):
         info[name] = {"lat": lat, "lon": lon, "location": location}
 
     return info
+
+
+def predictions_to_text_labels(
+    predictions,
+    labels,
+    default_label=None,
+    max_labels=None,
+):
+    """Convert predictions to text labels"""
+
+    res = []
+    labels = np.array(labels)
+
+    for i in range(len(predictions)):
+        label = " ".join(sorted(labels[np.nonzero(predictions[i] > 0.5)])[:max_labels])
+
+        if "" == label and default_label is not None:
+            label = default_label
+
+        res.append(label)
+
+    return res
+
+
+def normalize_soundscapes_df(
+    df,
+    seconds=5,
+    rating=5.0,
+    source="long",
+    quiet=False,
+):
+    """Prepare soundscapes df to contain c["DATASET_COLS"] cols + 'row_id'"""
+
+    soundscapes_info = read_soundscapes_info(
+        os.path.join(
+            c["COMPETITION_DATA"],
+            "test_soundscapes",
+        )
+    )
+
+    def tqdm_(x, **kwargs):
+        if quiet:
+            return x
+        else:
+            return tqdm(x, **kwargs)
+
+    df["rating"] = rating
+    df["_source"] = source
+    newcols = defaultdict(list)
+
+    for _, row in tqdm_(df.iterrows(), total=df.shape[0]):
+
+        file_glob = os.path.join(
+            c["COMPETITION_DATA"],
+            "*_soundscapes",
+            f"*{row.audio_id}*.ogg",
+        )
+
+        # filename
+        file_path = glob(file_glob, recursive=True)
+        assert len(file_path) > 0
+        file_name = os.path.basename(file_path[0])
+        newcols["filename"].append(file_name)
+
+        # date
+        date_s = re.findall("_(\\d+).ogg$", file_name)[0]
+        date = datetime.datetime.strptime(date_s, "%Y%m%d")
+        newcols["_month"].append(date.month)
+        newcols["_year"].append(date.year)
+
+        # from/to
+        # TODO: more precise sliding window
+        newcols["_from_s"].append(row.seconds - seconds)
+        newcols["_to_s"].append(row.seconds)
+
+        # lat/lon
+        newcols["latitude"].append(soundscapes_info[row.site]["lat"])
+        newcols["longitude"].append(soundscapes_info[row.site]["lon"])
+
+        # labels
+        row_birds = " ".join(row.birds.split(" ")) if "birds" in row else ""
+        newcols["_primary_labels"].append(row_birds)
+        newcols["_secondary_labels"].append("")
+
+    for k, v in newcols.items():
+        df[k] = v
+
+    df = df[c["DATASET_COLS"] + ["row_id"]]
+
+    return df
