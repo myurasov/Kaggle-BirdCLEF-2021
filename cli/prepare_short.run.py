@@ -122,7 +122,6 @@ def _get_audio_file_durations(filenames):
 # endregion
 
 # region: read short clips csv
-
 csv_path = os.path.join(c["COMPETITION_DATA"], "train_metadata.csv")
 df = pd.read_csv(csv_path)
 print(f"* Total {df.shape[0]:,} rows in {csv_path}")

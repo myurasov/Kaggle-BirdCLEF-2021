@@ -42,6 +42,13 @@ parser.add_argument(
     help="Filter only by months, ignore years",
 )
 
+parser.add_argument(
+    "--last_n_years",
+    type=int,
+    default=0,
+    help="Include only last N years. 0 = all.",
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
@@ -92,6 +99,9 @@ df = getattr(pd, f'read_{args.dataset.split(".")[-1].lower()}')(
     args.dataset
 ).reset_index(drop=True)
 
+# filter out bad files
+df = df[~df["filename"].isin(c["EXCLUDE_FILES"])].reset_index(drop=True)
+
 # add ym dates
 df["_ym_date_"] = list(
     map(lambda x: df.loc[x]["_year"] * 12 + df.loc[x]["_month"], df.index)
@@ -122,21 +132,28 @@ for k, v in ss_info.items():
     df = _add_distance(df, ss_info[k]["lat"], ss_info[k]["lon"])
 
     if args.only_months:
+        start_year = 0
+
         range_desc = (
-            f" {months[0]} and {months[-1]} (+-{args.time_tolerance_months}) months:"
+            f" {months[0]} and {months[-1]} (+-{args.time_tolerance_months}) months"
         )
+
+        if args.last_n_years > 0:
+            start_year = 2021 - args.last_n_years + 1
+            range_desc += f" in {start_year}-2021 years"
 
         site_classes = set(
             df[
                 (df["_distance_"] <= args.miles)
                 & (df["_month"] >= months[0] - args.time_tolerance_months)
                 & (df["_month"] <= months[-1] + args.time_tolerance_months)
+                & (df["_year"] >= start_year)
             ]["_primary_labels"]
         )
     else:
         range_desc = (
             f" {dates[0]//100} and {dates[-1]//100}"
-            + f" (+-{args.time_tolerance_months} months):"
+            + f" (+-{args.time_tolerance_months} months)"
         )
 
         site_classes = set(
@@ -151,6 +168,7 @@ for k, v in ss_info.items():
         f"\n* Within {args.miles} miles from {k} ({ss_info[k]['location']}"
         + f" @ {ss_info[k]['lat']}, {ss_info[k]['lon']}) between"
         + range_desc
+        + ":"
     )
 
     print(
