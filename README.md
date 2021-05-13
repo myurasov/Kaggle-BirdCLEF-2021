@@ -19,7 +19,7 @@
 - read `train_soundscape_labels.csv`
 - add date coarsened date
 - add coarsened coordinates
-- assume rating is '5' (?)
+- assume rating is '5'
 - assume all labels are primary (?)
 
 ---
