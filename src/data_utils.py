@@ -109,8 +109,9 @@ def read_soundscapes_info(info_dir):
 def predictions_to_text_labels(
     predictions,
     labels,
-    default_label=None,
+    threshold=0.5,
     max_labels=None,
+    default_label=None,
     priority_to_nocall=False,
 ):
     """
@@ -134,7 +135,7 @@ def predictions_to_text_labels(
     labels = np.array(labels)
 
     for i in range(len(predictions)):
-        label = set(labels[np.nonzero(predictions[i] > 0.5)])
+        label = set(labels[np.nonzero(predictions[i] > threshold)])
 
         if "nocall" in label and len(label) > 1:
 
