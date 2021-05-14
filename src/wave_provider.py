@@ -39,6 +39,12 @@ class WaveProvider:
     def _find_src_file(self, file_name):
         """Look for file in one of the source dirs"""
 
+        # look for absolute path first
+        if os.path.sep == file_name[0]:
+            if os.path.isfile(file_name):
+                return os.path.normpath(file_name)
+
+        # look in source dirs
         for src_dir in self._src_dirs:
             file_path = os.path.join(src_dir, file_name)
             if os.path.isfile(file_path):
@@ -48,13 +54,7 @@ class WaveProvider:
 
     def get_audio_duration(self, file_name):
         """Get audio file duration [second]"""
-
-        file_path = (
-            file_name
-            if (os.path.sep == file_name[0])
-            else self._find_src_file(file_name)
-        )
-
+        file_path = self._find_src_file(file_name)
         return librosa.get_duration(filename=file_path)
 
     def get_audio_fragment(self, file_name, range_seconds=None):

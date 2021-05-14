@@ -12,7 +12,9 @@ class TestWaveProvider(unittest.TestCase):
     def test_get_audio_fragment(self):
         # 16.7 second clip
 
-        wave = self.dp.get_audio_fragment("XC11209.ogg", range_seconds=None)
+        wave = self.dp.get_audio_fragment(
+            "/app/tests/res/XC11209.ogg", range_seconds=None
+        )
         self.assertEqual(len(wave), 532933)
         self.assertEqual(wave.dtype, np.float16)
 
