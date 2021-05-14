@@ -59,6 +59,14 @@ parser.add_argument(
     help="Number of folds",
 )
 
+parser.add_argument(
+    "--geofilter",
+    type=str,
+    default=None,
+    help="Geofilter to use (from src/geo_filters.py)."
+    + ' Eg: "all-500mi-1mo_tolerance" or "all-500mi-1mo_tolerance.SNE"',
+)
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion

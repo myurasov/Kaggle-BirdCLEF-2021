@@ -258,3 +258,54 @@ def geofilter_predictions(df, Y_pred, site_labels, labels, downgrade_const=0.501
         res[i] *= site_filters[site]
 
     return res
+
+
+def boost_multiple_occurences(
+    df,
+    labels,
+    pred_col="_y_pred",
+    out_col="_y_pred",
+    boost_coef=1.5,
+    max_boost_coef=1.5 * 1.5,
+    threshold=0.5,
+):
+    """
+    Boost predictions in file:
+        - if something occured once, multiply that class by boost_coef
+        - if something occured more than once - keep multiplying until
+            boost_coef reaches max_boost_coef
+    """
+
+    def _compute_boost_matrix(y_preds, labels, threshold, boost_coef, max_boost_coef):
+
+        nocall_ix = labels.index("nocall")
+        boost_matrix = np.ones((len(labels)), dtype=np.float64)
+
+        for p in y_preds:
+            boost_matrix = boost_matrix * np.where(p > threshold, boost_coef, 1.0)
+            boost_matrix = np.clip(boost_matrix, 1.0, max_boost_coef)
+            boost_matrix[nocall_ix] = 1.0
+
+        return boost_matrix
+
+    res_df = DataFrame()
+
+    for filename in set(df["filename"]):  # type: ignore
+
+        file_df = df[df.filename == filename].sort_values("_from_s")
+        file_y_preds = np.array(list(file_df[pred_col]), dtype=np.float64)
+
+        bm = _compute_boost_matrix(
+            file_y_preds,
+            labels=labels,
+            threshold=threshold,
+            boost_coef=boost_coef,
+            max_boost_coef=max_boost_coef,
+        )
+
+        file_y_preds = bm * file_y_preds
+
+        file_df[out_col] = list(map(lambda x: x, file_y_preds))
+        res_df = res_df.append(file_df)
+
+    return res_df.reset_index(drop=True)
