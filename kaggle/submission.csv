@@ -145,7 +145,7 @@ row_id,birds
 10534_SSW_120,nocall
 10534_SSW_125,nocall
 10534_SSW_130,bkcchi
-10534_SSW_135,nocall
+10534_SSW_135,bkcchi
 10534_SSW_140,bkcchi
 10534_SSW_145,bkcchi
 10534_SSW_150,nocall
@@ -164,7 +164,7 @@ row_id,birds
 10534_SSW_215,nocall
 10534_SSW_220,nocall
 10534_SSW_225,nocall
-10534_SSW_230,blujay
+10534_SSW_230,blujay rewbla
 10534_SSW_235,rewbla
 10534_SSW_240,nocall
 10534_SSW_245,rewbla
@@ -177,7 +177,7 @@ row_id,birds
 10534_SSW_280,nocall
 10534_SSW_285,rewbla
 10534_SSW_290,rewbla
-10534_SSW_295,haiwoo
+10534_SSW_295,haiwoo rewbla
 10534_SSW_300,haiwoo rewbla
 10534_SSW_305,rewbla
 10534_SSW_310,rewbla
@@ -185,10 +185,10 @@ row_id,birds
 10534_SSW_320,rewbla
 10534_SSW_325,dowwoo
 10534_SSW_330,haiwoo
-10534_SSW_335,haiwoo
+10534_SSW_335,haiwoo rewbla
 10534_SSW_340,rewbla
 10534_SSW_345,rewbla
-10534_SSW_350,nocall
+10534_SSW_350,haiwoo rewbla
 10534_SSW_355,rewbla
 10534_SSW_360,rewbla
 10534_SSW_365,rewbla
@@ -209,7 +209,7 @@ row_id,birds
 10534_SSW_440,nocall
 10534_SSW_445,dowwoo
 10534_SSW_450,nocall
-10534_SSW_455,nocall
+10534_SSW_455,rewbla
 10534_SSW_460,rewbla
 10534_SSW_465,rewbla
 10534_SSW_470,nocall
@@ -223,7 +223,7 @@ row_id,birds
 10534_SSW_510,nocall
 10534_SSW_515,rewbla
 10534_SSW_520,nocall
-10534_SSW_525,rewbla
+10534_SSW_525,comgra rewbla
 10534_SSW_530,rewbla
 10534_SSW_535,nocall
 10534_SSW_540,nocall
@@ -238,7 +238,7 @@ row_id,birds
 10534_SSW_585,nocall
 10534_SSW_590,nocall
 10534_SSW_595,nocall
-10534_SSW_600,comgra
+10534_SSW_600,comgra rewbla
 11254_COR_5,rubwre1
 11254_COR_10,nocall
 11254_COR_15,rubwre1
@@ -425,7 +425,7 @@ row_id,birds
 18003_COR_320,hofwoo1
 18003_COR_325,hofwoo1 rucwar
 18003_COR_330,rucwar
-18003_COR_335,hofwoo1
+18003_COR_335,hofwoo1 rucwar
 18003_COR_340,rucwar
 18003_COR_345,rucwar
 18003_COR_350,rucwar
@@ -457,7 +457,7 @@ row_id,birds
 18003_COR_480,nocall
 18003_COR_485,hofwoo1
 18003_COR_490,hofwoo1
-18003_COR_495,hofwoo1 runwre1
+18003_COR_495,hofwoo1 rucwar runwre1
 18003_COR_500,runwre1
 18003_COR_505,rucwar
 18003_COR_510,rucwar
@@ -477,7 +477,7 @@ row_id,birds
 18003_COR_580,rucwar
 18003_COR_585,rucwar
 18003_COR_590,runwre1
-18003_COR_595,runwre1
+18003_COR_595,rucwar runwre1
 18003_COR_600,rucwar
 7954_COR_5,nocall
 7954_COR_10,nocall
@@ -615,21 +615,21 @@ row_id,birds
 51010_SSW_70,blujay
 51010_SSW_75,blujay
 51010_SSW_80,rewbla
-51010_SSW_85,rewbla
-51010_SSW_90,nocall
+51010_SSW_85,balori rewbla
+51010_SSW_90,balori rewbla
 51010_SSW_95,nocall
 51010_SSW_100,woothr
-51010_SSW_105,nocall
+51010_SSW_105,rewbla
 51010_SSW_110,nocall
 51010_SSW_115,norcar
 51010_SSW_120,balori
-51010_SSW_125,nocall
+51010_SSW_125,norcar
 51010_SSW_130,norcar rewbla
 51010_SSW_135,rewbla
 51010_SSW_140,rewbla
 51010_SSW_145,nocall
 51010_SSW_150,rewbla
-51010_SSW_155,nocall
+51010_SSW_155,rewbla
 51010_SSW_160,balori rewbla
 51010_SSW_165,rewbla
 51010_SSW_170,rewbla
@@ -640,7 +640,7 @@ row_id,birds
 51010_SSW_195,nocall
 51010_SSW_200,nocall
 51010_SSW_205,rebwoo
-51010_SSW_210,nocall
+51010_SSW_210,norfli
 51010_SSW_215,nocall
 51010_SSW_220,nocall
 51010_SSW_225,nocall
@@ -650,7 +650,7 @@ row_id,birds
 51010_SSW_245,rebwoo
 51010_SSW_250,nocall
 51010_SSW_255,nocall
-51010_SSW_260,nocall
+51010_SSW_260,rewbla
 51010_SSW_265,balori haiwoo
 51010_SSW_270,nocall
 51010_SSW_275,balori
@@ -668,7 +668,7 @@ row_id,birds
 51010_SSW_335,balori
 51010_SSW_340,balori grycat
 51010_SSW_345,grycat
-51010_SSW_350,nocall
+51010_SSW_350,rewbla
 51010_SSW_355,sonspa
 51010_SSW_360,balori
 51010_SSW_365,grycat
@@ -677,7 +677,7 @@ row_id,birds
 51010_SSW_380,nocall
 51010_SSW_385,balori
 51010_SSW_390,balori
-51010_SSW_395,grycat
+51010_SSW_395,balori grycat
 51010_SSW_400,balori grycat
 51010_SSW_405,grycat
 51010_SSW_410,balori grycat
@@ -685,12 +685,12 @@ row_id,birds
 51010_SSW_420,grycat
 51010_SSW_425,balori grycat
 51010_SSW_430,balori grycat
-51010_SSW_435,balori
+51010_SSW_435,balori grycat
 51010_SSW_440,grycat
 51010_SSW_445,balori grycat
 51010_SSW_450,nocall
-51010_SSW_455,balori
-51010_SSW_460,nocall
+51010_SSW_455,balori grycat
+51010_SSW_460,balori grycat
 51010_SSW_465,balori
 51010_SSW_470,nocall
 51010_SSW_475,nocall
@@ -699,19 +699,19 @@ row_id,birds
 51010_SSW_490,nocall
 51010_SSW_495,bkcchi
 51010_SSW_500,balori bkcchi
-51010_SSW_505,bkcchi
+51010_SSW_505,balori bkcchi
 51010_SSW_510,balori
-51010_SSW_515,balori
+51010_SSW_515,balori bkcchi
 51010_SSW_520,balori bkcchi
 51010_SSW_525,bkcchi
 51010_SSW_530,bkcchi
-51010_SSW_535,bkcchi
+51010_SSW_535,balori bkcchi
 51010_SSW_540,bkcchi
 51010_SSW_545,bkcchi
 51010_SSW_550,balori bkcchi
 51010_SSW_555,bkcchi
 51010_SSW_560,bkcchi
-51010_SSW_565,bkcchi
+51010_SSW_565,bkcchi norcar
 51010_SSW_570,bkcchi
 51010_SSW_575,nocall
 51010_SSW_580,nocall
@@ -871,7 +871,7 @@ row_id,birds
 42907_SSW_150,nocall
 42907_SSW_155,reevir1
 42907_SSW_160,reevir1
-42907_SSW_165,nocall
+42907_SSW_165,reevir1
 42907_SSW_170,reevir1
 42907_SSW_175,reevir1
 42907_SSW_180,reevir1
@@ -1019,7 +1019,7 @@ row_id,birds
 50878_COR_290,nocall
 50878_COR_295,nocall
 50878_COR_300,nocall
-50878_COR_305,nocall
+50878_COR_305,rucwar
 50878_COR_310,nocall
 50878_COR_315,nocall
 50878_COR_320,nocall
@@ -1034,7 +1034,7 @@ row_id,birds
 50878_COR_365,orcpar
 50878_COR_370,nocall
 50878_COR_375,nocall
-50878_COR_380,nocall
+50878_COR_380,laufal1
 50878_COR_385,nocall
 50878_COR_390,nocall
 50878_COR_395,nocall
@@ -1085,7 +1085,7 @@ row_id,birds
 28933_SSW_20,sonspa
 28933_SSW_25,sonspa
 28933_SSW_30,sonspa
-28933_SSW_35,sonspa
+28933_SSW_35,rewbla sonspa
 28933_SSW_40,sonspa
 28933_SSW_45,sonspa
 28933_SSW_50,sonspa
@@ -1101,84 +1101,84 @@ row_id,birds
 28933_SSW_100,sonspa
 28933_SSW_105,sonspa
 28933_SSW_110,sonspa
-28933_SSW_115,sonspa
+28933_SSW_115,norcar sonspa
 28933_SSW_120,sonspa
-28933_SSW_125,sonspa
+28933_SSW_125,norcar sonspa
 28933_SSW_130,sonspa
-28933_SSW_135,nocall
+28933_SSW_135,norcar sonspa
 28933_SSW_140,sonspa
 28933_SSW_145,norcar
 28933_SSW_150,norcar
-28933_SSW_155,sonspa
-28933_SSW_160,norcar
+28933_SSW_155,gockin norcar sonspa
+28933_SSW_160,norcar sonspa
 28933_SSW_165,sonspa
-28933_SSW_170,sonspa
-28933_SSW_175,sonspa
-28933_SSW_180,sonspa
-28933_SSW_185,nocall
+28933_SSW_170,gockin rewbla sonspa
+28933_SSW_175,norcar sonspa
+28933_SSW_180,norcar sonspa
+28933_SSW_185,sonspa
 28933_SSW_190,sonspa
-28933_SSW_195,nocall
-28933_SSW_200,sonspa
+28933_SSW_195,gockin rewbla
+28933_SSW_200,rewbla sonspa
 28933_SSW_205,sonspa
 28933_SSW_210,sonspa
 28933_SSW_215,norcar
 28933_SSW_220,norcar sonspa
-28933_SSW_225,norcar
-28933_SSW_230,nocall
+28933_SSW_225,norcar sonspa
+28933_SSW_230,sonspa
 28933_SSW_235,rewbla
 28933_SSW_240,gockin
 28933_SSW_245,nocall
 28933_SSW_250,gockin
-28933_SSW_255,cangoo rewbla
+28933_SSW_255,cangoo rewbla sonspa
 28933_SSW_260,cangoo
 28933_SSW_265,cangoo
 28933_SSW_270,cangoo
-28933_SSW_275,nocall
-28933_SSW_280,cangoo
+28933_SSW_275,cangoo gockin rewbla sonspa
+28933_SSW_280,cangoo norcar
 28933_SSW_285,cangoo
-28933_SSW_290,nocall
+28933_SSW_290,cangoo norcar sonspa
 28933_SSW_295,cangoo gockin
 28933_SSW_300,cangoo rewbla
-28933_SSW_305,cangoo
-28933_SSW_310,rewbla
-28933_SSW_315,gockin
-28933_SSW_320,nocall
+28933_SSW_305,cangoo gockin rewbla
+28933_SSW_310,gockin rewbla sonspa
+28933_SSW_315,gockin rewbla
+28933_SSW_320,rewbla
 28933_SSW_325,cangoo
 28933_SSW_330,cangoo
 28933_SSW_335,nocall
 28933_SSW_340,nocall
 28933_SSW_345,nocall
 28933_SSW_350,cangoo
-28933_SSW_355,gockin
-28933_SSW_360,nocall
+28933_SSW_355,cangoo gockin
+28933_SSW_360,rewbla sonspa
 28933_SSW_365,cangoo
-28933_SSW_370,sonspa
-28933_SSW_375,rewbla
-28933_SSW_380,nocall
-28933_SSW_385,gockin
-28933_SSW_390,nocall
+28933_SSW_370,rewbla sonspa
+28933_SSW_375,rewbla sonspa
+28933_SSW_380,gockin rewbla
+28933_SSW_385,gockin rewbla sonspa
+28933_SSW_390,gockin rewbla sonspa
 28933_SSW_395,sonspa
-28933_SSW_400,nocall
-28933_SSW_405,nocall
-28933_SSW_410,gockin
+28933_SSW_400,norcar rewbla sonspa
+28933_SSW_405,rewbla sonspa
+28933_SSW_410,gockin sonspa
 28933_SSW_415,sonspa
-28933_SSW_420,rewbla
+28933_SSW_420,rewbla sonspa
 28933_SSW_425,nocall
 28933_SSW_430,rewbla
-28933_SSW_435,gockin
+28933_SSW_435,gockin sonspa
 28933_SSW_440,nocall
 28933_SSW_445,gockin
 28933_SSW_450,gockin
-28933_SSW_455,nocall
+28933_SSW_455,sonspa
 28933_SSW_460,nocall
-28933_SSW_465,nocall
-28933_SSW_470,nocall
+28933_SSW_465,norcar
+28933_SSW_470,norcar
 28933_SSW_475,nocall
 28933_SSW_480,nocall
 28933_SSW_485,nocall
-28933_SSW_490,rewbla
+28933_SSW_490,rewbla swaspa
 28933_SSW_495,nocall
-28933_SSW_500,nocall
+28933_SSW_500,rewbla
 28933_SSW_505,nocall
 28933_SSW_510,nocall
 28933_SSW_515,nocall
@@ -1187,91 +1187,91 @@ row_id,birds
 28933_SSW_530,nocall
 28933_SSW_535,blujay
 28933_SSW_540,blujay swaspa
-28933_SSW_545,nocall
+28933_SSW_545,blujay rewbla swaspa
 28933_SSW_550,swaspa
-28933_SSW_555,blujay
+28933_SSW_555,blujay swaspa
 28933_SSW_560,blujay
 28933_SSW_565,nocall
-28933_SSW_570,rewbla
+28933_SSW_570,rewbla sonspa
 28933_SSW_575,nocall
-28933_SSW_580,nocall
+28933_SSW_580,rewbla
 28933_SSW_585,blujay
 28933_SSW_590,nocall
 28933_SSW_595,nocall
 28933_SSW_600,rewbla
 2782_SSW_5,grycat reevir1
 2782_SSW_10,grycat reevir1
-2782_SSW_15,bkcchi
-2782_SSW_20,eawpew reevir1
-2782_SSW_25,nocall
+2782_SSW_15,bkcchi eawpew grycat
+2782_SSW_20,eawpew grycat reevir1
+2782_SSW_25,eawpew grycat reevir1
 2782_SSW_30,bkcchi reevir1
 2782_SSW_35,eawpew grycat
-2782_SSW_40,nocall
-2782_SSW_45,reevir1
-2782_SSW_50,bkcchi
-2782_SSW_55,nocall
-2782_SSW_60,nocall
-2782_SSW_65,bkcchi
+2782_SSW_40,bkcchi eawpew grycat reevir1
+2782_SSW_45,eawpew reevir1
+2782_SSW_50,bkcchi eawpew reevir1
+2782_SSW_55,bkcchi eawpew reevir1
+2782_SSW_60,bkcchi eawpew reevir1
+2782_SSW_65,bkcchi eawpew reevir1
 2782_SSW_70,eawpew reevir1
-2782_SSW_75,nocall
-2782_SSW_80,grycat
+2782_SSW_75,bkcchi eawpew grycat reevir1
+2782_SSW_80,eawpew grycat
 2782_SSW_85,grycat reevir1
-2782_SSW_90,grycat reevir1
-2782_SSW_95,grycat
+2782_SSW_90,eawpew grycat reevir1
+2782_SSW_95,eawpew grycat reevir1
 2782_SSW_100,bkcchi reevir1
-2782_SSW_105,reevir1
-2782_SSW_110,eawpew
+2782_SSW_105,eawpew reevir1
+2782_SSW_110,bkcchi eawpew reevir1
 2782_SSW_115,eawpew reevir1
-2782_SSW_120,reevir1
-2782_SSW_125,eawpew
+2782_SSW_120,eawpew reevir1
+2782_SSW_125,bkcchi eawpew reevir1
 2782_SSW_130,reevir1
-2782_SSW_135,eawpew grycat
-2782_SSW_140,grycat
+2782_SSW_135,eawpew grycat reevir1
+2782_SSW_140,grycat reevir1
 2782_SSW_145,reevir1
 2782_SSW_150,reevir1
-2782_SSW_155,eawpew
+2782_SSW_155,eawpew reevir1
 2782_SSW_160,eawpew reevir1
 2782_SSW_165,reevir1
-2782_SSW_170,eawpew
+2782_SSW_170,eawpew reevir1
 2782_SSW_175,reevir1
 2782_SSW_180,reevir1
-2782_SSW_185,eawpew grycat
-2782_SSW_190,reevir1
+2782_SSW_185,eawpew grycat reevir1
+2782_SSW_190,eawpew reevir1
 2782_SSW_195,reevir1
-2782_SSW_200,reevir1
+2782_SSW_200,eawpew reevir1
 2782_SSW_205,grycat reevir1
 2782_SSW_210,eawpew grycat
 2782_SSW_215,reevir1
-2782_SSW_220,grycat
-2782_SSW_225,grycat
-2782_SSW_230,nocall
-2782_SSW_235,reevir1
-2782_SSW_240,chswar
-2782_SSW_245,grycat
-2782_SSW_250,grycat
-2782_SSW_255,reevir1
+2782_SSW_220,eawpew grycat reevir1
+2782_SSW_225,eawpew grycat reevir1
+2782_SSW_230,eawpew grycat reevir1
+2782_SSW_235,eawpew grycat reevir1
+2782_SSW_240,chswar reevir1
+2782_SSW_245,grycat reevir1
+2782_SSW_250,eawpew grycat reevir1
+2782_SSW_255,grycat reevir1
 2782_SSW_260,grycat reevir1
-2782_SSW_265,eawpew
-2782_SSW_270,eawpew
+2782_SSW_265,eawpew reevir1
+2782_SSW_270,eawpew reevir1
 2782_SSW_275,grycat reevir1
-2782_SSW_280,eawpew
+2782_SSW_280,eawpew reevir1
 2782_SSW_285,reevir1
 2782_SSW_290,eawpew reevir1
 2782_SSW_295,reevir1
-2782_SSW_300,reevir1
+2782_SSW_300,eawpew reevir1
 2782_SSW_305,eawpew reevir1
 2782_SSW_310,bkcchi reevir1
-2782_SSW_315,reevir1
+2782_SSW_315,eawpew reevir1
 2782_SSW_320,reevir1
 2782_SSW_325,eawpew reevir1
 2782_SSW_330,reevir1
-2782_SSW_335,eawpew
+2782_SSW_335,eawpew reevir1
 2782_SSW_340,reevir1
 2782_SSW_345,eawpew reevir1
 2782_SSW_350,reevir1
 2782_SSW_355,eawpew reevir1
 2782_SSW_360,reevir1
-2782_SSW_365,reevir1
+2782_SSW_365,eawpew reevir1
 2782_SSW_370,reevir1
 2782_SSW_375,reevir1
 2782_SSW_380,reevir1
@@ -1280,45 +1280,45 @@ row_id,birds
 2782_SSW_395,eawpew reevir1
 2782_SSW_400,reevir1
 2782_SSW_405,eawpew reevir1
-2782_SSW_410,reevir1
+2782_SSW_410,eawpew grycat reevir1
 2782_SSW_415,eawpew reevir1
 2782_SSW_420,reevir1
 2782_SSW_425,reevir1
 2782_SSW_430,eawpew reevir1
 2782_SSW_435,reevir1
 2782_SSW_440,eawpew reevir1
-2782_SSW_445,nocall
+2782_SSW_445,bkcchi eawpew reevir1
 2782_SSW_450,eawpew reevir1
 2782_SSW_455,reevir1
-2782_SSW_460,reevir1
+2782_SSW_460,bkcchi reevir1
 2782_SSW_465,eawpew reevir1
-2782_SSW_470,eawpew
-2782_SSW_475,bkcchi
-2782_SSW_480,bkcchi
-2782_SSW_485,bkcchi
-2782_SSW_490,nocall
-2782_SSW_495,bkcchi
-2782_SSW_500,bkcchi
+2782_SSW_470,bkcchi eawpew reevir1
+2782_SSW_475,bkcchi reevir1
+2782_SSW_480,bkcchi eawpew reevir1
+2782_SSW_485,bkcchi eawpew reevir1
+2782_SSW_490,bkcchi eawpew reevir1
+2782_SSW_495,bkcchi eawpew reevir1
+2782_SSW_500,bkcchi eawpew reevir1
 2782_SSW_505,bkcchi reevir1
 2782_SSW_510,bkcchi reevir1
 2782_SSW_515,eawpew reevir1
 2782_SSW_520,bkcchi reevir1
 2782_SSW_525,bkcchi reevir1
-2782_SSW_530,reevir1
-2782_SSW_535,bkcchi
-2782_SSW_540,nocall
-2782_SSW_545,reevir1
+2782_SSW_530,bkcchi reevir1
+2782_SSW_535,bkcchi eawpew reevir1
+2782_SSW_540,bkcchi eawpew reevir1
+2782_SSW_545,eawpew grycat reevir1
 2782_SSW_550,eawpew reevir1
 2782_SSW_555,reevir1
 2782_SSW_560,reevir1
 2782_SSW_565,eawpew reevir1
 2782_SSW_570,eawpew reevir1
-2782_SSW_575,eawpew
+2782_SSW_575,eawpew reevir1
 2782_SSW_580,reevir1
 2782_SSW_585,eawpew reevir1
-2782_SSW_590,reevir1
-2782_SSW_595,reevir1
-2782_SSW_600,eawpew
+2782_SSW_590,bkcchi eawpew reevir1
+2782_SSW_595,bkcchi eawpew reevir1
+2782_SSW_600,eawpew reevir1
 20152_SSW_5,nocall
 20152_SSW_10,nocall
 20152_SSW_15,nocall
@@ -1458,8 +1458,8 @@ row_id,birds
 57610_COR_85,nocall
 57610_COR_90,rubwre1
 57610_COR_95,rubwre1
-57610_COR_100,bucmot2
-57610_COR_105,rubwre1
+57610_COR_100,bucmot2 rubwre1
+57610_COR_105,bucmot2 rubwre1
 57610_COR_110,rubwre1
 57610_COR_115,rubwre1
 57610_COR_120,nocall
@@ -1606,18 +1606,18 @@ row_id,birds
 26709_SSW_225,nocall
 26709_SSW_230,nocall
 26709_SSW_235,comyel
-26709_SSW_240,sonspa
+26709_SSW_240,eastow sonspa
 26709_SSW_245,comyel
 26709_SSW_250,sonspa
 26709_SSW_255,comyel
-26709_SSW_260,sonspa
-26709_SSW_265,sonspa
-26709_SSW_270,comyel
+26709_SSW_260,comyel sonspa
+26709_SSW_265,eastow sonspa
+26709_SSW_270,comyel sonspa
 26709_SSW_275,eastow sonspa
 26709_SSW_280,comyel sonspa
 26709_SSW_285,eastow sonspa
 26709_SSW_290,comyel
-26709_SSW_295,sonspa
+26709_SSW_295,eastow sonspa
 26709_SSW_300,sonspa
 26709_SSW_305,comyel
 26709_SSW_310,nocall
@@ -1639,9 +1639,9 @@ row_id,birds
 26709_SSW_390,comyel eastow
 26709_SSW_395,eastow
 26709_SSW_400,nocall
-26709_SSW_405,comyel
+26709_SSW_405,comyel sonspa
 26709_SSW_410,eastow
-26709_SSW_415,nocall
+26709_SSW_415,comyel
 26709_SSW_420,nocall
 26709_SSW_425,comyel
 26709_SSW_430,nocall
@@ -1669,7 +1669,7 @@ row_id,birds
 26709_SSW_540,nocall
 26709_SSW_545,sonspa
 26709_SSW_550,nocall
-26709_SSW_555,nocall
+26709_SSW_555,sonspa
 26709_SSW_560,sonspa
 26709_SSW_565,sonspa
 26709_SSW_570,nocall
@@ -1745,7 +1745,7 @@ row_id,birds
 54955_SSW_320,chswar
 54955_SSW_325,nocall
 54955_SSW_330,chswar
-54955_SSW_335,nocall
+54955_SSW_335,chswar
 54955_SSW_340,nocall
 54955_SSW_345,chswar
 54955_SSW_350,nocall
@@ -1795,11 +1795,11 @@ row_id,birds
 54955_SSW_570,grycat
 54955_SSW_575,chswar
 54955_SSW_580,nocall
-54955_SSW_585,grycat
+54955_SSW_585,chswar grycat
 54955_SSW_590,grycat
 54955_SSW_595,nocall
 54955_SSW_600,nocall
-26746_COR_5,nocall
+26746_COR_5,bobfly1
 26746_COR_10,bobfly1
 26746_COR_15,bobfly1
 26746_COR_20,rucwar
@@ -1807,9 +1807,9 @@ row_id,birds
 26746_COR_30,bobfly1
 26746_COR_35,bobfly1
 26746_COR_40,bobfly1 rucwar
-26746_COR_45,rucwar
-26746_COR_50,rucwar
-26746_COR_55,bobfly1
+26746_COR_45,bobfly1 rucwar
+26746_COR_50,bobfly1 rucwar
+26746_COR_55,bobfly1 rucwar
 26746_COR_60,bobfly1
 26746_COR_65,bobfly1
 26746_COR_70,bobfly1
@@ -2160,13 +2160,13 @@ row_id,birds
 14473_SSW_595,grycat
 14473_SSW_600,grycat
 21767_COR_5,grekis rucwar
-21767_COR_10,grekis
+21767_COR_10,grekis rucwar
 21767_COR_15,rucwar
 21767_COR_20,rucwar
-21767_COR_25,nocall
+21767_COR_25,rucwar
 21767_COR_30,grekis rucwar
 21767_COR_35,rucwar
-21767_COR_40,rucwar
+21767_COR_40,grekis rucwar
 21767_COR_45,rucwar
 21767_COR_50,nocall
 21767_COR_55,grekis
@@ -2178,7 +2178,7 @@ row_id,birds
 21767_COR_85,rucwar
 21767_COR_90,grekis
 21767_COR_95,rucwar
-21767_COR_100,clcrob rucwar
+21767_COR_100,clcrob grekis rucwar
 21767_COR_105,clcrob rucwar
 21767_COR_110,rucwar
 21767_COR_115,rucwar
@@ -2187,7 +2187,7 @@ row_id,birds
 21767_COR_130,rucwar
 21767_COR_135,runwre1
 21767_COR_140,runwre1
-21767_COR_145,yehcar1
+21767_COR_145,rucwar runwre1 yehcar1
 21767_COR_150,rucwar
 21767_COR_155,rucwar
 21767_COR_160,rucwar
@@ -2200,12 +2200,12 @@ row_id,birds
 21767_COR_195,rucwar
 21767_COR_200,rucwar
 21767_COR_205,rucwar
-21767_COR_210,nocall
+21767_COR_210,rucwar
 21767_COR_215,rucwar
 21767_COR_220,rucwar
 21767_COR_225,rucwar
 21767_COR_230,rucwar
-21767_COR_235,rucwar
+21767_COR_235,grekis rucwar
 21767_COR_240,rucwar
 21767_COR_245,melbla1
 21767_COR_250,melbla1
@@ -2214,7 +2214,7 @@ row_id,birds
 21767_COR_265,nocall
 21767_COR_270,crfpar
 21767_COR_275,crfpar
-21767_COR_280,crfpar
+21767_COR_280,crfpar rucwar
 21767_COR_285,crfpar
 21767_COR_290,crfpar
 21767_COR_295,nocall
@@ -2253,7 +2253,7 @@ row_id,birds
 21767_COR_460,rucwar
 21767_COR_465,rucwar
 21767_COR_470,hofwoo1
-21767_COR_475,hofwoo1
+21767_COR_475,hofwoo1 rucwar
 21767_COR_480,hofwoo1
 21767_COR_485,nocall
 21767_COR_490,rucwar
@@ -2261,7 +2261,7 @@ row_id,birds
 21767_COR_500,whcpar
 21767_COR_505,whcpar
 21767_COR_510,whcpar
-21767_COR_515,whcpar
+21767_COR_515,hofwoo1 whcpar
 21767_COR_520,whcpar
 21767_COR_525,hofwoo1
 21767_COR_530,crfpar
@@ -2272,7 +2272,7 @@ row_id,birds
 21767_COR_555,rucwar runwre1
 21767_COR_560,runwre1
 21767_COR_565,rucwar
-21767_COR_570,crfpar
+21767_COR_570,crfpar rucwar
 21767_COR_575,rucwar
 21767_COR_580,rucwar
 21767_COR_585,rucwar
@@ -2325,7 +2325,7 @@ row_id,birds
 44957_COR_220,bobfly1 plawre1
 44957_COR_225,nocall
 44957_COR_230,plawre1
-44957_COR_235,bobfly1
+44957_COR_235,bobfly1 plawre1
 44957_COR_240,bobfly1
 44957_COR_245,nocall
 44957_COR_250,plawre1
@@ -2334,7 +2334,7 @@ row_id,birds
 44957_COR_265,bobfly1
 44957_COR_270,bobfly1
 44957_COR_275,bobfly1
-44957_COR_280,plawre1
+44957_COR_280,bobfly1 plawre1
 44957_COR_285,bobfly1
 44957_COR_290,bobfly1
 44957_COR_295,bobfly1
