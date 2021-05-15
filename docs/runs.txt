@@ -16,13 +16,16 @@ cli/train_fe.run.py --run A1_b7 --lr_patience 3 --samples_per_epoch 10240 --mode
 
 # config: GEO_COORDINATES_BINS=18
 
-cli/prepare_short.run.py --min_rating 3 --max_from_clip 10 --no_rating_value 3 --rectify_class_balance 0 --sample_with_stride 5 --out_csv short-B.csv
-cli/prepare_long.run.py --split_multilabel 1 --out_csv long-B.csv
-cli/create_dataset.run.py --in_csvs short-B.csv long-B.csv --secondary_label_p 0.33 --folds 10 --rectify_class_balance 2.5 0.25 --out dataset-B.pickle
+cli/prepare_short.run.py --min_rating 3 --max_from_clip 10 --no_rating_value 3 --rectify_class_balance 0 --sample_with_stride 5 --out_csv short-B.csv && \
+cli/prepare_long.run.py --split_multilabel 1 --out_csv long-B.csv && \
+cli/create_dataset.run.py --in_csvs short-B.csv long-B.csv --secondary_label_p 0.33 --folds 10 --rectify_class_balance 2.5 0.25 --out dataset-B.pickle && \
 cli/cache_waves.py --dataset dataset-B.pickle
 
 # 0.61 nogeo / 0.62 geo / 0.64 geo+boost
 cli/train_fe.run.py --run B1_nrsw_2 --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
+
+# config: GEO_COORDINATES_BINS=None
+cli/train_fe.run.py --run B1_nrsw_2_nogeobins --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
 
 # config: MSG_FREQ_RANGE: 300 14000
 cli/train_fe.run.py --run B1_nrsw_2_freqs314 --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
