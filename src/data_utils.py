@@ -268,6 +268,7 @@ def boost_multiple_occurences(
     boost_coef=1.5,
     max_boost_coef=1.5 * 1.5,
     threshold=0.5,
+    lowering_coeff=1.0,
 ):
     """
     Boost predictions in file:
@@ -282,9 +283,11 @@ def boost_multiple_occurences(
         boost_matrix = np.ones((len(labels)), dtype=np.float64)
 
         for p in y_preds:
-            boost_matrix = boost_matrix * np.where(p > threshold, boost_coef, 1.0)
-            boost_matrix = np.clip(boost_matrix, 1.0, max_boost_coef)
-            boost_matrix[nocall_ix] = 1.0
+            boost_matrix = boost_matrix * np.where(
+                p > threshold, boost_coef, lowering_coeff
+            )
+            boost_matrix = np.clip(boost_matrix, lowering_coeff, max_boost_coef)
+            boost_matrix[nocall_ix] = lowering_coeff
 
         return boost_matrix
 
