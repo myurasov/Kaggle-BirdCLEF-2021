@@ -120,8 +120,17 @@ df = normalize_soundscapes_df(
 # endregion
 
 # region: save output df
+
 df["_source"] = ["long"] * df.shape[0]
+
+# add standard columns
+for col in c["DATASET_COLS"]:
+    if col not in df:
+        df[col] = ""
+
 df = df[c["DATASET_COLS"] + ["row_id"]]
+
 df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
+
 # endregion

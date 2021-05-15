@@ -303,7 +303,7 @@ callbacks.append(
         mode=monitoring_mode,
         factor=args.lr_factor,
         patience=args.lr_patience,
-        min_lr=1e-6,
+        min_lr=1e-7,
         verbose=1,
     )
 )

@@ -126,7 +126,7 @@ if args.geofilter is not None:
     cols = ["_primary_labels", "_extra_primary_labels", "_secondary_labels"]
     df[cols] = df[cols].fillna("")
 
-    for ix, row in tqdm(df[cols].iterrows()):
+    for ix, row in tqdm(df[cols].iterrows(), total=df.shape[0]):
         for col in cols:
             row_labels = set(row[col].split(" "))
             row_labels &= gf_classes

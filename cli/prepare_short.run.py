@@ -251,8 +251,16 @@ if len(args.rectify_class_balance) == 2:
 # endregion
 
 # region: save output df
+
 out_df["_source"] = ["short"] * out_df.shape[0]
+
+# add standard columns
+for col in c["DATASET_COLS"]:
+    if col not in out_df:
+        out_df[col] = ""
 out_df = out_df[c["DATASET_COLS"]]
+
 out_df.to_csv(args.out_csv, index=False)
 print(f'* Saved CSV to "{args.out_csv}"')
+
 # endregion
