@@ -26,6 +26,7 @@ parser.add_argument(
     "--in_csvs",
     type=str,
     nargs="+",
+    # default=["long-tst2.csv"],
     default=["short.csv", "long.csv"],
     help="Input CSV files",
 )
@@ -63,7 +64,8 @@ parser.add_argument(
 parser.add_argument(
     "--geofilter",
     type=str,
-    default="all-500mi-1mo_tolerance",
+    # default="all-500mi-0mo_tolerance.SNE",
+    default=None,
     help="Geofilter to use (from src/geo_filters.py)."
     + ' Eg: "all-500mi-1mo_tolerance" or "all-500mi-1mo_tolerance.SNE"',
 )
@@ -107,15 +109,34 @@ df["_secondary_labels"] = list(
 
 # region: geofilter
 
-# if args.geofilter is not None:
+if args.geofilter is not None:
+    # remove all primary, extra primary and secondary labels not in geofilter
+    # drop rows that do not have any labels left
 
-#     geo_filer = geo_filters[args.geofilter]
-#     gf_classes = set(sum(geo_filer.values(), []))
+    # args.geofilter can have "geofilter.SITE" format
+    args_geofilter = args.geofilter.split(".")
+    geo_filter = geo_filters[args_geofilter[0]]
+    if len(args_geofilter) > 1:
+        geo_filter = {"_": geo_filter[args_geofilter[1]]}
 
-#     print(f"* Geofiltering by {args.geofilter} with {len(gf_classes)} classes...")
+    gf_classes = set(sum(geo_filter.values(), []))
+    print(f"* Geofiltering by {args.geofilter} with {len(gf_classes)} classes...")
 
-#     print(df)
+    ixs_to_drop = []
+    cols = ["_primary_labels", "_extra_primary_labels", "_secondary_labels"]
+    df[cols] = df[cols].fillna("")
 
+    for ix, row in tqdm(df[cols].iterrows()):
+        for col in cols:
+            row_labels = set(row[col].split(" "))
+            row_labels &= gf_classes
+            df.at[ix, col] = " ".join(list(row_labels))  # type: ignore
+
+        if set(list(df.loc[ix, cols])) == {""}:  # no labels left - drop row
+            ixs_to_drop.append(ix)
+
+    df = df.drop(ixs_to_drop).reset_index(drop=True)
+    print(f"* Dropped {len(ixs_to_drop)} rows")
 
 # endregion
 
