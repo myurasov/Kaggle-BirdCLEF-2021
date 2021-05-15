@@ -56,6 +56,7 @@ c["GEO_COORDINATES_BINS"] = 18
 c["DATASET_COLS"] = [
     "filename",
     "_primary_labels",
+    "_extra_primary_labels",
     "_secondary_labels",
     "_from_s",
     "_to_s",

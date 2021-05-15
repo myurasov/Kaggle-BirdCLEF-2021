@@ -11,7 +11,7 @@ from pprint import pformat
 import pandas as pd
 from lib.utils import fix_random_seed
 from src.config import c
-from src.data_utils import read_soundscapes_info
+from src.data_utils import normalize_soundscapes_df, read_soundscapes_info
 from tqdm import tqdm
 
 # see README.md for details on the dataset creation
@@ -74,6 +74,11 @@ soundscapes_info = read_soundscapes_info(
 # region: split multilabel rows into separate single-label ones
 
 if args.split_multilabel:
+
+    # other labels will be stored in '_extra_primary_labels' column
+    if "_extra_primary_labels" not in df:
+        df["_extra_primary_labels"] = ""
+
     extra_df = pd.DataFrame()
 
     print("* Splitting multilabel rows...")
@@ -89,7 +94,10 @@ if args.split_multilabel:
 
                 for bird in birds:
                     row.birds = bird
-                    # row.audio_id = str(row.audio_id)
+                    # save other labels just in case
+                    row._extra_primary_labels = " ".join(
+                        sorted(list(set(birds) ^ set([bird])))
+                    )
                     extra_df = extra_df.append(row, ignore_index=True)
 
     if extra_df.shape[0] > 0:
@@ -99,44 +107,15 @@ if args.split_multilabel:
 
 # region: add info fields
 
-newcols = defaultdict(list)
-newcols["_secondary_labels"] = [None] * df.shape[0]
-newcols["rating"] = [5.0] * df.shape[0]
+print("* Normalizing to match dataset format...")
 
-for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
-    # audio file path/name
-
-    file_glob = os.path.join(
-        c["COMPETITION_DATA"],
-        "*_soundscapes",
-        f"{row.audio_id}*.ogg",
-    )
-
-    file_path = glob(file_glob, recursive=True)
-    assert len(file_path) > 0
-    file_path = file_path[0]
-    file_name = os.path.basename(file_path)
-    newcols["filename"].append(file_name)
-
-    # date
-    date_s = re.findall("_(\\d+).ogg$", file_name)[0]
-    date = datetime.datetime.strptime(date_s, "%Y%m%d")
-    newcols["_month"].append(date.month)
-    newcols["_year"].append(date.year)
-
-    # from/to
-    newcols["_from_s"].append(row.seconds - 5)
-    newcols["_to_s"].append(row.seconds)
-
-    # lat/lon
-    newcols["latitude"].append(soundscapes_info[row.site]["lat"])
-    newcols["longitude"].append(soundscapes_info[row.site]["lon"])
-
-    # labels
-    newcols["_primary_labels"].append(" ".join(row.birds.split(" ")))
-
-for k, v in newcols.items():
-    df[k] = v
+df = normalize_soundscapes_df(
+    df,
+    seconds=5,
+    rating=5.0,
+    source="long",
+    quiet=False,
+)
 
 # endregion
 

@@ -12,7 +12,8 @@ import numpy as np
 import pandas as pd
 from lib.utils import fix_random_seed, list_indexes, write_json
 from src.config import c
-from src.data_utils import rectify_class_counts, add_folds
+from src.data_utils import add_folds, rectify_class_counts
+from src.geo_filter import filters as geo_filters
 from tqdm import tqdm
 
 # region: read arguments
@@ -62,7 +63,7 @@ parser.add_argument(
 parser.add_argument(
     "--geofilter",
     type=str,
-    default=None,
+    default="all-500mi-1mo_tolerance",
     help="Geofilter to use (from src/geo_filters.py)."
     + ' Eg: "all-500mi-1mo_tolerance" or "all-500mi-1mo_tolerance.SNE"',
 )
@@ -104,6 +105,20 @@ df["_secondary_labels"] = list(
 
 # endregion
 
+# region: geofilter
+
+# if args.geofilter is not None:
+
+#     geo_filer = geo_filters[args.geofilter]
+#     gf_classes = set(sum(geo_filer.values(), []))
+
+#     print(f"* Geofiltering by {args.geofilter} with {len(gf_classes)} classes...")
+
+#     print(df)
+
+
+# endregion
+
 # region: rectify class balance
 
 if len(args.rectify_class_balance) == 2:
@@ -122,17 +137,21 @@ if len(args.rectify_class_balance) == 2:
     print(f"* Total {df.shape[0]:,} clips")
 # endregion
 
-# region: read and convert labels
-
 # region: split into folds based on _primary_labels
 df = add_folds(df, args.folds, "_primary_labels")
 # endregion
+
+# region: read and convert labels
 
 # read and convert primary and secondary labels
 
 classes = set()
 
-for col in ["_primary_labels", "_secondary_labels"]:
+for col in [
+    "_primary_labels",
+    "_secondary_labels",
+    "_extra_primary_labels",
+]:
     df[[col]] = df[[col]].fillna(value="")
     classes.update(set(" ".join(df[col].unique()).split(" ")))
 
@@ -151,14 +170,20 @@ class_ixs = list_indexes(classes)
 for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
     Y.append(np.zeros((len(classes)), dtype=np.float16))
 
-    # secondary
+    # _secondary_labels
     row_labels = row._secondary_labels.split(" ")
     for row_label in row_labels:
         if row_label != "":
             Y[-1][class_ixs[row_label]] = args.secondary_label_p
 
-    # primary
+    # _primary_labels
     row_labels = row._primary_labels.split(" ")
+    for row_label in row_labels:
+        if row_label != "":
+            Y[-1][class_ixs[row_label]] = 1.0
+
+    # _extra_primary_labels - also assign ones there
+    row_labels = row._extra_primary_labels.split(" ")
     for row_label in row_labels:
         if row_label != "":
             Y[-1][class_ixs[row_label]] = 1.0
