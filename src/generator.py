@@ -35,6 +35,7 @@ class Generator(keras.utils.Sequence):
         self._batch_size = batch_size
         self._msg_provider = msg_provider
         self._rating_as_sw = rating_as_sw
+        self._augmentation = augmentation
         self._wave_provider = wave_provider
         self._rareness_as_sw = rareness_as_sw
         self._msg_output_size = msg_output_size

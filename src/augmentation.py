@@ -1,7 +1,6 @@
-# augmentation config
+# augmentation levels config
 
 import numpy as np
-from lib.utils import fix_random_seed
 
 
 def _msg_random_power_fn(max_power, chance):
