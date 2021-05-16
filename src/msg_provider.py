@@ -1,9 +1,6 @@
-import warnings
-
 import librosa
 import numpy as np
 import torch
-from PIL import Image
 from torchaudio.transforms import MelSpectrogram
 
 
@@ -53,7 +50,7 @@ class MSG_Provider:
 
         return self._cache[key]
 
-    def msg(self, wave, n_mels, time_steps, power):
+    def msg(self, wave, n_mels, time_steps, power, to_db=True):
         wave = torch.tensor(wave.reshape([1, -1]).astype(np.float32)).to(self._device)
 
         transform = self._get_MelSpectrogram(
@@ -61,7 +58,9 @@ class MSG_Provider:
         )
 
         msg = transform(wave)[0].cpu().numpy()
-        msg = librosa.power_to_db(msg)
+
+        if to_db:
+            msg = librosa.power_to_db(msg)
 
         if self._normalize:
             assert msg.dtype == np.float32 or msg.dtype == np.float64
