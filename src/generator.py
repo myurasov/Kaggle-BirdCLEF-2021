@@ -137,8 +137,9 @@ class Generator(keras.utils.Sequence):
             power = self._msg_power
 
             # random power
-            if "msg.random_power.fn" in self._augmentation:
-                power = self._augmentation["msg.random_power.fn"](self._msg_power)
+            if self._augmentation is not None:
+                if "msg.random_power.fn" in self._augmentation:
+                    power = self._augmentation["msg.random_power.fn"](self._msg_power)
 
             msg = self._msg_provider.msg(
                 wave,
