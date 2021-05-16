@@ -74,13 +74,13 @@ parser.add_argument(
     help="Preload validation generator into memory to speed up validation runs.",
 )
 
-# TODO
-# parser.add_argument(
-#     "--aug",
-#     type=int,
-#     default=0,
-#     help="Augmentation level",
-# )
+parser.add_argument(
+    "--aug",
+    type=str,
+    default=None,
+    nargs="+",
+    help="Augmentation levels",
+)
 
 parser.add_argument(
     "--batch",
@@ -115,7 +115,6 @@ parser.add_argument(
     default=1e-3,
     help="Inital LR",
 )
-
 
 parser.add_argument(
     "--lr_factor",
@@ -243,7 +242,7 @@ try:
     train_g = Generator(
         df=train_df,
         shuffle=True,
-        augmentation=None,
+        augmentation=args.aug,
         rating_as_sw=True,
         rareness_as_sw=args.weight_by_rareness > 0,
         msg_provider=msg_p,

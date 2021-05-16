@@ -41,4 +41,8 @@ cli/create_dataset.run.py --in_csvs short-C.csv long-C.csv --out dataset-C.pickl
 
 # config: GEO_COORDINATES_BINS=18
 # min LR: 1e-6 -> 1e-7
+# 0.65 geo + boost
 cli/train_fe.run.py --run C1 --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
+
+#
+cli/train_fe.run.py --run C1_augv0 --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v0

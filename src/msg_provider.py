@@ -13,11 +13,13 @@ class MSG_Provider:
         f_min: int,
         f_max: int,
         normalize: bool,
+        to_db: bool = True,
         device: str = "cpu",
     ):
         self._f_min = f_min
         self._f_max = f_max
         self._n_fft = n_fft
+        self._to_db = to_db
         self._device = device
         self._normalize = normalize
         self._sample_rate = sample_rate
@@ -50,7 +52,7 @@ class MSG_Provider:
 
         return self._cache[key]
 
-    def msg(self, wave, n_mels, time_steps, power, to_db=True):
+    def msg(self, wave, n_mels, time_steps, power):
         wave = torch.tensor(wave.reshape([1, -1]).astype(np.float32)).to(self._device)
 
         transform = self._get_MelSpectrogram(
@@ -59,7 +61,7 @@ class MSG_Provider:
 
         msg = transform(wave)[0].cpu().numpy()
 
-        if to_db:
+        if self._to_db:
             msg = librosa.power_to_db(msg)
 
         if self._normalize:

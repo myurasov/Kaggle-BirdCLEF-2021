@@ -5,6 +5,7 @@ from lib.utils import coarsen_number, float2d_to_rgb
 from pandas import DataFrame
 from tensorflow import keras
 
+from src.augmentation import c as augmentation_configs
 from src.msg_provider import MSG_Provider
 from src.wave_provider import WaveProvider
 
@@ -33,12 +34,17 @@ class Generator(keras.utils.Sequence):
         self._msg_power = msg_power
         self._batch_size = batch_size
         self._msg_provider = msg_provider
-        self._augmentation = augmentation
         self._rating_as_sw = rating_as_sw
         self._wave_provider = wave_provider
         self._rareness_as_sw = rareness_as_sw
         self._msg_output_size = msg_output_size
         self._geo_coordinates_bins = geo_coordinates_bins
+
+        # augmentation can be None or list of configs, eg. ['v1', 'v2']
+        if augmentation is not None:
+            self._augmentation = {}
+            for a in augmentation:
+                self._augmentation.update(augmentation_configs[a])
 
         # compute rareness sample weighting coefficients
         if self._rareness_as_sw is not None:
@@ -127,11 +133,17 @@ class Generator(keras.utils.Sequence):
 
         else:  # return melspectrograms
 
+            power = self._msg_power
+
+            # random power
+            if "msg.random_power.fn" in self._augmentation:
+                power = self._augmentation["msg.random_power.fn"](self._msg_power)
+
             msg = self._msg_provider.msg(
                 wave,
                 n_mels=self._msg_output_size[0],
                 time_steps=self._msg_output_size[1],
-                power=self._msg_power,
+                power=power,
             ).astype(np.float32)
 
             # return as rgb uint8 image
