@@ -214,10 +214,14 @@ def normalize_soundscapes_df(
         # labels
         row_birds = " ".join(row.birds.split(" ")) if "birds" in row else ""
         newcols["_primary_labels"].append(row_birds)
-        newcols["_secondary_labels"].append("")
 
     for k, v in newcols.items():
         df[k] = v
+
+    # add missing standard cols
+    for col in c["DATASET_COLS"]:
+        if col not in df:
+            df[col] = ""
 
     df = df[c["DATASET_COLS"] + ["row_id", "site"]]
 
