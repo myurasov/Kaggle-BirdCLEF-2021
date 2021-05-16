@@ -3,7 +3,7 @@ from src.msg_provider import MSG_Provider
 from src.wave_provider import WaveProvider
 
 # services cache
-_services = {}
+services = {}
 
 
 def get_wave_provider(
@@ -14,9 +14,9 @@ def get_wave_provider(
     if key is None:
         key = "wave_provider"
 
-    if key not in _services:
+    if key not in services:
 
-        _services[key] = WaveProvider(
+        services[key] = WaveProvider(
             audio_sr=config["AUDIO_SR"],
             cache_dir=config["CACHE_DIR"],
             src_dirs=config["SRC_DATA_DIRS"],
@@ -25,28 +25,21 @@ def get_wave_provider(
             warn_on_silence=config["AUDIO_QUALITY_WARNINGS"],
         )
 
-    return _services[key]
+    return services[key]
 
 
 def get_msg_provider(
     config=c,
-    n_mels=256,
-    time_steps=256,
     key=None,
 ) -> MSG_Provider:
 
     if key is None:
-        key = f"msg_provider:n_mels={n_mels}:time_steps={time_steps}"
+        key = "msg_provider"
 
-    if key not in _services:
+    if key not in services:
 
-        _services[key] = MSG_Provider(
-            n_mels=n_mels,
-            target_n_mels=n_mels,
-            time_steps=time_steps,
+        services[key] = MSG_Provider(
             n_fft=config["MSG_N_FFT"],
-            power=config["MSG_POWER"],
-            target_time_steps=time_steps,
             sample_rate=config["AUDIO_SR"],
             normalize=config["MSG_NORMALIZE"],
             f_min=config["MSG_FREQ_RANGE"][0],
@@ -55,4 +48,4 @@ def get_msg_provider(
             device=config["TORCH_MELSPECTROGRAM_DEVICE"],
         )
 
-    return _services[key]
+    return services[key]

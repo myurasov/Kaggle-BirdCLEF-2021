@@ -14,21 +14,23 @@ class Test_MSG_Generator(unittest.TestCase):
         self._msg_generator_rgb = Generator(
             df=pd.read_pickle(os.path.join(c["WORK_DIR"], "dataset.pickle")),
             wave_provider=get_wave_provider(c),
-            msg_provider=get_msg_provider(c, n_mels=128, time_steps=256),
+            msg_provider=get_msg_provider(c),
+            msg_output_size=(128, 256, 3),
+            msg_power=c["MSG_POWER"],
             batch_size=10,
             shuffle=False,
             augmentation=None,
-            msg_as_rgb=True,
         )
 
         self._msg_generator_non_rgb = Generator(
             df=pd.read_pickle(os.path.join(c["WORK_DIR"], "dataset.pickle")),
             wave_provider=get_wave_provider(c),
-            msg_provider=get_msg_provider(c, n_mels=128, time_steps=256),
+            msg_provider=get_msg_provider(c),
+            msg_output_size=(128, 256),
+            msg_power=c["MSG_POWER"],
             batch_size=10,
             shuffle=False,
             augmentation=None,
-            msg_as_rgb=False,
         )
 
     def test_1(self):
@@ -37,8 +39,8 @@ class Test_MSG_Generator(unittest.TestCase):
         self.assertEqual(b_x["i_msg"].dtype, np.uint8)
 
         self.assertEqual(
-            b_x["i_msg"].shape[1:3],
-            (128, 256),
+            b_x["i_msg"].shape[1:],
+            (128, 256, 3),
         )
 
         self.assertEqual(b_x["i_lat"].dtype, np.float32)

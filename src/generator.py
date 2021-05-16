@@ -19,23 +19,25 @@ class Generator(keras.utils.Sequence):
         df: DataFrame,
         wave_provider: WaveProvider,
         msg_provider: MSG_Provider = None,  # if not set, waves will be returned
+        msg_output_size=(256, 256, 3),  # output size of a melspectrogram
+        msg_power=2,
         batch_size=32,
-        shuffle=True,  # shuffle on each epoch
         augmentation=None,
-        msg_as_rgb=True,  # return melspectrogram as rgb image
+        shuffle=True,  # shuffle on each epoch
         rating_as_sw=True,  # use rating/5 as sample weight
         rareness_as_sw=True,  # use 1/<class_freq> as sw. multiplied by rating if both are set.
         geo_coordinates_bins=None,  # number of bins for coarsening lat/lon
     ):
         self._df = df.copy()
         self._shuffle = shuffle
+        self._msg_power = msg_power
         self._batch_size = batch_size
-        self._msg_as_rgb = msg_as_rgb
         self._msg_provider = msg_provider
         self._augmentation = augmentation
         self._rating_as_sw = rating_as_sw
         self._wave_provider = wave_provider
         self._rareness_as_sw = rareness_as_sw
+        self._msg_output_size = msg_output_size
         self._geo_coordinates_bins = geo_coordinates_bins
 
         # compute rareness sample weighting coefficients
@@ -125,11 +127,17 @@ class Generator(keras.utils.Sequence):
 
         else:  # return melspectrograms
 
-            msg = self._msg_provider.msg(wave).astype(np.float32)
+            msg = self._msg_provider.msg(
+                wave,
+                n_mels=self._msg_output_size[0],
+                time_steps=self._msg_output_size[1],
+                power=self._msg_power,
+            ).astype(np.float32)
 
             # return as rgb uint8 image
-            if self._msg_as_rgb:
-                msg = float2d_to_rgb(msg)
+            if len(self._msg_output_size) == 3:
+                if self._msg_output_size[2] == 3:
+                    msg = float2d_to_rgb(msg)
 
             x["i_msg"] = msg
 

@@ -238,7 +238,7 @@ try:
     input_shape = model.get_layer("i_msg").input_shape[0][1:]
     input_type = "melspectrogram"
     wave_p = get_wave_provider(c)
-    msg_p = get_msg_provider(c, n_mels=input_shape[0], time_steps=input_shape[1])
+    msg_p = get_msg_provider(c)
 
     train_g = Generator(
         df=train_df,
@@ -249,7 +249,8 @@ try:
         msg_provider=msg_p,
         wave_provider=wave_p,
         batch_size=args.batch,
-        msg_as_rgb=3 == input_shape[-1],
+        msg_output_size=input_shape,
+        msg_power=c["MSG_POWER"],
         geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
     )
 
@@ -261,7 +262,8 @@ try:
         rareness_as_sw=False,
         msg_provider=msg_p,
         wave_provider=wave_p,
-        msg_as_rgb=3 == input_shape[-1],
+        msg_output_size=input_shape,
+        msg_power=c["MSG_POWER"],
         geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
         batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
     )
