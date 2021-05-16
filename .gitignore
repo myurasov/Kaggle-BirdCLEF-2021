@@ -10,5 +10,5 @@ kaggle.json.*
 docker/res/root/.jupyter/migrated
 iframe_figures/
 /__*
-kaggle/__repo__
+**/__repo__
 tests/res/__cache__
