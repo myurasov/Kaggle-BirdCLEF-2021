@@ -44,6 +44,7 @@ if is_kaggle:
 c["MSG_N_FFT"] = 2048
 c["MSG_NORMALIZE"] = False  # -mean, /std
 c["MSG_FREQ_RANGE"] = [0, 16000]
+c["MSG_POWER_TO_DB"] = True  # convert power to decibels?
 c["MSG_POWER"] = 3.0
 
 # torchaudio melspectrogram device: cpu or cuda

@@ -25,9 +25,11 @@ cli/cache_waves.py --dataset dataset-B.pickle
 cli/train_fe.run.py --run B1_nrsw_2 --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
 
 # config: GEO_COORDINATES_BINS=None
+# 0.59 geo+boost
 cli/train_fe.run.py --run B1_nrsw_2_nogeobins --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
 
 # config: MSG_FREQ_RANGE: 300 14000
+# 0.61 geo+boost
 cli/train_fe.run.py --run B1_nrsw_2_freqs314 --dataset dataset-B.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
 
 # 0.61 geo+boost
@@ -44,5 +46,5 @@ cli/create_dataset.run.py --in_csvs short-C.csv long-C.csv --out dataset-C.pickl
 # 0.65 geo + boost
 cli/train_fe.run.py --run C1 --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
 
-#
+# ...
 cli/train_fe.run.py --run C1_augv0 --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v0

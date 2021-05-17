@@ -46,6 +46,7 @@ def get_msg_provider(
             f_max=config["MSG_FREQ_RANGE"][1],
             audio_len_seconds=config["AUDIO_TARGET_LEN_S"],
             device=config["TORCH_MELSPECTROGRAM_DEVICE"],
+            to_db=c["MSG_POWER_TO_DB"],
         )
 
     return services[key]
