@@ -1,20 +1,23 @@
-# augmentation levels config
-
-import numpy as np
-
-
-def chance(probability):
-    return np.random.uniform(0, 1) <= probability
-
-
-def msg_random_power(max_power):
-    if chance(0.33):
-        return np.random.uniform(0.5, max_power)
-    return max_power
-
+# augmentation config
 
 c = {}
 
 c["v0"] = {
-    "msg.random_power": msg_random_power,
+    "msg.random_power": {"chance": 0.5, "min_power": 0.5, "max_power": 3},
+}
+
+c["v1"] = {
+    "wave.same_class_mixing": {
+        "chance": 1.0,
+        # coefficients to multiply samples to
+        # (randomly sampled in the provided ranges)
+        "coeffs": [
+            [0.75, 1],
+            [0.5, 0.75],
+            [0.25, 0.5],
+            # [0.125, 0.25],
+            # [0.0625, 0.125],
+        ],
+        "labels": True,  # also mix labels
+    },
 }

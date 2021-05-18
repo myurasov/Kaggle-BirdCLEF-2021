@@ -23,6 +23,8 @@ from src.models import build_model
 from src.services import get_msg_provider, get_wave_provider
 from tensorflow import keras
 
+from augmentation import c as aug_levels
+
 # args for debugging
 _debug_args = None
 
@@ -79,7 +81,7 @@ parser.add_argument(
     type=str,
     default=None,
     nargs="+",
-    help="Augmentation levels",
+    help='Augmentation levels. Eg: "v0 v1 v2"...',
 )
 
 parser.add_argument(
@@ -171,6 +173,11 @@ if args.amp:
 # load dataset and metadata
 df = getattr(pd, f'read_{args.dataset.split(".")[-1].lower()}')(args.dataset)
 meta = read_json(args.dataset + ".json")
+
+# convert augmentation levels list into config
+augmentation_config = {}
+for level in args.aug:
+    augmentation_config.update(aug_levels[level])
 # endregion
 
 # region: create train/val dataframes
@@ -216,6 +223,7 @@ write_json(
         "args": vars(args),
         "cmd": " ".join(sys.argv),
         "labels": meta["labels"],
+        "augmentation": augmentation_config,
         "config": c,
     },
     train_meta_file,
@@ -242,7 +250,7 @@ try:
     train_g = Generator(
         df=train_df,
         shuffle=True,
-        augmentation=args.aug,
+        augmentation=augmentation_config,
         rating_as_sw=True,
         rareness_as_sw=args.weight_by_rareness > 0,
         msg_provider=msg_p,

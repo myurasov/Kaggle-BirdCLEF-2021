@@ -5,7 +5,6 @@ from lib.utils import coarsen_number, float2d_to_rgb
 from pandas import DataFrame
 from tensorflow import keras
 
-from src.augmentation import c as augmentation_configs
 from src.msg_provider import MSG_Provider
 from src.wave_provider import WaveProvider
 
@@ -41,11 +40,8 @@ class Generator(keras.utils.Sequence):
         self._msg_output_size = msg_output_size
         self._geo_coordinates_bins = geo_coordinates_bins
 
-        # augmentation can be None or list of configs, eg. ['v1', 'v2']
-        if augmentation is not None:
+        if augmentation is None:
             self._augmentation = {}
-            for a in augmentation:
-                self._augmentation.update(augmentation_configs[a])
 
         # compute rareness sample weighting coefficients
         if self._rareness_as_sw is not None:
@@ -112,6 +108,9 @@ class Generator(keras.utils.Sequence):
         if self._rareness_as_sw:
             sw *= self._df.loc[ix]["_rareness_sw"]  # type: ignore
 
+        # y
+        y = np.array(self._df.loc[ix]["_y"])  # type: ignore
+
         # x
 
         x = {}
@@ -126,6 +125,10 @@ class Generator(keras.utils.Sequence):
             ],
         )
 
+        wave, y = self._aug_same_class_mixing(
+            default_wave=wave, default_y=y, current_ix=ix
+        )
+
         # msg
 
         if self._msg_provider is None:  # return waves
@@ -134,12 +137,8 @@ class Generator(keras.utils.Sequence):
 
         else:  # return melspectrograms
 
-            power = self._msg_power
-
-            # random power
-            if self._augmentation is not None:
-                if "msg.random_power" in self._augmentation:
-                    power = self._augmentation["msg.random_power"](self._msg_power)
+            # augmentation: random melspectrogram power
+            power = self._aug_msg_random_power(default=self._msg_power)
 
             msg = self._msg_provider.msg(
                 wave,
@@ -179,10 +178,71 @@ class Generator(keras.utils.Sequence):
         x["i_year"] = np.array(self._df.loc[ix]["_year"], dtype=np.int32)  # type: ignore
         x["i_month"] = np.array(self._df.loc[ix]["_month"], dtype=np.int32)  # type: ignore
 
-        # y
-        y = np.array(self._df.loc[ix]["_y"], dtype=np.float16)  # type: ignore
-
-        return x, y, sw
+        return x, y.astype(np.float16), sw
 
     def _shuffle_samples(self):
         self._df = self._df.sample(frac=1).reset_index(drop=True)
+
+    def _aug_msg_random_power(self, default):
+        key = "msg.random_power"
+
+        if key in self._augmentation:
+            opts = self._augmentation[key]
+
+            if np.random.uniform(0, 1) <= opts["chance"]:
+                return np.random.uniform(
+                    opts["min_power"],
+                    opts["max_power"],
+                )
+
+        return default
+
+    def _aug_same_class_mixing(self, default_wave, default_y, current_ix):
+        key = "wave.same_class_mixing"
+
+        if key in self._augmentation:
+            opts = self._augmentation[key]
+
+            if np.random.uniform(0, 1) <= opts["chance"]:
+
+                # coefficients for multiplying samples/labels to
+                coeffs = [np.random.uniform(*x) for x in opts["coeffs"]]
+
+                # find more candidates of the same class to mix with
+                current_label = self._df.loc[current_ix]["_primary_labels"]  # type: ignore
+                extra_rows = self._df[
+                    (self._df["_primary_labels"] == current_label)
+                    & (self._df.index != current_ix)
+                ].sample(n=len(coeffs) - 1)
+                coeffs = coeffs[: 1 + extra_rows.shape[0]]
+                extra_rows = extra_rows.to_dict("list")
+
+                # original wave
+                wave = default_wave.astype(np.float32) * coeffs[0]
+
+                # original y
+                y = default_y.astype(np.float32) * coeffs[0]
+
+                for filename, from_s, to_s, row_y, coeff in zip(
+                    extra_rows["filename"],
+                    extra_rows["_from_s"],
+                    extra_rows["_to_s"],
+                    extra_rows["_y"],
+                    coeffs[1:],
+                ):
+                    wave += (
+                        coeff
+                        * self._wave_provider.get_audio_fragment(
+                            file_name=filename,
+                            range_seconds=[from_s, to_s],
+                        ).astype(np.float32)
+                    )
+
+                    y += coeff * row_y.astype(np.float32)
+
+                wave /= sum(coeffs)
+                y /= sum(coeffs)
+
+                return wave, y if opts["labels"] else default_y
+
+        return default_wave, default_y
