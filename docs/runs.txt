@@ -53,7 +53,7 @@ cli/train_fe.run.py --run C1_augv0 --dataset dataset-C.pickle --lr 0.001 --lr_pa
 cli/train_fe.run.py --run C1_augv1 --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v1
 
 # G ...
-cli/train_fe.run.py --run C1_augv1_g --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v1
+cli/train_fe.run.py --run C1_augv1_g --dataset dataset-C.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 32 --preload_val_data 1 --multiprocessing 4x8 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v1
 
-# ...
+# A ...
 cli/train_fe.run.py --run C1_augv1_lr53 --dataset dataset-C.pickle --lr 0.005 --lr_patience 3 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score --aug v1

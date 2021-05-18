@@ -249,8 +249,8 @@ class Generator(keras.utils.Sequence):
 
     def _aug_mix_wave(self, default_wave, default_y, current_ix, with_class, coeffs):
         # coefficients for multiplying samples/labels to
-        coeffs = [np.random.uniform(*x) for x in coeffs]
-        coeffs /= sum(coeffs)
+        coeffs = np.array([np.random.uniform(*x) for x in coeffs])
+        coeffs /= np.sum(coeffs)
 
         # find more candidates of the same class to mix with
         extra_rows = self._df[
