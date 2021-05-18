@@ -93,6 +93,7 @@ RUN apt-get install -y libsndfile1
 RUN pip install librosa
 RUN pip install tables
 RUN pip install tfa-nightly
+RUN pip install git+https://github.com/DemisEom/SpecAugment.git
 
 # mimic kaggle directory layout
 RUN mkdir -pv /kaggle/input

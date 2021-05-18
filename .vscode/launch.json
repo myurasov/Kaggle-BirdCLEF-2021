@@ -12,7 +12,8 @@
                         "remoteRoot": "/app"
                     }
                 ],
-                "projectType": "general"
+                "projectType": "general",
+                "justMyCode": false,
             }
         }
     ]
