@@ -68,7 +68,7 @@ RUN chmod +x /usr/bin/save-jupyter-config
 # startup commands
 ARG JUPYTER_TOKEN="mytoken"
 RUN echo "tensorboard --logdir=${APP_DIR}/.tensorboard --bind_all &" >> /cmd
-RUN echo "jupyter lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='${JUPYTER_TOKEN}' &" >> /cmd
+RUN echo "jupyter lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='${JUPYTER_TOKEN}' --NotebookApp.allow_origin='*' &" >> /cmd
 RUN echo "sleep infinity" >> /cmd
 CMD ["sh", "/cmd"]
 
@@ -93,7 +93,6 @@ RUN apt-get install -y libsndfile1
 RUN pip install librosa
 RUN pip install tables
 RUN pip install tfa-nightly
-RUN pip install git+https://github.com/DemisEom/SpecAugment.git
 
 # mimic kaggle directory layout
 RUN mkdir -pv /kaggle/input
@@ -108,6 +107,9 @@ ENV PYTHONHASHSEED=777
 
 # tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
 RUN jupyter server extension disable nbclassic
+
+# htop, because it's good for you
+RUN apt install htop
 
 # copy external resources
 COPY docker/res /
