@@ -228,7 +228,7 @@ class Generator(keras.utils.Sequence):
         return default_wave, default_y
 
     def _aug_nocall_mixing(self, default_wave, default_y, current_ix):
-        key = "wave.nocal_mixing"
+        key = "wave.nocall_mixing"
 
         if key in self._augmentation:
             opts = self._augmentation[key]

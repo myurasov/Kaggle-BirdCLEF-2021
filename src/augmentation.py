@@ -22,7 +22,7 @@ c["v1"] = {
         ],
         "labels": True,  # also mix labels
     },
-    "wave.nocal_mixing": {
+    "wave.nocall_mixing": {
         "chance": 0.5,
         "coeffs": [
             [0.75, 1],  # original
