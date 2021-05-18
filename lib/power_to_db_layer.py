@@ -21,6 +21,14 @@ class PowerToDb(keras.layers.Layer):
 
     def __init__(self, ref=1.0, amin=1e-10, top_db=80, **kwargs):
         super(PowerToDb, self).__init__(**kwargs)
+
+        if amin <= 0:
+            raise Exception("amin must be strictly positive")
+
+        if top_db is not None:
+            if top_db < 0:
+                raise Exception("top_db must be non-negative")
+
         self._ref = ref
         self._amin = amin
         self._top_db = top_db
@@ -28,17 +36,21 @@ class PowerToDb(keras.layers.Layer):
     def call(self, inputs):
         # see https://github.com/librosa/librosa/blob/main/librosa/core/spectrum.py#L1447
 
-        log10 = 2.302585092994046
+        LOG10 = 2.302585092994046
+
+        log_spec = K.cast(inputs, "float32")
 
         log_spec = (
-            10.0 * K.log(K.clip(inputs, min_value=self._amin, max_value=None)) / log10
+            10.0 * K.log(K.clip(log_spec, min_value=self._amin, max_value=None)) / LOG10
         )
 
-        log_spec -= 10.0 * K.log(K.max([self._amin, self._ref])) / log10
+        log_spec -= 10.0 * K.log(K.max([self._amin, K.abs(self._ref)])) / LOG10
 
-        log_spec = K.clip(
-            log_spec, min_value=K.max(log_spec) - self._top_db, max_value=None
-        )
+        if self._top_db is not None:
+
+            log_spec = K.clip(
+                log_spec, min_value=K.max(log_spec) - self._top_db, max_value=None
+            )
 
         return log_spec
 
