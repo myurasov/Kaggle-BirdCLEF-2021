@@ -39,17 +39,17 @@ class PowerToDb(keras.layers.Layer):
         LOG10 = 2.302585092994046
 
         log_spec = K.cast(inputs, "float32")
-
-        log_spec = (
-            10.0 * K.log(K.clip(log_spec, min_value=self._amin, max_value=None)) / LOG10
-        )
-
-        log_spec -= 10.0 * K.log(K.max([self._amin, K.abs(self._ref)])) / LOG10
+        log_spec = K.clip(log_spec, min_value=self._amin, max_value=None)
+        log_spec = 10.0 * K.log(log_spec) / LOG10
+        ref = K.max([self._amin, K.abs(self._ref)])
+        log_spec -= 10.0 * K.log(ref) / LOG10
 
         if self._top_db is not None:
 
             log_spec = K.clip(
-                log_spec, min_value=K.max(log_spec) - self._top_db, max_value=None
+                log_spec,
+                min_value=K.max(log_spec, axis=(1, 2), keepdims=True) - self._top_db,
+                max_value=None,
             )
 
         return log_spec
