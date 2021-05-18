@@ -125,8 +125,18 @@ class Generator(keras.utils.Sequence):
             ],
         )
 
+        # augmentation: mix with same class
         wave, y = self._aug_same_class_mixing(
-            default_wave=wave, default_y=y, current_ix=ix
+            default_wave=wave,
+            default_y=y,
+            current_ix=ix,
+        )
+
+        # augmentation: mix with nocall
+        wave, y = self._aug_nocall_mixing(
+            default_wave=wave,
+            default_y=y,
+            current_ix=ix,
         )
 
         # msg
@@ -205,44 +215,73 @@ class Generator(keras.utils.Sequence):
 
             if np.random.uniform(0, 1) <= opts["chance"]:
 
-                # coefficients for multiplying samples/labels to
-                coeffs = [np.random.uniform(*x) for x in opts["coeffs"]]
-
-                # find more candidates of the same class to mix with
-                current_label = self._df.loc[current_ix]["_primary_labels"]  # type: ignore
-                extra_rows = self._df[
-                    (self._df["_primary_labels"] == current_label)
-                    & (self._df.index != current_ix)
-                ].sample(n=len(coeffs) - 1)
-                coeffs = coeffs[: 1 + extra_rows.shape[0]]
-                extra_rows = extra_rows.to_dict("list")
-
-                # original wave
-                wave = default_wave.astype(np.float32) * coeffs[0]
-
-                # original y
-                y = default_y.astype(np.float32) * coeffs[0]
-
-                for filename, from_s, to_s, row_y, coeff in zip(
-                    extra_rows["filename"],
-                    extra_rows["_from_s"],
-                    extra_rows["_to_s"],
-                    extra_rows["_y"],
-                    coeffs[1:],
-                ):
-                    wave += (
-                        coeff
-                        * self._wave_provider.get_audio_fragment(
-                            file_name=filename,
-                            range_seconds=[from_s, to_s],
-                        ).astype(np.float32)
-                    )
-
-                    y += coeff * row_y.astype(np.float32)
-
-                wave /= sum(coeffs)
-                y /= sum(coeffs)
+                wave, y = self._aug_mix_wave(
+                    default_wave=default_wave,
+                    default_y=default_y,
+                    current_ix=current_ix,
+                    with_class=self._df.loc[current_ix]["_primary_labels"],  # type: ignore
+                    coeffs=opts["coeffs"],
+                )
 
                 return wave, y if opts["labels"] else default_y
 
         return default_wave, default_y
+
+    def _aug_nocall_mixing(self, default_wave, default_y, current_ix):
+        key = "wave.nocal_mixing"
+
+        if key in self._augmentation:
+            opts = self._augmentation[key]
+
+            if np.random.uniform(0, 1) <= opts["chance"]:
+
+                wave, _ = self._aug_mix_wave(
+                    default_wave=default_wave,
+                    default_y=default_y,
+                    current_ix=current_ix,
+                    with_class="nocall",
+                    coeffs=opts["coeffs"],
+                )
+
+                return wave, default_y
+
+        return default_wave, default_y
+
+    def _aug_mix_wave(self, default_wave, default_y, current_ix, with_class, coeffs):
+        # coefficients for multiplying samples/labels to
+        coeffs = [np.random.uniform(*x) for x in coeffs]
+
+        # find more candidates of the same class to mix with
+        extra_rows = self._df[
+            (self._df["_primary_labels"] == with_class) & (self._df.index != current_ix)
+        ].sample(n=len(coeffs) - 1)
+        coeffs = coeffs[: 1 + extra_rows.shape[0]]
+        extra_rows = extra_rows.to_dict("list")
+
+        # original wave
+        wave = default_wave.astype(np.float32) * coeffs[0]
+
+        # original y
+        y = default_y.astype(np.float32) * coeffs[0]
+
+        for filename, from_s, to_s, row_y, coeff in zip(
+            extra_rows["filename"],
+            extra_rows["_from_s"],
+            extra_rows["_to_s"],
+            extra_rows["_y"],
+            coeffs[1:],
+        ):
+            wave += (
+                coeff
+                * self._wave_provider.get_audio_fragment(
+                    file_name=filename,
+                    range_seconds=[from_s, to_s],
+                ).astype(np.float32)
+            )
+
+            y += coeff * row_y.astype(np.float32)
+
+        wave /= sum(coeffs)
+        y /= sum(coeffs)
+
+        return wave, y
