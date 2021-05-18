@@ -1,3 +1,4 @@
+import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow import keras
 
@@ -29,18 +30,22 @@ class Float2DToRGB(keras.layers.Layer):
     ```
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, E=1e-7, **kwargs):
         super(Float2DToRGB, self).__init__(**kwargs)
+        # minimum value for division to avoid overflows
+        self._e = E
 
     def call(self, inputs):
-        E = 1e-5  # minimum value for division to avoid overflows
-
-        res = inputs
-        res -= K.min(res)
-        res /= K.max([K.max(res), E])
+        res = inputs - K.min(inputs, axis=(1, 2), keepdims=True)
+        res /= K.max(res, axis=(1, 2), keepdims=True) + self._e
         res *= 255.0
         res = K.cast(res, "uint8")
         res = K.expand_dims(res, axis=3)
         res = K.repeat_elements(res, 3, 3)
 
         return res
+
+    def get_config(self):
+        return {
+            "E": self._e,
+        }
