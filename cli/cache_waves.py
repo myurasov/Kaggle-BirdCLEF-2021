@@ -78,9 +78,9 @@ with Pool(cpu_count()) as pool:
         tqdm(
             pool.imap(
                 _read_fragment,
-                range(len(fragments)),
+                range(len(fragments["filename"])),
             ),
-            total=len(fragments),
+            total=len(fragments["filename"]),
             smoothing=0,
         )
     )
