@@ -43,10 +43,12 @@ def _read_whole_file(i):
 
 
 def _read_fragment(i):
-    wp.get_audio_fragment(
+    x = wp.get_audio_fragment(
         file_name=fragments["filename"][i],
         range_seconds=[fragments["_from_s"][i], fragments["_to_s"][i]],
     )
+
+    assert len(x) == (fragments["_to_s"][i] - fragments["_from_s"][i]) * c["AUDIO_SR"]
 
 
 #
@@ -56,7 +58,6 @@ fragments = df[["filename", "_from_s", "_to_s"]].to_dict("list")
 filenames = list(set(fragments["filename"]))
 
 wp = get_wave_provider(c)
-
 
 print("* Caching whole files...")
 with Pool(cpu_count()) as pool:
@@ -73,14 +74,17 @@ with Pool(cpu_count()) as pool:
 
 
 print("* Caching fragments...")
-with Pool(cpu_count()) as pool:
-    list(
-        tqdm(
-            pool.imap(
-                _read_fragment,
-                range(len(fragments["filename"])),
-            ),
-            total=len(fragments["filename"]),
-            smoothing=0,
-        )
-    )
+for i in tqdm(range(len(fragments["filename"]))):
+    _read_fragment(i)
+
+# with Pool(cpu_count()) as pool:
+#     list(
+#         tqdm(
+#             pool.imap(
+#                 _read_fragment,
+#                 range(len(fragments["filename"])),
+#             ),
+#             total=len(fragments["filename"]),
+#             smoothing=0,
+#         )
+#     )
