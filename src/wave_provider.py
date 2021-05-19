@@ -129,7 +129,7 @@ class WaveProvider:
         if self._cache_dir is not None:
             if self._cache_fragments or range_seconds is None:
                 if not os.path.isdir(cache_dir):
-                    os.makedirs(cache_dir)
+                    os.makedirs(cache_dir, exist_ok=True)
                 save_pickle(cache_path, wave)
 
         return wave
