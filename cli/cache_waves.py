@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from multiprocessing import Pool, cpu_count
 from pprint import pformat
 
 import pandas as pd
@@ -34,17 +35,52 @@ os.chdir(c["WORK_DIR"])
 
 #
 
+
+def _read_whole_file(i):
+    wp.get_audio_fragment(
+        file_name=filenames[i],
+    )
+
+
+def _read_fragment(i):
+    wp.get_audio_fragment(
+        file_name=fragments["filename"][i],
+        range_seconds=[fragments["_from_s"][i], fragments["_to_s"][i]],
+    )
+
+
+#
+
 df = getattr(pd, f'read_{args.dataset.split(".")[-1].lower()}')(args.dataset)
+fragments = df[["filename", "_from_s", "_to_s"]].to_dict("list")
+filenames = list(set(fragments["filename"]))
 
-generator = Generator(
-    df=df,
-    wave_provider=get_wave_provider(c),
-    msg_provider=None,
-    batch_size=1,
-    shuffle=False,
-    augmentation=None,
-)
+wp = get_wave_provider(c)
 
-# multiprocessing corrupts numpy files...
-for i in tqdm(range(generator.__len__()), smoothing=0):
-    generator.__getitem__(i)
+
+print("* Caching whole files...")
+with Pool(cpu_count()) as pool:
+    list(
+        tqdm(
+            pool.imap(
+                _read_whole_file,
+                range(len(filenames)),
+            ),
+            total=len(filenames),
+            smoothing=0,
+        )
+    )
+
+
+print("* Caching fragments...")
+with Pool(cpu_count()) as pool:
+    list(
+        tqdm(
+            pool.imap(
+                _read_fragment,
+                range(len(fragments)),
+            ),
+            total=len(fragments),
+            smoothing=0,
+        )
+    )

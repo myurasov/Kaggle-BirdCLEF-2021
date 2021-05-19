@@ -16,7 +16,7 @@ if is_kaggle:
     c["WORK_DIR"] = "/tmp/_work"
 
 # cache directory
-c["CACHE_DIR"] = c["WORK_DIR"] + "/cache"
+c["CACHE_DIR"] = c["WORK_DIR"] + "/cache_pickle"
 
 # competition data
 c["COMPETITION_DATA"] = c["DATA_DIR"] + "/competition_data"
