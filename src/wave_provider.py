@@ -1,10 +1,11 @@
 import os
+import warnings
 from glob import glob
 from hashlib import md5
-import warnings
 
 import librosa
 import numpy as np
+from lib.utils import load_pickle, save_pickle
 
 
 class WaveProvider:
@@ -82,9 +83,9 @@ class WaveProvider:
             cache_key_md5 = md5(cache_key.encode()).hexdigest()
             cache_dir = os.path.join(self._cache_dir, "audio_fragments")
             cache_dir = os.path.join(cache_dir, cache_key_md5[0], cache_key_md5[1])
-            cache_path = os.path.join(cache_dir, cache_key_md5)
-            if os.path.isfile(cache_path + ".npy"):
-                wave = np.load(cache_path + ".npy")
+            cache_path = os.path.join(cache_dir, cache_key_md5) + ".pickle"
+            if os.path.isfile(cache_path):
+                wave = load_pickle(cache_path)
                 return wave
 
         if range_seconds is None:
@@ -129,6 +130,6 @@ class WaveProvider:
             if self._cache_fragments or range_seconds is None:
                 if not os.path.isdir(cache_dir):
                     os.makedirs(cache_dir)
-                np.save(cache_path, wave)
+                save_pickle(cache_path, wave)
 
         return wave

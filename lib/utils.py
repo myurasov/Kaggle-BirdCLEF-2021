@@ -2,6 +2,7 @@ import hashlib
 import json
 import math
 import os
+import pickle
 import random
 import shutil
 from collections import namedtuple
@@ -139,3 +140,14 @@ def float2d_to_rgb(a):
     a = np.expand_dims(a, 2)
     a = np.repeat(a, 3, 2)
     return a
+
+
+def save_pickle(file_path, data):
+    with open(file_path, "wb") as f:
+        pickle.dump(data, f)
+
+
+def load_pickle(file_path):
+    with open(file_path, "rb") as f:
+        out = pickle.load(f)
+    return out
