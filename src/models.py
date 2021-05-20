@@ -1,4 +1,7 @@
 import tensorflow.keras.backend as K
+from lib.float2d_to_rgb_layer import Float2DToFloatRGB, Float2DToRGB
+from lib.melspectrogram_layer import MelSpectrogram
+from lib.power_to_db_layer import PowerToDb
 from lib.sin_cos_layer import SinCos
 from tensorflow import keras
 
@@ -44,37 +47,30 @@ class MSG_Model_Builder:
 
     def build(self) -> keras.models.Model:
 
-        # msg branch
-
-        if self._body[:3] == "enb":  # EfficientNetB#
-
-            if self._body[:3] == "enb":
-                self._body = "EfficientNetB" + self._body[-1]
-                input_shape = [224, 240, 260, 300, 380, 456, 528, 600]
-                input_shape = input_shape[int(self._body[-1])]
-                input_shape = (input_shape, input_shape, 3)
-                input_dtype = "uint8"
-            elif self._body.lower() == "resnet50":
-                input_shape = (224, 224, 3)
-                input_dtype = "float16"
-            else:
-                raise ValueError(f'Unsupported body type "{self._body}"')
-
-            i_msg = keras.layers.Input(
-                shape=input_shape,
-                dtype=input_dtype,
-                name="i_msg",
-            )
-
-            x = getattr(keras.applications, self._body)(
-                include_top=False,
-                weights="imagenet" if self._imagenet_weights else None,
-            )(i_msg)
-
-            f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)
-
+        if self._body[:3] == "enb":
+            self._body = "EfficientNetB" + self._body[-1]
+            input_shape = [224, 240, 260, 300, 380, 456, 528, 600]
+            input_shape = input_shape[int(self._body[-1])]
+            input_shape = (input_shape, input_shape, 3)
+            input_dtype = "uint8"
+        elif self._body.lower() == "resnet50":
+            input_shape = (224, 224, 3)
+            input_dtype = "float16"
         else:
-            raise ValueError(f'Unsupported "body" parameter value "{self._body}"')
+            raise ValueError(f'Unsupported body type "{self._body}"')
+
+        i_msg = keras.layers.Input(
+            shape=input_shape,
+            dtype=input_dtype,
+            name="i_msg",
+        )
+
+        x = getattr(keras.applications, self._body)(
+            include_top=False,
+            weights="imagenet" if self._imagenet_weights else None,
+        )(i_msg)
+
+        f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)
 
         # year
         i_year = keras.layers.Input(
@@ -167,6 +163,169 @@ class MSG_Model_Builder:
                 i_lat,
                 i_lon,
             ],
+            outputs=[o_classes],
+        )
+
+        return self.model
+
+
+class Wave_Model_Builder:
+    """Builds wave-based model"""
+
+    def __init__(
+        self,
+        n_classes,
+        wave_len_samples,
+        wave_sample_rate,
+        n_fft=2048,
+        n_mels=256,
+        n_time_steps=256,
+        spec_power=2,
+        body="enb0",
+        imagenet_weights=False,
+        extra_dense_layers=None,
+        dropout=None,
+    ):
+        self._body = body
+        self._n_fft = n_fft
+        self._n_mels = n_mels
+        self._dropout = dropout
+        self._n_classes = n_classes
+        self._spec_power = spec_power
+        self._n_time_steps = n_time_steps
+        self._imagenet_weights = imagenet_weights
+        self._wave_len_samples = wave_len_samples
+        self._wave_sample_rate = wave_sample_rate
+        self._extra_dense_layers = extra_dense_layers
+
+    def build(self) -> keras.models.Model:
+
+        # msg branch
+
+        if self._body[:3] == "enb":
+            self._body = "EfficientNetB" + self._body[-1]
+            msg_shape = [224, 240, 260, 300, 380, 456, 528, 600]
+            msg_shape = msg_shape[int(self._body[-1])]
+            msg_shape = (msg_shape, msg_shape, 3)
+            msg_dtype = "uint8"
+        elif self._body.lower() == "resnet50":
+            msg_shape = (224, 224, 3)
+            msg_dtype = "float16"
+        else:
+            raise ValueError(f'Unsupported body type "{self._body}"')
+
+        # wave
+
+        i_wave = x = keras.layers.Input(
+            shape=(self._wave_len_samples),
+            dtype="float32",
+            name="i_wave",
+        )
+
+        x = MelSpectrogram(
+            sample_rate=self._wave_sample_rate,
+            fft_size=self._n_fft,
+            n_mels=self._n_mels,
+            hop_length=self._wave_len_samples // (self._n_time_steps - 1),
+            power=self._spec_power,
+        )(
+            x
+        )  # type: ignore
+
+        x = PowerToDb()(x)  # type: ignore
+
+        if len(msg_shape) == 3 and msg_shape[2] == 3:
+            if msg_dtype == "uint8":
+                x = Float2DToRGB()(x)  # type: ignore
+            else:
+                x = Float2DToFloatRGB(out_dtype=msg_dtype)(x)  # type: ignore
+
+        x = getattr(keras.applications, self._body)(
+            include_top=False,
+            weights="imagenet" if self._imagenet_weights else None,
+        )(x)
+
+        f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)
+
+        # year
+        i_year = keras.layers.Input(
+            shape=(1,),
+            dtype="int32",
+            name="i_year",
+        )
+
+        # month
+
+        i_month = keras.layers.Input(
+            shape=(1,),
+            dtype="int32",
+            name="i_month",
+        )
+
+        f_month_sincos = SinCos(  # type: ignore
+            val_range=[1, 12],
+            name="f_month_sincos",
+        )(i_month)
+
+        # date
+        f_date = YMToDate(name="f_date")([i_year, i_month])  # type: ignore
+
+        # lat
+
+        i_lat = keras.layers.Input(
+            shape=(1,),
+            dtype="float32",
+            name="i_lat",
+        )
+
+        f_lat = Div(by=90, name="f_lat")(i_lat)  # type: ignore
+
+        # lon
+
+        i_lon = keras.layers.Input(
+            shape=(1,),
+            dtype="float32",
+            name="i_lon",
+        )
+
+        f_lon_sincos = SinCos(  # type: ignore
+            val_range=[-180, 180],
+            name="f_lon_sincos",
+        )(i_lon)
+
+        # combine all the features
+
+        features = keras.layers.Concatenate(axis=1, name="features")(
+            [f_msg, f_date, f_month_sincos, f_lat, f_lon_sincos]
+        )
+
+        # classifier head
+        x = features
+
+        if self._dropout is not None:
+            x = keras.layers.Dropout(self._dropout)(x)
+
+        if self._extra_dense_layers is not None:
+            for _ in range(self._extra_dense_layers[0]):
+
+                x = keras.layers.Dense(
+                    self._extra_dense_layers[1],
+                    activation="relu",
+                )(x)
+
+                if self._dropout is not None:
+                    x = keras.layers.Dropout(self._dropout)(x)
+
+        o_classes = keras.layers.Dense(
+            self._n_classes,
+            name="o_classes",
+            activation="sigmoid",
+        )(x)
+
+        # model
+
+        self.model = keras.models.Model(
+            inputs=[i_wave, i_year, i_month, i_lat, i_lon],
             outputs=[o_classes],
         )
 
