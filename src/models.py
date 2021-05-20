@@ -223,8 +223,9 @@ class Wave_Model_Builder:
             msg_shape = (msg_shape, msg_shape, 3)
             msg_dtype = "uint8"
         elif self._body.lower() == "resnet50":
+            self._body = "ResNet50"
             msg_shape = (224, 224, 3)
-            msg_dtype = "float16"
+            msg_dtype = "float"
         else:
             raise ValueError(f'Unsupported body type "{self._body}"')
 
@@ -252,7 +253,7 @@ class Wave_Model_Builder:
             if msg_dtype == "uint8":
                 x = Float2DToRGB()(x)  # type: ignore
             else:
-                x = Float2DToFloatRGB(out_dtype=msg_dtype)(x)  # type: ignore
+                x = Float2DToFloatRGB()(x)  # type: ignore
 
         x = getattr(keras.applications, self._body)(
             input_shape=msg_shape,
