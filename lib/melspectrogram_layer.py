@@ -19,7 +19,7 @@ class MelSpectrogram(tf.keras.layers.Layer):
 
     from lib.float2d_to_rgb_layer import Float2DToRGB
     from lib.melspectrogram_layer import MelSpectrogram
-    from lib.power_to_db_layer import PowerToDB
+    from lib.power_to_db_layer import PowerToDb
 
     N_FFT = 2048
     N_MELS = 256
@@ -40,7 +40,7 @@ class MelSpectrogram(tf.keras.layers.Layer):
         hop_length=WAVE_LEN_SAMPLES // (N_TIMESTEPS - 1),
         power=POWER,
     )(x)
-    o_float = x = PowerToDB()(x)
+    o_float = x = PowerToDb()(x)
     o_rgb = x = Float2DToRGB()(x)
 
     m = keras.models.Model(inputs=[i_wave], outputs=[o_float, o_rgb])
