@@ -2,7 +2,7 @@ import tensorflow.keras as keras
 import tensorflow.keras.backend as K
 
 
-class PowerToDb(keras.layers.Layer):
+class PowerToDB(keras.layers.Layer):
     """
     Does roughly the same as librosa.power_to_db() but faster.
 
@@ -13,14 +13,14 @@ class PowerToDb(keras.layers.Layer):
 
     ```python
     i = keras.layers.Input(shape=msg.shape, dtype='float32')
-    x = PowerToDb()(i)
+    x = PowerToDB()(i)
     m = keras.models.Model(inputs=[i], outputs=[x])
     ```
 
     """
 
     def __init__(self, ref=1.0, amin=1e-10, top_db=80, **kwargs):
-        super(PowerToDb, self).__init__(**kwargs)
+        super(PowerToDB, self).__init__(**kwargs)
 
         if amin <= 0:
             raise Exception("amin must be strictly positive")
