@@ -176,8 +176,9 @@ meta = read_json(args.dataset + ".json")
 
 # convert augmentation levels list into config
 augmentation_config = {}
-for level in args.aug:
-    augmentation_config.update(aug_levels[level])
+if args.aug is not None:
+    for level in args.aug:
+        augmentation_config.update(aug_levels[level])
 # endregion
 
 # region: create train/val dataframes
@@ -241,43 +242,48 @@ val_g = None
 wave_p = None
 msg_p = None
 
-try:
-    input_shape = model.get_layer("i_msg").input_shape[0][1:]
+layer_names = set([layer.name for layer in model.layers])
+
+if "i_msg" in layer_names:
     input_type = "melspectrogram"
+    input_shape = model.get_layer("i_msg").input_shape[0][1:]
     wave_p = get_wave_provider(c)
     msg_p = get_msg_provider(c)
-
-    train_g = Generator(
-        df=train_df,
-        shuffle=True,
-        augmentation=augmentation_config,
-        rating_as_sw=True,
-        rareness_as_sw=args.weight_by_rareness > 0,
-        msg_provider=msg_p,
-        wave_provider=wave_p,
-        batch_size=args.batch,
-        msg_output_size=input_shape,
-        msg_power=c["MSG_POWER"],
-        geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
-    )
-
-    val_g = Generator(
-        df=val_df,
-        shuffle=False,
-        augmentation=None,
-        rating_as_sw=False,
-        rareness_as_sw=False,
-        msg_provider=msg_p,
-        wave_provider=wave_p,
-        msg_output_size=input_shape,
-        msg_power=c["MSG_POWER"],
-        geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
-        batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
-    )
-
-
-except ValueError:
+elif "i_wave" in layer_names:
+    input_type = "wave"
+    input_shape = model.get_layer("i_wave").input_shape[0][1:]
+    wave_p = get_wave_provider(c)
+else:
     raise RuntimeError("Unsupported input type")
+
+
+train_g = Generator(
+    df=train_df,
+    shuffle=True,
+    augmentation=augmentation_config,
+    rating_as_sw=True,
+    rareness_as_sw=args.weight_by_rareness > 0,
+    msg_provider=msg_p,
+    wave_provider=wave_p,
+    batch_size=args.batch,
+    msg_output_size=input_shape,
+    msg_power=c["MSG_POWER"],
+    geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
+)
+
+val_g = Generator(
+    df=val_df,
+    shuffle=False,
+    augmentation=None,
+    rating_as_sw=False,
+    rareness_as_sw=False,
+    msg_provider=msg_p,
+    wave_provider=wave_p,
+    msg_output_size=input_shape,
+    msg_power=c["MSG_POWER"],
+    geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
+    batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
+)
 
 print(f"* Model input: {input_type} of size {input_shape}")
 

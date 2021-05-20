@@ -5,6 +5,8 @@ from lib.power_to_db_layer import PowerToDb
 from lib.sin_cos_layer import SinCos
 from tensorflow import keras
 
+from src.config import c
+
 
 def build_model(name, n_classes) -> keras.models.Model:
     """Name convetion mgs|wave_body_option1_option2_.."""
@@ -18,6 +20,22 @@ def build_model(name, n_classes) -> keras.models.Model:
             imagenet_weights="imagenet" in options,
             extra_dense_layers=None if "noxdense" in options else [1, 1024],
             dropout=0.5 if "drops" in options else None,
+        )
+
+        return mb.build()
+
+    elif input_type == "wave":
+
+        mb = Wave_Model_Builder(
+            n_classes=n_classes,
+            body=body,
+            imagenet_weights="imagenet" in options,
+            extra_dense_layers=None if "noxdense" in options else [1, 1024],
+            dropout=0.5 if "drops" in options else None,
+            wave_len_samples=c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"],
+            wave_sample_rate=c["AUDIO_SR"],
+            n_fft=c["MSG_N_FFT"],
+            spec_power=c["MSG_POWER"],
         )
 
         return mb.build()
@@ -178,8 +196,6 @@ class Wave_Model_Builder:
         wave_len_samples,
         wave_sample_rate,
         n_fft=2048,
-        n_mels=256,
-        n_time_steps=256,
         spec_power=2,
         body="enb0",
         imagenet_weights=False,
@@ -188,11 +204,9 @@ class Wave_Model_Builder:
     ):
         self._body = body
         self._n_fft = n_fft
-        self._n_mels = n_mels
         self._dropout = dropout
         self._n_classes = n_classes
         self._spec_power = spec_power
-        self._n_time_steps = n_time_steps
         self._imagenet_weights = imagenet_weights
         self._wave_len_samples = wave_len_samples
         self._wave_sample_rate = wave_sample_rate
@@ -218,15 +232,15 @@ class Wave_Model_Builder:
 
         i_wave = x = keras.layers.Input(
             shape=(self._wave_len_samples),
-            dtype="float32",
+            dtype="float16",
             name="i_wave",
         )
 
         x = MelSpectrogram(
             sample_rate=self._wave_sample_rate,
             fft_size=self._n_fft,
-            n_mels=self._n_mels,
-            hop_length=self._wave_len_samples // (self._n_time_steps - 1),
+            n_mels=msg_shape[1],
+            hop_length=self._wave_len_samples // (msg_shape[0] - 1),
             power=self._spec_power,
         )(
             x
@@ -241,6 +255,7 @@ class Wave_Model_Builder:
                 x = Float2DToFloatRGB(out_dtype=msg_dtype)(x)  # type: ignore
 
         x = getattr(keras.applications, self._body)(
+            input_shape=msg_shape,
             include_top=False,
             weights="imagenet" if self._imagenet_weights else None,
         )(x)
