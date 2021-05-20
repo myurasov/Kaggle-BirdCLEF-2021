@@ -73,9 +73,10 @@ with Pool(cpu_count()) as pool:
     )
 
 
-print("* Caching fragments...")
-for i in tqdm(range(len(fragments["filename"]))):
-    _read_fragment(i)
+if c["CACHE_AUDIO_FRAGMENTS"]:
+    print("* Caching fragments...")
+    for i in tqdm(range(len(fragments["filename"]))):
+        _read_fragment(i)
 
 # with Pool(cpu_count()) as pool:
 #     list(
