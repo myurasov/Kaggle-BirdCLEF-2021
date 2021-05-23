@@ -31,3 +31,23 @@ c["v1"] = {
         ],
     },
 }
+
+c["v2"] = {
+    "wave.same_class_mixing": {
+        "chance": 0.333,
+        # coefficients to multiply samples to
+        # (randomly sampled in the provided ranges)
+        "coeffs": [
+            [1, 1],  # original
+            [0.25, 0.5],
+        ],
+        "labels": True,  # also mix labels
+    },
+    "wave.nocall_mixing": {
+        "chance": 0.333,
+        "coeffs": [
+            [1, 1],  # original
+            [0.25, 0.5],
+        ],
+    },
+}
