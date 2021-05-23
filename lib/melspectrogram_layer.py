@@ -127,6 +127,7 @@ class MelSpectrogram(tf.keras.layers.Layer):
             "pad_end": self._pad_end,
             "fft_size": self._fft_size,
             "hop_size": self._hop_length,
+            "hop_length": self._hop_length,
             "sample_rate": self._sample_rate,
         }
 
