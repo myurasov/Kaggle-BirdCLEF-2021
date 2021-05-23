@@ -57,7 +57,7 @@ class MelSpectrogram(tf.keras.layers.Layer):
         self,
         sample_rate,
         fft_size,
-        hop_length,
+        hop_size,
         n_mels,
         f_min=0.0,
         f_max=None,
@@ -72,7 +72,7 @@ class MelSpectrogram(tf.keras.layers.Layer):
         self._n_mels = n_mels
         self._pad_end = pad_end
         self._fft_size = fft_size
-        self._hop_length = hop_length
+        self._hop_length = hop_size
         self._sample_rate = sample_rate
         self._f_max = f_max if f_max is not None else sample_rate // 2
 

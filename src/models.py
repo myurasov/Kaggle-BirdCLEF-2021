@@ -250,7 +250,7 @@ class Wave_Model_Builder:
             sample_rate=self._wave_sample_rate,
             fft_size=self._n_fft,
             n_mels=msg_shape[1],
-            hop_length=self._wave_len_samples // (msg_shape[0] - 1),
+            hop_size=self._wave_len_samples // (msg_shape[0] - 1),
             power=self._spec_power,
             f_min=self._freq_min,
             f_max=self._freq_max,
