@@ -80,8 +80,8 @@ args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
-# args.min_rating = 5
-# args.sample_with_detection_csv = "/app/res/n_nocall_predictions.csv.gz"
+args.min_rating = 5
+args.sample_with_detection_csv = "/app/res/n_nocall_predictions.csv.gz"
 
 # region: bootstrap
 
@@ -248,7 +248,7 @@ if args.sample_with_stride > 0:
                 for interval in detections[row["filename"]]:
                     for from_s in np.arange(interval[0], interval[1], stride_s):
                         # natasha's file has 1s strides
-                        if (from_s - interval[0]) % args.sample_with_stride == 0:
+                        if from_s % args.sample_with_stride == 0:
                             # and sometimes has intervals past the end of file
                             if from_s + clip_len_s <= row["_duration_s"]:
                                 clip_row = list(row)
