@@ -19,7 +19,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             n_classes=n_classes,
             body=body,
             imagenet_weights="imagenet" in options,
-            extra_dense_layers=None if "noxdense" in options else [1, 1024],
+            extra_dense_layers=[1, 1024] if "xdense" in options else None,
             dropout=0.5 if "drops" in options else None,
         )
 
@@ -34,7 +34,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             n_classes=n_classes,
             body=body,
             imagenet_weights="imagenet" in options,
-            extra_dense_layers=None if "noxdense" in options else [1, 1024],
+            extra_dense_layers=[1, 1024] if "xdense" in options else None,
             dropout=0.5 if "drops" in options else None,
             wave_len_samples=c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"],
             wave_sample_rate=c["AUDIO_SR"],
