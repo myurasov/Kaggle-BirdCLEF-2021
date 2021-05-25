@@ -41,7 +41,7 @@ c["v2"] = {
             [1, 1],  # original
             [0.25, 0.5],
         ],
-        "labels": True,  # also mix labels
+        "labels": False,  # also mix labels
     },
     "wave.nocall_mixing": {
         "chance": 0.333,
