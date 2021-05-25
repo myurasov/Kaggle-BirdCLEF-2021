@@ -36,6 +36,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             body=body,
             imagenet_weights="imagenet" in options,
             extra_dense_layers=[1, 1024] if "xdense" in options else None,
+            extra_aux_encoder=[3, 32] if "xauxenc332" in options else None,
             dropout=0.5 if "drops" in options else None,
             wave_len_samples=c["AUDIO_SR"] * c["AUDIO_TARGET_LEN_S"],
             wave_sample_rate=c["AUDIO_SR"],
@@ -167,7 +168,7 @@ class MSG_Model_Builder:
                 ]
             )
 
-            for i in range(self._extra_aux_encoder[0]):
+            for _ in range(self._extra_aux_encoder[0]):
                 x = keras.layers.Dense(self._extra_aux_encoder[1], activation="relu")(x)
 
             features = keras.layers.Concatenate(
@@ -230,6 +231,7 @@ class Wave_Model_Builder:
         dropout=None,
         freq_min=0,
         freq_max=None,
+        extra_aux_encoder=[3, 32],
     ):
         self._body = body
         self._n_fft = n_fft
@@ -240,6 +242,7 @@ class Wave_Model_Builder:
         self._imagenet_weights = imagenet_weights
         self._wave_len_samples = wave_len_samples
         self._wave_sample_rate = wave_sample_rate
+        self._extra_aux_encoder = extra_aux_encoder
         self._extra_dense_layers = extra_dense_layers
         self._freq_max = freq_max if freq_max is not None else wave_sample_rate // 2
 
@@ -344,9 +347,34 @@ class Wave_Model_Builder:
 
         # combine all the features
 
-        features = keras.layers.Concatenate(axis=1, name="features")(
-            [f_msg, f_date, f_month_sincos, f_lat, f_lon_sincos]
-        )
+        if self._extra_aux_encoder is None:
+
+            features = keras.layers.Concatenate(axis=1, name="features",)(
+                [
+                    f_msg,
+                    f_date,
+                    f_month_sincos,
+                    f_lat,
+                    f_lon_sincos,
+                ]
+            )
+        else:
+            x = keras.layers.Concatenate(axis=1, name="aux_features")(
+                [
+                    f_date,
+                    f_month_sincos,
+                    f_lat,
+                    f_lon_sincos,
+                ]
+            )
+
+            for _ in range(self._extra_aux_encoder[0]):
+                x = keras.layers.Dense(self._extra_aux_encoder[1], activation="relu")(x)
+
+            features = keras.layers.Concatenate(
+                axis=1,
+                name="features",
+            )([f_msg, x])
 
         # classifier head
         x = features
