@@ -80,4 +80,14 @@ c["EXCLUDE_FILES"] = [
     "XC600308.ogg",  # year 202
     "XC452323.ogg",  # year 199
     "XC204856.ogg",  # year 2104
+    # from natasha
+    "XC509721.ogg",
+    "XC428067.ogg",
+    "XC523831.ogg",
+    "XC523960.ogg",
+    "XC237870.ogg",
+    "XC129924.ogg",
+    "XC576851.ogg",
+    "XC579430.ogg",
+    "XC590621.ogg",
 ]

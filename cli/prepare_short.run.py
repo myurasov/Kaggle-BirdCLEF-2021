@@ -52,9 +52,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--sample_with_detection",
-    action="store_true",
-    help="Produce samples from bird song presense detection.",
+    "--sample_with_detection_csv",
+    type=str,
+    default=None,
+    help="Produce samples from song detection prediction CSV."
+    + " Columns 'filename', 'nocall', 'bird', 'end_sec' should be present.",
 )
 
 parser.add_argument(
@@ -73,9 +75,13 @@ parser.add_argument(
     help="Maximum number of samples from a single clip. Set to 0 for no limit.",
 )
 
+
 args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
+
+# args.min_rating = 5
+# args.sample_with_detection_csv = "/app/res/n_nocall_predictions.csv.gz"
 
 # region: bootstrap
 
@@ -155,7 +161,7 @@ df["_secondary_labels"] = secondary_labels
 # endregion
 
 # region: add month, year
-print("* Adding monts and years...")
+print("* Adding months and years...")
 
 months = []
 years = []
@@ -181,9 +187,10 @@ df["_month"] = months
 # region: sample fragments
 
 # calc audio files durations
-print("* Calculating short files duration...")
-df["_duration_s"] = durations = _get_audio_file_durations(list(df.filename))
-print(f"* Total short clips time: {sum(durations):,.0f} seconds")
+if args.sample_with_detection_csv is None:
+    print("* Calculating short files duration...")
+    df["_duration_s"] = durations = _get_audio_file_durations(list(df.filename))
+    print(f"* Total short clips time: {sum(durations):,.0f} seconds")
 
 # add from/to cols
 df["_from_s"] = [None] * df.shape[0]
@@ -194,10 +201,31 @@ out_df_rows = []
 out_df_col_ixs = list_indexes(list(df.columns))
 
 # sample with bird voice detection model
-if args.sample_with_detection:
-    raise NotImplementedError("Sampling with detection is not yet implented.")
+# this only works with data from Natasha currently (res/n_nocall_predictions.csv)
+detections = None
+if args.sample_with_detection_csv is not None:
 
-# sample with strides
+    det_df = pd.read_csv(args.sample_with_detection_csv)
+    det_df = det_df[(det_df["nocall"] == 0) & (det_df["bird"] == 1)]  # type: ignore
+    det_df = (
+        det_df[["filename", "end_sec"]]
+        .sort_values(["filename", "end_sec"])
+        .set_index("filename")
+    )
+
+    # prepare detections ductionary: filename -> [[from_s, to_s]...]
+    detections = {}
+    print(f"* Reading detections from {args.sample_with_detection_csv}")
+
+    with tqdm(total=det_df.shape[0]) as t:
+        for ix in det_df.groupby("filename").indices:
+            end_secs = det_df.loc[ix]["end_sec"]
+            if type(end_secs) != pd.Series:
+                end_secs = [end_secs]
+            end_secs = list(end_secs)
+            detections[ix] = list(map(lambda x: [x - 5, x], end_secs))
+            t.update(len(end_secs))
+
 if args.sample_with_stride > 0:
 
     clip_len_s = c["AUDIO_TARGET_LEN_S"]
@@ -206,15 +234,23 @@ if args.sample_with_stride > 0:
     print(f"* Sampling {clip_len_s}s clips with stride={stride_s}s")
 
     for ix, row in tqdm(df.iterrows(), total=df.shape[0]):
-        clip_duration_s = row["_duration_s"]
         clip_rows = []
 
-        # stride through one file
-        for from_s in np.arange(0, clip_duration_s - clip_len_s, stride_s):
-            clip_row = list(row)
-            clip_row[out_df_col_ixs["_from_s"]] = from_s
-            clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
-            clip_rows.append(clip_row)
+        if detections is None:  # sample with strides
+            for from_s in np.arange(0, row["_duration_s"], stride_s):
+                clip_row = list(row)
+                clip_row[out_df_col_ixs["_from_s"]] = from_s
+                clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
+                clip_rows.append(clip_row)
+
+        else:  # sample with detections
+            if row["filename"] in detections:
+                for interval in detections[row["filename"]]:
+                    for from_s in np.arange(interval[0], interval[1], stride_s):
+                        clip_row = list(row)
+                        clip_row[out_df_col_ixs["_from_s"]] = from_s
+                        clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
+                        clip_rows.append(clip_row)
 
         # limit max number per audio clip
         if args.max_from_clip > 0:
@@ -223,7 +259,6 @@ if args.sample_with_stride > 0:
                 clip_rows = clip_rows[: args.max_from_clip]
 
         out_df_rows += clip_rows
-
 
 # create output df
 out_df = pd.DataFrame(out_df_rows, columns=df.columns)
