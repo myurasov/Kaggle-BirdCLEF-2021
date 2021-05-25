@@ -187,10 +187,9 @@ df["_month"] = months
 # region: sample fragments
 
 # calc audio files durations
-if args.sample_with_detection_csv is None:
-    print("* Calculating short files duration...")
-    df["_duration_s"] = durations = _get_audio_file_durations(list(df.filename))
-    print(f"* Total short clips time: {sum(durations):,.0f} seconds")
+print("* Calculating short files duration...")
+df["_duration_s"] = durations = _get_audio_file_durations(list(df.filename))
+print(f"* Total short clips time: {sum(durations):,.0f} seconds")
 
 # add from/to cols
 df["_from_s"] = [None] * df.shape[0]
@@ -248,10 +247,14 @@ if args.sample_with_stride > 0:
             if row["filename"] in detections:
                 for interval in detections[row["filename"]]:
                     for from_s in np.arange(interval[0], interval[1], stride_s):
-                        clip_row = list(row)
-                        clip_row[out_df_col_ixs["_from_s"]] = from_s
-                        clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
-                        clip_rows.append(clip_row)
+                        # natasha's file has 1s strides
+                        if from_s % args.sample_with_stride == 0:
+                            # and sometimes has intervals past the end of file
+                            if from_s + clip_len_s <= row["_duration_s"]:
+                                clip_row = list(row)
+                                clip_row[out_df_col_ixs["_from_s"]] = from_s
+                                clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
+                                clip_rows.append(clip_row)
 
         # limit max number per audio clip
         if args.max_from_clip > 0:

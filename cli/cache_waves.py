@@ -48,7 +48,7 @@ def _read_fragment(i):
         range_seconds=[fragments["_from_s"][i], fragments["_to_s"][i]],
     )
 
-    assert len(x) == (fragments["_to_s"][i] - fragments["_from_s"][i]) * c["AUDIO_SR"]
+    assert len(x) == c["AUDIO_TARGET_LEN_S"] * c["AUDIO_SR"]
 
 
 #
@@ -71,7 +71,6 @@ with Pool(cpu_count()) as pool:
             smoothing=0,
         )
     )
-
 
 if c["CACHE_AUDIO_FRAGMENTS"]:
     print("* Caching fragments...")
