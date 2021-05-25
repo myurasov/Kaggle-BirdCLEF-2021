@@ -21,6 +21,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             imagenet_weights="imagenet" in options,
             extra_dense_layers=[1, 1024] if "xdense" in options else None,
             dropout=0.5 if "drops" in options else None,
+            extra_aux_encoder=[3, 32] if "xauxenc332" in options else None,
         )
 
         return mb.build()
@@ -60,11 +61,13 @@ class MSG_Model_Builder:
             1024,
         ],  # number and dimensions for extra dense layers in the head. None = no extra layers.
         dropout=None,
+        extra_aux_encoder=[3, 32],
     ):
         self._body = body
         self._dropout = dropout
         self._n_classes = n_classes
         self._imagenet_weights = imagenet_weights
+        self._extra_aux_encoder = extra_aux_encoder
         self._extra_dense_layers = extra_dense_layers
 
     def build(self) -> keras.models.Model:
@@ -143,15 +146,34 @@ class MSG_Model_Builder:
 
         # combine all the features
 
-        features = keras.layers.Concatenate(axis=1, name="features",)(
-            [
-                f_msg,
-                f_date,
-                f_month_sincos,
-                f_lat,
-                f_lon_sincos,
-            ]
-        )
+        if self._extra_aux_encoder is None:
+
+            features = keras.layers.Concatenate(axis=1, name="features",)(
+                [
+                    f_msg,
+                    f_date,
+                    f_month_sincos,
+                    f_lat,
+                    f_lon_sincos,
+                ]
+            )
+        else:
+            x = keras.layers.Concatenate(axis=1, name="aux_features")(
+                [
+                    f_date,
+                    f_month_sincos,
+                    f_lat,
+                    f_lon_sincos,
+                ]
+            )
+
+            for i in range(self._extra_aux_encoder[0]):
+                x = keras.layers.Dense(self._extra_aux_encoder[1], activation="relu")(x)
+
+            features = keras.layers.Concatenate(
+                axis=1,
+                name="features",
+            )([f_msg, x])
 
         # classifier head
         x = features
