@@ -153,6 +153,13 @@ parser.add_argument(
     help="Use primary label rareness for sample weighting",
 )
 
+parser.add_argument(
+    "--weight_by_rating",
+    type=int,
+    default=1,
+    help="Use rating for sample weighting",
+)
+
 args = parser.parse_args()
 if _debug_args is not None:
     args = parser.parse_args(shlex.split(_debug_args))
@@ -261,7 +268,7 @@ train_g = Generator(
     df=train_df,
     shuffle=True,
     augmentation=augmentation_config,
-    rating_as_sw=True,
+    rating_as_sw=args.weight_by_rating > 0,
     rareness_as_sw=args.weight_by_rareness > 0,
     msg_provider=msg_p,
     wave_provider=wave_p,
