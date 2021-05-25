@@ -238,10 +238,11 @@ if args.sample_with_stride > 0:
 
         if detections is None:  # sample with strides
             for from_s in np.arange(0, row["_duration_s"], stride_s):
-                clip_row = list(row)
-                clip_row[out_df_col_ixs["_from_s"]] = from_s
-                clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
-                clip_rows.append(clip_row)
+                if from_s + clip_len_s <= row["_duration_s"]:
+                    clip_row = list(row)
+                    clip_row[out_df_col_ixs["_from_s"]] = from_s
+                    clip_row[out_df_col_ixs["_to_s"]] = from_s + clip_len_s
+                    clip_rows.append(clip_row)
 
         else:  # sample with detections
             if row["filename"] in detections:
