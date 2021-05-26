@@ -95,6 +95,9 @@ cli/create_dataset.run.py --in_csvs n_nocall.csv short-E.csv long-E.csv --out da
 
 cli/cache_waves.py --dataset dataset-E.pickle
 
+# 0.64 geof, 0.65 - geof+boost 2.4/12
 cli/train_fe.run.py --run E1_g_xae332 --dataset dataset-E.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332 --amp 1 --val_fold 0.1 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 1 --monitor_metric val_f1_score
+
+cli/train_fe.run.py --run E2_g_xae_augv1 --dataset dataset-E.pickle --lr 0.001 --lr_patience 3 --lr_factor 0.5 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332 --amp 1 --val_fold 0.1 --batch 32 --preload_val_data 1 --multiprocessing 8x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 1 --monitor_metric val_f1_score --aug v1
 
 cli/train_fe.run.py --run E2_d_xa_augv2 --dataset dataset-E.pickle --lr 0.001 --lr_patience 3 --lr_factor 0.5 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332 --amp 1 --val_fold 0.1 --batch 32 --preload_val_data 1 --multiprocessing 10x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 1 --monitor_metric val_f1_score --aug v2
