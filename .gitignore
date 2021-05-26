@@ -12,3 +12,4 @@ iframe_figures/
 /__*
 **/__repo__
 tests/res/__cache__
+notebooks/convert_n_data.nbconvert.ipynb

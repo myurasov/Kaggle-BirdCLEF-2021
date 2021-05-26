@@ -77,8 +77,11 @@ RUN pip install pydot
 RUN apt-get install -y graphviz
 
 # kaggle cli
-ENV KAGGLE_CONFIG_DIR ${APP_DIR}
+ENV KAGGLE_CONFIG_DIR /root/.kaggle
 RUN pip install kaggle
+
+# pre-approve github host
+RUN mkdir /root/.ssh && ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # python packages
 
@@ -108,8 +111,8 @@ ENV PYTHONHASHSEED=777
 # tmp fix for https://github.com/jupyterlab/jupyterlab/issues/10228
 RUN jupyter server extension disable nbclassic
 
-# htop, because it's good for you
-RUN apt install htop
+# htop, atop - because it's good for you
+RUN apt install -y htop atop
 
 # copy external resources
 COPY docker/res /

@@ -8,10 +8,10 @@ c = {}
 c["SEED"] = 123
 
 # input data dir
-c["DATA_DIR"] = "/app/_data"
+c["DATA_DIR"] = "/app2/_data"
 
 # where to put generated data
-c["WORK_DIR"] = "/app/_work"
+c["WORK_DIR"] = "/app2/_work"
 if is_kaggle:
     c["WORK_DIR"] = "/tmp/_work"
 
