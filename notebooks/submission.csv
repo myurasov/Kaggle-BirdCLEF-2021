@@ -488,7 +488,7 @@ row_id,birds
 21767_COR_35,rucwar
 21767_COR_40,grekis rucwar
 21767_COR_45,rucwar
-21767_COR_50,rucwar
+21767_COR_50,nocall
 21767_COR_55,grekis
 21767_COR_60,grekis rucwar
 21767_COR_65,grekis rucwar
@@ -538,7 +538,7 @@ row_id,birds
 21767_COR_285,crfpar
 21767_COR_290,crfpar
 21767_COR_295,nocall
-21767_COR_300,nocall
+21767_COR_300,crfpar
 21767_COR_305,crfpar
 21767_COR_310,crfpar
 21767_COR_315,nocall
@@ -639,7 +639,7 @@ row_id,birds
 26746_COR_190,rucwar
 26746_COR_195,rucwar
 26746_COR_200,rucwar
-26746_COR_205,nocall
+26746_COR_205,rucwar
 26746_COR_210,rucwar
 26746_COR_215,nocall
 26746_COR_220,nocall
@@ -709,7 +709,7 @@ row_id,birds
 26746_COR_540,nocall
 26746_COR_545,nocall
 26746_COR_550,nocall
-26746_COR_555,nocall
+26746_COR_555,brnjay
 26746_COR_560,nocall
 26746_COR_565,nocall
 26746_COR_570,nocall
@@ -840,7 +840,7 @@ row_id,birds
 31928_COR_595,nocall
 31928_COR_600,nocall
 44957_COR_5,nocall
-44957_COR_10,nocall
+44957_COR_10,bobfly1
 44957_COR_15,nocall
 44957_COR_20,bobfly1
 44957_COR_25,bobfly1
@@ -923,7 +923,7 @@ row_id,birds
 44957_COR_410,bobfly1
 44957_COR_415,bobfly1
 44957_COR_420,bobfly1
-44957_COR_425,nocall
+44957_COR_425,bobfly1
 44957_COR_430,bobfly1
 44957_COR_435,bobfly1
 44957_COR_440,nocall
@@ -935,7 +935,7 @@ row_id,birds
 44957_COR_470,bobfly1
 44957_COR_475,bobfly1
 44957_COR_480,bobfly1
-44957_COR_485,bobfly1
+44957_COR_485,nocall
 44957_COR_490,bobfly1
 44957_COR_495,bobfly1
 44957_COR_500,bobfly1
@@ -943,7 +943,7 @@ row_id,birds
 44957_COR_510,nocall
 44957_COR_515,nocall
 44957_COR_520,nocall
-44957_COR_525,bobfly1
+44957_COR_525,nocall
 44957_COR_530,nocall
 44957_COR_535,nocall
 44957_COR_540,nocall
@@ -1031,7 +1031,7 @@ row_id,birds
 50878_COR_350,nocall
 50878_COR_355,orcpar
 50878_COR_360,orcpar
-50878_COR_365,orcpar
+50878_COR_365,nocall
 50878_COR_370,nocall
 50878_COR_375,nocall
 50878_COR_380,nocall
@@ -1127,7 +1127,7 @@ row_id,birds
 57610_COR_230,nocall
 57610_COR_235,nocall
 57610_COR_240,nocall
-57610_COR_245,nocall
+57610_COR_245,bobfly1
 57610_COR_250,nocall
 57610_COR_255,nocall
 57610_COR_260,nocall
@@ -1272,13 +1272,13 @@ row_id,birds
 2782_SSW_355,eawpew reevir1
 2782_SSW_360,reevir1
 2782_SSW_365,eawpew reevir1
-2782_SSW_370,nocall
+2782_SSW_370,reevir1
 2782_SSW_375,reevir1
 2782_SSW_380,reevir1
 2782_SSW_385,eawpew reevir1
 2782_SSW_390,bkcchi reevir1
 2782_SSW_395,eawpew reevir1
-2782_SSW_400,eawpew reevir1
+2782_SSW_400,reevir1
 2782_SSW_405,eawpew reevir1
 2782_SSW_410,reevir1
 2782_SSW_415,eawpew reevir1
@@ -1307,7 +1307,7 @@ row_id,birds
 2782_SSW_530,reevir1
 2782_SSW_535,bkcchi eawpew reevir1
 2782_SSW_540,bkcchi eawpew reevir1
-2782_SSW_545,eawpew reevir1
+2782_SSW_545,reevir1
 2782_SSW_550,bkcchi eawpew reevir1
 2782_SSW_555,reevir1
 2782_SSW_560,reevir1
@@ -1850,7 +1850,7 @@ row_id,birds
 26709_SSW_245,comyel
 26709_SSW_250,sonspa
 26709_SSW_255,comyel
-26709_SSW_260,sonspa
+26709_SSW_260,comyel sonspa
 26709_SSW_265,eastow sonspa
 26709_SSW_270,comyel sonspa
 26709_SSW_275,eastow sonspa
@@ -1878,7 +1878,7 @@ row_id,birds
 26709_SSW_385,nocall
 26709_SSW_390,comyel eastow
 26709_SSW_395,eastow
-26709_SSW_400,eastow
+26709_SSW_400,nocall
 26709_SSW_405,comyel sonspa
 26709_SSW_410,eastow sonspa
 26709_SSW_415,comyel
@@ -1943,7 +1943,7 @@ row_id,birds
 28933_SSW_110,sonspa
 28933_SSW_115,sonspa
 28933_SSW_120,sonspa
-28933_SSW_125,sonspa
+28933_SSW_125,norcar sonspa
 28933_SSW_130,sonspa
 28933_SSW_135,sonspa
 28933_SSW_140,sonspa
@@ -1990,7 +1990,7 @@ row_id,birds
 28933_SSW_345,cangoo
 28933_SSW_350,cangoo
 28933_SSW_355,amecro cangoo gockin
-28933_SSW_360,sonspa
+28933_SSW_360,cangoo sonspa
 28933_SSW_365,cangoo sonspa
 28933_SSW_370,rewbla sonspa
 28933_SSW_375,rewbla sonspa
@@ -2025,7 +2025,7 @@ row_id,birds
 28933_SSW_520,rewbla swaspa
 28933_SSW_525,swaspa
 28933_SSW_530,nocall
-28933_SSW_535,rewbla
+28933_SSW_535,nocall
 28933_SSW_540,blujay swaspa
 28933_SSW_545,blujay rewbla swaspa
 28933_SSW_550,swaspa
@@ -2053,7 +2053,7 @@ row_id,birds
 42907_SSW_60,reevir1
 42907_SSW_65,reevir1
 42907_SSW_70,reevir1
-42907_SSW_75,nocall
+42907_SSW_75,reevir1
 42907_SSW_80,reevir1
 42907_SSW_85,reevir1
 42907_SSW_90,reevir1
@@ -2135,7 +2135,7 @@ row_id,birds
 42907_SSW_470,nocall
 42907_SSW_475,nocall
 42907_SSW_480,nocall
-42907_SSW_485,yebsap
+42907_SSW_485,nocall
 42907_SSW_490,nocall
 42907_SSW_495,nocall
 42907_SSW_500,nocall
@@ -2175,7 +2175,7 @@ row_id,birds
 51010_SSW_70,blujay
 51010_SSW_75,blujay
 51010_SSW_80,rewbla
-51010_SSW_85,rewbla
+51010_SSW_85,nocall
 51010_SSW_90,nocall
 51010_SSW_95,nocall
 51010_SSW_100,woothr
@@ -2274,7 +2274,7 @@ row_id,birds
 51010_SSW_565,bkcchi norcar
 51010_SSW_570,bkcchi norcar
 51010_SSW_575,nocall
-51010_SSW_580,nocall
+51010_SSW_580,bkcchi
 51010_SSW_585,balori
 51010_SSW_590,nocall
 51010_SSW_595,bkcchi

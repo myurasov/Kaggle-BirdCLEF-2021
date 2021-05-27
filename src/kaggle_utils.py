@@ -1,24 +1,9 @@
-import os
-import sys
-
-import numpy as np
-import pandas as pd
-import tensorflow_addons as tfa
-from lib.utils import fix_random_seed, read_json
-from sklearn.metrics import f1_score
+from lib.utils import read_json
 from tensorflow import keras
 from tqdm import tqdm
 
 from src.config import c
-from src.data_utils import (
-    boost_multiple_occurences,
-    geofilter_predictions,
-    normalize_soundscapes_df,
-    predictions_to_text_labels,
-    read_soundscapes_info,
-)
 from src.generator import Generator
-from src.geo_filter import filters as geo_filters
 from src.models import (
     Div,
     Float2DToFloatRGB,
