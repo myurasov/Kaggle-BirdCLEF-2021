@@ -161,7 +161,7 @@ def normalize_soundscapes_df(
     seconds=5,
     rating=5.0,
     source="long",
-    quiet=False,
+    quiet=True,
 ):
     """Prepare soundscapes df to contain c["DATASET_COLS"] cols + 'row_id' + 'site'"""
 
