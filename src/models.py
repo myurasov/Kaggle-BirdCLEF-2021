@@ -13,15 +13,25 @@ def build_model(name, n_classes) -> keras.models.Model:
     """Name convetion mgs|wave_body_option1_option2_.."""
     input_type, body, *options = name.split("_")
 
+    extra_aux_encoder = None
+    if "xauxenc332" in options:
+        extra_aux_encoder = [3, 32]
+    elif "xauxenc464" in options:
+        extra_aux_encoder = [4, 64]
+
+    extra_dense_layers = None
+    if "xdense" in options:
+        extra_dense_layers = [1, 1024]
+
     if input_type == "msg":
 
         mb = MSG_Model_Builder(
-            n_classes=n_classes,
             body=body,
+            n_classes=n_classes,
             imagenet_weights="imagenet" in options,
-            extra_dense_layers=[1, 1024] if "xdense" in options else None,
+            extra_dense_layers=extra_dense_layers,
             dropout=0.5 if "drops" in options else None,
-            extra_aux_encoder=[3, 32] if "xauxenc332" in options else None,
+            extra_aux_encoder=extra_aux_encoder,
         )
 
         return mb.build()
@@ -32,8 +42,8 @@ def build_model(name, n_classes) -> keras.models.Model:
         assert c["MSG_POWER"] == 1
 
         mb = Wave_Model_Builder(
-            n_classes=n_classes,
             body=body,
+            n_classes=n_classes,
             imagenet_weights="imagenet" in options,
             extra_dense_layers=[1, 1024] if "xdense" in options else None,
             extra_aux_encoder=[3, 32] if "xauxenc332" in options else None,
