@@ -80,8 +80,8 @@ args = parser.parse_args()
 print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
-args.min_rating = 5
-args.sample_with_detection_csv = "/app/res/n_nocall_predictions.csv.gz"
+# args.min_rating = 5
+# args.sample_with_detection_csv = "/app/res/n_nocall_predictions.csv.gz"
 
 # region: bootstrap
 
