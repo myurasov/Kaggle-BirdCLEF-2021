@@ -22,6 +22,8 @@ def build_model(name, n_classes) -> keras.models.Model:
     augmentation = None
     if ("auga" in options) or ("aug-a" in options):
         augmentation = "a"
+    elif ("augb" in options) or ("aug-b" in options):
+        augmentation = "b"
 
     extra_dense_layers = None
     if "xdense" in options:
@@ -125,6 +127,24 @@ class MSG_Model_Builder:
             )(x)
             x = keras.layers.experimental.preprocessing.RandomContrast(
                 factor=0.25,
+                seed=c["SEED"],
+            )(x)
+
+        elif self._augmentation == "b":
+            x = keras.layers.experimental.preprocessing.RandomZoom(
+                height_factor=(-0.125, 0.125),
+                width_factor=(-0.25, 0.25),
+                fill_mode="reflect",
+                seed=c["SEED"],
+            )(x)
+            x = keras.layers.experimental.preprocessing.RandomTranslation(
+                height_factor=(-0.125, 0.125),
+                width_factor=(-0.125, 0.125),
+                fill_mode="reflect",
+                seed=c["SEED"],
+            )(x)
+            x = keras.layers.experimental.preprocessing.RandomContrast(
+                factor=0.5,
                 seed=c["SEED"],
             )(x)
 

@@ -160,6 +160,13 @@ parser.add_argument(
     help="Use rating for sample weighting",
 )
 
+parser.add_argument(
+    "--msg_power",
+    type=int,
+    default=c["MSG_POWER"],
+    help="MelSpectrogram power",
+)
+
 args = parser.parse_args()
 if _debug_args is not None:
     args = parser.parse_args(shlex.split(_debug_args))
@@ -274,7 +281,7 @@ train_g = Generator(
     wave_provider=wave_p,
     batch_size=args.batch,
     msg_output_size=input_shape,
-    msg_power=c["MSG_POWER"],
+    msg_power=args.msg_power,
     geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
 )
 
@@ -287,7 +294,7 @@ val_g = Generator(
     msg_provider=msg_p,
     wave_provider=wave_p,
     msg_output_size=input_shape,
-    msg_power=c["MSG_POWER"],
+    msg_power=args.msg_power,
     geo_coordinates_bins=c["GEO_COORDINATES_BINS"],
     batch_size=val_df.shape[0] if args.preload_val_data else args.batch,
 )

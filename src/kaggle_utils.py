@@ -26,7 +26,8 @@ def predict(
     # metadata from model training run
     meta = read_json(model_path.replace(".h5", ".json"))
 
-    # copy kaggle-specific configs from config saved with a model
+    # set kaggle-specific options from config saved with a model
+
     for k in [
         "WORK_DIR",
         "CACHE_DIR",
@@ -35,6 +36,9 @@ def predict(
         "CACHE_AUDIO_FRAGMENTS",
     ]:
         meta["config"][k] = c[k]
+
+    if "msg_power" in meta["args"]:
+        c["MSG_POWER"] = meta["args"]["msg_power"]
 
     # load model
     model = keras.models.load_model(

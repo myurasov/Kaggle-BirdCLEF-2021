@@ -119,7 +119,11 @@ cli/train_fe.run.py --run D10b --val_fold 4 --dataset dataset-D10.pickle --lr 0.
 cli/train_fe.run.py --run D10b_g --val_fold 5 --dataset dataset-D10.pickle --lr 0.001 --lr_patience 4 --lr_factor 0.33 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332 --amp 1 --batch 32 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 1 --monitor_metric val_f1_score
 
 # msg power == 2
-cli/train_fe.run.py --run D10d_a --val_fold 5 --dataset dataset-D10.pickle --lr 0.001 --lr_patience 4 --lr_factor 0.33 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332_auga --amp 1 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 0 --monitor_metric val_f1_score
+cli/train_fe.run.py --run D10d_a --val_fold 5 --dataset dataset-D10.pickle --lr 0.001 --lr_patience 4 --lr_factor 0.33 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332_auga --amp 1 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 0 --monitor_metric val_f1_score --msg_power 2
+
+# msg power == 2
+cli/train_fe.run.py --run D10e --val_fold 7 --dataset dataset-D10.pickle --lr 0.001 --lr_patience 4 --lr_factor 0.33 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332_augb --amp 1 --batch 64 --preload_val_data 0 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 0 --monitor_metric val_f1_score --msg_power 2
+
 
 cli/train_fe.run.py --run D10c --val_fold 6 --dataset dataset-D10.pickle --lr 0.001 --lr_patience 4 --lr_factor 0.33 --samples_per_epoch 128000 --model msg_enb4_imagenet_xauxenc332_auga --amp 1 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --weight_by_rating 1 --monitor_metric val_f1_score
 
