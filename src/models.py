@@ -14,10 +14,14 @@ def build_model(name, n_classes) -> keras.models.Model:
     input_type, body, *options = name.split("_")
 
     extra_aux_encoder = None
-    if "xauxenc332" in options:
+    if ("xauxenc332" in options) or ("xauxenc-3-32" in options):
         extra_aux_encoder = [3, 32]
-    elif "xauxenc464" in options:
+    elif ("xauxenc464" in options) or ("xauxenc-4-64" in options):
         extra_aux_encoder = [4, 64]
+
+    augmentation = None
+    if ("auga" in options) or ("aug-a" in options):
+        augmentation = "a"
 
     extra_dense_layers = None
     if "xdense" in options:
@@ -32,6 +36,7 @@ def build_model(name, n_classes) -> keras.models.Model:
             extra_dense_layers=extra_dense_layers,
             dropout=0.5 if "drops" in options else None,
             extra_aux_encoder=extra_aux_encoder,
+            augmentation=augmentation,
         )
 
         return mb.build()
@@ -73,10 +78,12 @@ class MSG_Model_Builder:
         ],  # number and dimensions for extra dense layers in the head. None = no extra layers.
         dropout=None,
         extra_aux_encoder=[3, 32],
+        augmentation=None,
     ):
         self._body = body
         self._dropout = dropout
         self._n_classes = n_classes
+        self._augmentation = augmentation
         self._imagenet_weights = imagenet_weights
         self._extra_aux_encoder = extra_aux_encoder
         self._extra_dense_layers = extra_dense_layers
@@ -96,16 +103,36 @@ class MSG_Model_Builder:
         else:
             raise ValueError(f'Unsupported body type "{self._body}"')
 
-        i_msg = keras.layers.Input(
+        i_msg = x = keras.layers.Input(
             shape=msg_shape,
             dtype=msg_dtype,
             name="i_msg",
         )
 
+        if self._augmentation == "a":
+            print("aaaaa")
+
+            x = keras.layers.experimental.preprocessing.RandomZoom(
+                height_factor=(-0.1, 0.1),
+                width_factor=(-0.1, 0.1),
+                fill_mode="reflect",
+                seed=c["SEED"],
+            )(x)
+            x = keras.layers.experimental.preprocessing.RandomTranslation(
+                height_factor=(-0.1, 0.1),
+                width_factor=(-0.1, 0.1),
+                fill_mode="reflect",
+                seed=c["SEED"],
+            )(x)
+            x = keras.layers.experimental.preprocessing.RandomContrast(
+                factor=0.25,
+                seed=c["SEED"],
+            )(x)
+
         x = getattr(keras.applications, self._body)(
             include_top=False,
             weights="imagenet" if self._imagenet_weights else None,
-        )(i_msg)
+        )(x)
 
         f_msg = keras.layers.GlobalAveragePooling2D(name="f_msg")(x)
 
