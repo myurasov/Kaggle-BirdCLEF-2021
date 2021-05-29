@@ -110,7 +110,6 @@ class MSG_Model_Builder:
         )
 
         if self._augmentation == "a":
-            print("aaaaa")
 
             x = keras.layers.experimental.preprocessing.RandomZoom(
                 height_factor=(-0.1, 0.1),
