@@ -516,3 +516,14 @@ class Cast(keras.layers.Layer):
 
     def get_config(self):
         return {"dtype": self._dtype}
+
+
+custom_objects = {
+    "SinCos": SinCos,
+    "Div": Div,
+    "YMToDate": YMToDate,
+    "MelSpectrogram": MelSpectrogram,
+    "Float2DToFloatRGB": Float2DToFloatRGB,
+    "Float2DToRGB": Float2DToRGB,
+    "PowerToDb": PowerToDb,
+}
