@@ -167,6 +167,13 @@ parser.add_argument(
     help="MelSpectrogram power",
 )
 
+parser.add_argument(
+    "--seed",
+    type=int,
+    default=c["SEED"],
+    help="MelSpectrogram power",
+)
+
 args = parser.parse_args()
 if _debug_args is not None:
     args = parser.parse_args(shlex.split(_debug_args))
@@ -175,6 +182,8 @@ print(f"* Arguments:\n{pformat(vars(args))}")
 # endregion
 
 # region: bootstrap
+c["SEED"] = args.seed
+
 fix_random_seed(c["SEED"])
 os.makedirs(c["WORK_DIR"], exist_ok=True)
 os.chdir(c["WORK_DIR"])

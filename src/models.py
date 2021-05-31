@@ -102,6 +102,10 @@ class MSG_Model_Builder:
             self._body = "ResNet50"
             msg_shape = (224, 224, 3)
             msg_dtype = "float32"
+        elif self._body.lower() == "resnet50v2":
+            self._body = "ResNet50V2"
+            msg_shape = (224, 224, 3)
+            msg_dtype = "float32"
         else:
             raise ValueError(f'Unsupported body type "{self._body}"')
 
