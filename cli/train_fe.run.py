@@ -168,10 +168,17 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--geo_bins",
+    type=int,
+    default=c["GEO_COORDINATES_BINS"],
+    help="Number of bins for latitude/longitude",
+)
+
+parser.add_argument(
     "--seed",
     type=int,
     default=c["SEED"],
-    help="MelSpectrogram power",
+    help="Random seed",
 )
 
 args = parser.parse_args()
@@ -183,6 +190,7 @@ print(f"* Arguments:\n{pformat(vars(args))}")
 
 # region: bootstrap
 c["SEED"] = args.seed
+c["GEO_COORDINATES_BINS"] = args.geo_bins
 
 fix_random_seed(c["SEED"])
 os.makedirs(c["WORK_DIR"], exist_ok=True)
