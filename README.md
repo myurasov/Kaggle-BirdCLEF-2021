@@ -2,74 +2,43 @@
 
 <https://www.kaggle.com/c/birdclef-2021>
 
-## Plan
+## Running
 
-### Dataset Creation
+### Starting Jupyter Lab and TensorBoard
 
-- read `train_metadata.csv`
-- select only labels with good rating
-- slice clips into fragments with `stride` and `length` or cut based on detection model
-- randomly drop samples classes with too much data
-- "upsample" classes with too little data
-- coarsen coordinates
-- add date coarsened up to season (month?, 1/8 of y?)
+`$ docker/docker-forever.sh [--gpus='device=###|all'] [--jupyter_port=####|8888] [--tensorboard_port=####|6006]`
 
----
+### Shell
 
-- read `train_soundscape_labels.csv`
-- add date coarsened date
-- add coarsened coordinates
-- assume rating is '5'
-- assume all labels are primary (?)
+`$ docker/docker.sh [--gpus='device=###|all'] bash`
 
----
+## Workflow
 
-- join datasets (short+long+external?)
-- treat secondary labels with lower value than 1 (?)
-- add folds
+### Create geofilter
 
-### Training
+```sh
+cli/get_flybies.run.py --dataset dataset-all-m1.pickle --miles 500 --time_tolerance_months 1 --only_months 1 --last_n_years 5 > docs/flybies-all-500mi-last_5y-1mo_tolerance.txt
+```
 
-- use rating as sample weight (?)
-- use secondary labels with label value < 1 and linear activation (?)
-- do something about class imbalance
-- do augmentation with mixing of random fragments, (*predict all labels mixed up*)
-- try "Cosine Annealing Scheduler with warmup"
+### Prepare data
 
----
+```sh
+cli/prepare_short.run.py --min_rating 3 --max_from_clip 10 --no_rating_value 3 --rectify_class_balance 0 --sample_with_stride 5 --out_csv short-C.csv && \
+cli/prepare_long.run.py --split_multilabel 1 --out_csv long-C.csv && \
+cli/create_dataset.run.py --in_csvs short-X.csv long-X.csv --out dataset-X.pickle --secondary_label_p 0.33 --rectify_class_balance 1 --geofilter all-500mi-last_5y-1mo_tolerance --folds 7 && \
+cli/cache_waves.py --dataset dataset-X.pickle
+```
 
-- use sounscapes data for fine-tuning
+### Train
 
-### Models
+```
+cli/train_fe.run.py --run X --dataset dataset-X.pickle --lr 0.001 --lr_patience 5 --samples_per_epoch 128000 --model msg_enb4_imagenet_noxdense --amp 1 --val_fold 0.15 --batch 64 --preload_val_data 1 --multiprocessing 4x4 --epochs 500  --weight_by_rareness 0 --monitor_metric val_f1_score
+```
 
-- Baseline: ensemble of 2d and 1d convnets
-- Perceiver (?)
+### Upload code to Kaggle
 
-### Prediction
+Configure credentials in the `kaggle.json` polaced in the root of the project.
 
-- Predictions close by in time of the same bird should be treaded with more confidence
-- Try LSTM that takes predicted stream and trains on soundscapes to correct predictions
-- Try different ensembling methods: averaging/sqrt(sum(squares))/voting
-
-## Ideas
-
-- Collect more data, particularly on rare classes
-- Use only soundscapes for validation to be closer to test dataset
-- Assign default rating value more optimally (is there correllation between length/other stuff and rating?)
-- Implement SWA <https://arxiv.org/pdf/1803.05407.pdf>, <https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/>
-
-### Crazy Ideas
-
-- Create synthetic data with GANs
-
-## Links
-
-- "Perceiver: General Perception with Iterative Attention" <https://arxiv.org/pdf/2103.03206.pdf>
-- "Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains" <https://arxiv.org/pdf/2006.10739.pdf>
-- <https://www.kaggle.com/stefankahl/birdclef2021-exploring-the-data>
-- <http://dcase.community/challenge2018/task-bird-audio-detection-results>
-- <http://dcase.community/documents/challenge2018/technical_reports/DCASE2018_Lasseck_76.pdf>
-- SWA <https://arxiv.org/pdf/1803.05407.pdf>, <https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/>
-- <https://github.com/iver56/audiomentations>
-- <https://ai.googleblog.com/2019/04/specaugment-new-data-augmentation.html>, <https://github.com/DemisEom/SpecAugment>
-- <https://enzokro.dev/spectrogram_normalizations/2020/09/10/Normalizing-spectrograms-for-deep-learning.html>
+```sh
+cli/kaggle_upload_repo.sh
+```
